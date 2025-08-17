@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Optimized dark mode styles with instant switching */
+body {
+  @apply bg-white text-black dark:bg-gray-900 dark:text-white;
+  transition: none !important;
+}
+
+/* Instant theme switching for critical elements */
+html, body, 
+.bg-white, .dark\:bg-gray-900,
+.text-gray-900, .dark\:text-gray-100,
+.bg-gray-100, .dark\:bg-gray-800,
+.text-gray-800, .dark\:text-gray-200,
+.border-gray-200, .dark\:border-gray-700,
+.bg-gray-50, .dark\:bg-gray-800\/50 {
+  transition: none !important;
+}
+
+/* Only animate non-critical elements */
+.transition-colors:not(.instant-theme) {
+  transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+}
+
+/* Game-like cursor styles - only applied when game mode is active */
+@media (min-width: 768px) {
+  html.game-mode {
+    cursor: none;
+  }
+  
+  html.game-mode a, 
+  html.game-mode button, 
+  html.game-mode [role="button"], 
+  html.game-mode input, 
+  html.game-mode label, 
+  html.game-mode select, 
+  html.game-mode textarea {
+    cursor: none;
+  }
+}
+
+/* Theme transition animation */
+.theme-transition {
+  animation: theme-flash 0.5s ease;
+}
+
+@keyframes theme-flash {
+  0% {
+    filter: saturate(1) brightness(1);
+  }
+  25% {
+    filter: saturate(1.3) brightness(1.1);
+  }
+  50% {
+    filter: saturate(1) brightness(1);
+  }
+  75% {
+    filter: saturate(1.3) brightness(1.1);
+  }
+  100% {
+    filter: saturate(1) brightness(1);
+  }
+}
+
+/* Animated gradient text */
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Floating animation */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Wave animation */
+.animate-wave {
+  animation: wave 2.5s infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Fade in animation */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Blink animation */
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Mobile cursor fix */
+@media (max-width: 768px) {
+  html {
+    cursor: auto;
+  }
+  
+  a, button, [role="button"], input, label, select, textarea {
+    cursor: auto;
+  }
+}
+
+/* Cyberpunk font styles */
+.cyberpunk-font {
+  font-family: 'Rajdhani', 'Orbitron', monospace;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cyberpunk-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.cyberpunk-text {
+  font-family: 'Rajdhani', monospace;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}/* Prevent transition on page load */
+:root:not(.theme-initialized) * {
+  transition: none !important;
+}
+
+/* Optimize theme switching with hardware acceleration */
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Hardware acceleration for smooth theme switching */
+html, body {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: background-color, color;
+}
+
+/* Instant theme switching utility class */
+.instant-theme-switch {
+  transition: none !important;
+}
+
+/* Theme switching optimization - disable ALL transitions during switch */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+/* Critical elements that should switch instantly */
+.bg-white,
+.dark\:bg-gray-900,
+.text-gray-900,
+.dark\:text-gray-100,
+.bg-gray-100,
+.dark\:bg-gray-800,
+.text-gray-800,
+.dark\:text-gray-200,
+.border-gray-200,
+.dark\:border-gray-700,
+.bg-gray-50,
+.dark\:bg-gray-800\/50,
+.bg-gray-200,
+.dark\:bg-gray-700 {
+  transition: none !important;
+}
+
+/* Optimize rendering performance */
+html.theme-switching {
+  contain: layout style paint;
+}
+
+/* Force GPU acceleration for theme elements */
+.bg-white,
+.dark\:bg-gray-900,
+body {
+  transform: translateZ(0);
+  will-change: background-color;
+}
+
+/* Enhanced Cyberpunk font styles */
+.cyberpunk-logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-stretch: ultra-condensed;
+  transform: scaleX(0.9);
+}
+
+.cyberpunk-menu {
+  font-family: 'Rajdhani', monospace;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.cyberpunk-data {
+  font-family: 'Courier New', 'Rajdhani', monospace;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cyberpunk angular text effect */
+.cyberpunk-angular {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-stretch: condensed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}/* Smoot
+h scrolling optimization for game-dev page */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .cyberpunk-font * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimize rendering performance */
+.cyberpunk-font {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hardware acceleration for smooth animations */
+.cyberpunk-font * {
+  will-change: auto;
+  transform: translateZ(0);
+}

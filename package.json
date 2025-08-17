@@ -1,0 +1,35 @@
+{
+  "name": "portfolio-website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:fast": "cross-env NODE_OPTIONS=--max_old_space_size=4096 NEXT_DISABLE_ESLINT=true NEXT_DISABLE_TYPECHECKING=true next dev",
+    "dev:turbo": "next dev --turbo",
+    "build": "next build",
+    "build:analyze": "cross-env ANALYZE=true next build",
+    "start": "next start",
+    "lint": "next lint",
+    "kill-port": "node kill-port.js"
+  },
+  "dependencies": {
+    "framer-motion": "^10.18.0",
+    "next": "15.4.2",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-intersection-observer": "^9.16.0"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "15.4.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "cross-env": "7.0.3",
+    "eslint": "^8",
+    "eslint-config-next": "15.4.2",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
