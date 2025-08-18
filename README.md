@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Basil's Portfolio
 
 A modern portfolio website built with Next.js, TypeScript, and Tailwind CSS with dark mode support.
@@ -68,3 +69,6 @@ npm run kill-port
 ```
 
 Then try running the development server again.
+=======
+# basil_portfolio
+>>>>>>> 2eee13f9b74ac97c77da25b6f92888cf0ec194ef
