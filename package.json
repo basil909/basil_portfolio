@@ -13,6 +13,7 @@
     "kill-port": "node kill-port.js"
   },
   "dependencies": {
+    "critters": "0.0.23",
     "framer-motion": "^10.18.0",
     "next": "15.4.2",
     "react": "^18",
