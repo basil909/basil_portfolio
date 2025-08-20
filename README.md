@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Basil's Portfolio
 
 A modern portfolio website built with Next.js, TypeScript, and Tailwind CSS with dark mode support.
