@@ -207,7 +207,7 @@ export default function Hero() {
             </svg>
           </motion.a>
           <motion.a
-            href="https://linkedin.com/in/basil909"
+            href="https://www.linkedin.com/in/basil909"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-white hover:bg-blue-600 transition-all duration-300"
