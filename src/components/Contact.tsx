@@ -179,7 +179,7 @@ export default function Contact() {
                                     <h4 className="font-semibold">Social</h4>
                                     <div className="flex gap-3 mt-1">
                                         <a
-                                            href="https://github.com/basil909"
+                                            href="https://github.com/basilcp909"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

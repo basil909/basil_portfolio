@@ -195,7 +195,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 1 }}
         >
           <motion.a
-            href="https://github.com/basil909"
+                                    href="https://github.com/basilcp909"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-white hover:bg-gray-900 dark:hover:bg-gray-700 transition-all duration-300"
@@ -207,7 +207,7 @@ export default function Hero() {
             </svg>
           </motion.a>
           <motion.a
-            href="https://www.linkedin.com/in/basil909"
+            href="https://www.linkedin.com/in/muhammed-basil-cp-cse007"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-white hover:bg-blue-600 transition-all duration-300"

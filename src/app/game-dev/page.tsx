@@ -1300,7 +1300,7 @@ const ContactContent = () => (
                 </motion.a>
 
                 <motion.a
-                    href="https://linkedin.com/in/muhammadbasil"
+                    href="https://www.linkedin.com/in/muhammed-basil-cp-cse007"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="border border-gray-700 bg-black/60 p-6 hover:border-cyan-400 hover:bg-cyan-400/5 transition-all duration-200 group"
