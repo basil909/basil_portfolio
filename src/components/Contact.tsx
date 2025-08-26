@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import emailjs from '@emailjs/browser';
+import { emailjsConfig } from '../config/emailjs';
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -19,11 +21,14 @@ export default function Contact() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
     const [ref, inView] = useInView({
         triggerOnce: true,
         threshold: 0.1
     });
+
+    const formRef = useRef<HTMLFormElement>(null);
 
     const validateForm = () => {
         let valid = true;
@@ -60,14 +65,24 @@ export default function Contact() {
         if (!validateForm()) return;
 
         setIsSubmitting(true);
+        setSubmitError('');
 
-        // Simulate API call
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            setIsSubmitted(true);
-            setFormData({ name: '', email: '', message: '' });
+            // Send email using EmailJS
+            const result = await emailjs.sendForm(
+                emailjsConfig.serviceId,
+                emailjsConfig.templateId,
+                formRef.current!,
+                emailjsConfig.publicKey
+            );
+
+            if (result.status === 200) {
+                setIsSubmitted(true);
+                setFormData({ name: '', email: '', message: '' });
+            }
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Error sending email:', error);
+            setSubmitError('Failed to send message. Please try again or contact me directly via email.');
         } finally {
             setIsSubmitting(false);
         }
@@ -136,7 +151,7 @@ export default function Contact() {
                             >
                                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                                 <div>
@@ -145,7 +160,7 @@ export default function Contact() {
                                         href="mailto:basilcp090@gmail.com"
                                         className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                     >
-                                        basilcp090@@gmail.com
+                                        basilcp090@gmail.com
                                     </a>
                                 </div>
                             </motion.div>
@@ -241,9 +256,20 @@ export default function Contact() {
                             </motion.div>
                         ) : (
                             <motion.form
+                                ref={formRef}
                                 onSubmit={handleSubmit}
                                 className="space-y-6 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg"
                             >
+                                {submitError && (
+                                    <motion.div
+                                        className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg"
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                    >
+                                        {submitError}
+                                    </motion.div>
+                                )}
+
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -255,7 +281,7 @@ export default function Contact() {
                                     <input
                                         type="text"
                                         id="name"
-                                        name="name"
+                                        name="user_name"
                                         value={formData.name}
                                         onChange={handleChange}
                                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 transition-colors ${errors.name ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
@@ -278,7 +304,7 @@ export default function Contact() {
                                     <input
                                         type="email"
                                         id="email"
-                                        name="email"
+                                        name="user_email"
                                         value={formData.email}
                                         onChange={handleChange}
                                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 transition-colors ${errors.email ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
