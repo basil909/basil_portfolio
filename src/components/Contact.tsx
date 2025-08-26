@@ -287,9 +287,14 @@ export default function Contact() {
                                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 transition-colors ${errors.name ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
                                             }`}
                                         placeholder="Your name"
+                                        aria-describedby={errors.name ? "name-error" : undefined}
+                                        aria-invalid={errors.name ? "true" : "false"}
+                                        aria-required="true"
+                                        autoComplete="name"
+                                        maxLength={100}
                                     />
                                     {errors.name && (
-                                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
+                                        <p id="name-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">{errors.name}</p>
                                     )}
                                 </motion.div>
 
@@ -310,9 +315,14 @@ export default function Contact() {
                                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 transition-colors ${errors.email ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
                                             }`}
                                         placeholder="your.email@example.com"
+                                        aria-describedby={errors.email ? "email-error" : undefined}
+                                        aria-invalid={errors.email ? "true" : "false"}
+                                        aria-required="true"
+                                        autoComplete="email"
+                                        maxLength={100}
                                     />
                                     {errors.email && (
-                                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                                        <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">{errors.email}</p>
                                     )}
                                 </motion.div>
 
@@ -333,9 +343,13 @@ export default function Contact() {
                                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 transition-colors resize-none ${errors.message ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
                                             }`}
                                         placeholder="Tell me about your project..."
+                                        aria-describedby={errors.message ? "message-error" : undefined}
+                                        aria-invalid={errors.message ? "true" : "false"}
+                                        aria-required="true"
+                                        maxLength={500}
                                     />
                                     {errors.message && (
-                                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>
+                                        <p id="message-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">{errors.message}</p>
                                     )}
                                 </motion.div>
 
