@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import Image from 'next/image';
 
 export default function About() {
   const [ref, inView] = useInView({
@@ -12,10 +13,10 @@ export default function About() {
 
   const variants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { 
+      transition: {
         duration: 0.6,
         staggerChildren: 0.2
       }
@@ -24,21 +25,31 @@ export default function About() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     }
   };
 
   const skills = {
-    aiml: ['Hugging Face Transformers', 'DeBERTaV3 / MPT-7B', 'XGBoost / Random Forest', 'Reinforcement Learning'],
-    technologies: ['Python / Rasa', 'FastAPI / Next.js', 'OCR / Document Processing', 'Streamlit / Jupyter']
+    aiml: [
+      { name: 'Hugging Face Transformers', icon: '🤗' },
+      { name: 'DeBERTaV3 / MPT-7B', icon: '🧠' },
+      { name: 'XGBoost / Random Forest', icon: '🌲' },
+      { name: 'Reinforcement Learning', icon: '🤖' }
+    ],
+    technologies: [
+      { name: 'Python / Rasa', icon: '🐍' },
+      { name: 'FastAPI / Next.js', icon: '⚡' },
+      { name: 'OCR / Document Processing', icon: '📄' },
+      { name: 'Streamlit / Jupyter', icon: '📊' }
+    ]
   };
 
   return (
-    <section id="about" className="py-20 px-4 bg-gray-50 dark:bg-gray-800/50">
-      <motion.div 
+    <section id="about" className="py-20 px-4 bg-white dark:bg-gray-900">
+      <motion.div
         ref={ref}
         className="max-w-6xl mx-auto"
         variants={variants}
@@ -55,119 +66,99 @@ export default function About() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div className="space-y-6" variants={itemVariants}>
-            <motion.p 
-              className="text-gray-700 dark:text-gray-300 leading-relaxed"
+          <motion.div className="space-y-6 order-2 md:order-1" variants={itemVariants}>
+            <motion.p
+              className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
               variants={itemVariants}
             >
-              I'm Muhammed Basil, a Computer Science undergraduate with a strong passion for web development, AI, and immersive technologies. 
-              I enjoy building intelligent, user-focused applications that bridge research and practical use. My recent project, Vakyam AI, 
+              I'm Muhammed Basil, a Computer Science undergraduate with a strong passion for web development, AI, and immersive technologies.
+              I enjoy building intelligent, user-focused applications that bridge research and practical use. My recent project, Vakyam AI,
               is a Malayalam language learning assistant that combines rule-based grammar with reinforcement learning techniques.
             </motion.p>
-            
-            <motion.p 
-              className="text-gray-700 dark:text-gray-300 leading-relaxed"
+
+            <motion.p
+              className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
               variants={itemVariants}
             >
-              I'm particularly interested in how AI can enhance language learning and human-computer interaction. 
-              Whether working on full-stack web apps or exploring cognitive simulation, I aim to create solutions 
-              that are meaningful and adaptive. I'm currently looking for opportunities to grow as a developer and 
+              I'm particularly interested in how AI can enhance language learning and human-computer interaction.
+              Whether working on full-stack web apps or exploring cognitive simulation, I aim to create solutions
+              that are meaningful and adaptive. I'm currently looking for opportunities to grow as a developer and
               contribute to impactful, forward-thinking projects.
             </motion.p>
 
-            <motion.div 
-              className="grid grid-cols-2 gap-4 mt-8"
+            <motion.div
+              className="mt-8"
               variants={itemVariants}
             >
-              <motion.div
-                className="col-span-2 text-center mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-              >
-                <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">
-                  ✨ Check out my interactive skill tree below! ✨
-                </p>
-              </motion.div>
-              <motion.div 
-                className="space-y-2"
-                variants={itemVariants}
-                whileHover={{ scale: 1.03 }}
-              >
-                <h3 className="font-semibold text-blue-600 dark:text-blue-400">AI & ML</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                  {skills.aiml.map((skill, index) => (
-                    <motion.li 
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + (index * 0.1) }}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="text-blue-500 dark:text-blue-400">▹</span> {skill}
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-              <motion.div 
-                className="space-y-2"
-                variants={itemVariants}
-                whileHover={{ scale: 1.03 }}
-              >
-                <h3 className="font-semibold text-purple-600 dark:text-purple-400">Technologies</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                  {skills.technologies.map((skill, index) => (
-                    <motion.li 
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.2 + (index * 0.1) }}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="text-purple-500 dark:text-purple-400">▹</span> {skill}
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
+              <h3 className="font-bold text-xl mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="text-blue-500">🛠️</span> Technical Arsenal
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+                  <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-3 flex items-center gap-2">
+                    <span>🧠</span> AI & ML
+                  </h4>
+                  <ul className="space-y-2">
+                    {skills.aiml.map((skill, index) => (
+                      <li key={index} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="text-xs">{skill.icon}</span>
+                        {skill.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+                  <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-3 flex items-center gap-2">
+                    <span>💻</span> Technologies
+                  </h4>
+                  <ul className="space-y-2">
+                    {skills.technologies.map((skill, index) => (
+                      <li key={index} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="text-xs">{skill.icon}</span>
+                        {skill.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
 
-          <motion.div 
-            className="flex justify-center"
+          <motion.div
+            className="flex justify-center order-1 md:order-2"
             variants={itemVariants}
           >
-            <motion.div 
-              className="relative"
-              whileHover={{ scale: 1.05 }}
+            <motion.div
+              className="relative w-72 h-72 md:w-96 md:h-96"
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <motion.div 
-                className="w-80 h-80 bg-gradient-to-br from-blue-400 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center"
-                animate={{ 
-                  boxShadow: [
-                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                    "0 25px 50px -12px rgba(79, 70, 229, 0.25)",
-                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-                  ]
-                }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-              >
-                <div className="text-white text-6xl">👨‍💻</div>
-              </motion.div>
-              <motion.div 
-                className="absolute -bottom-4 -right-4 w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center text-2xl shadow-lg"
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ 
-                  duration: 5, 
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-2xl rotate-6 opacity-20 blur-xl animate-pulse"></div>
+              <div className="relative w-full h-full rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-2xl">
+                <Image
+                  src="/images/avatar.png"
+                  alt="Muhammed Basil"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+
+              <motion.div
+                className="absolute -bottom-6 -right-6 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700"
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
               >
-                ⚡
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">Open to work</span>
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
