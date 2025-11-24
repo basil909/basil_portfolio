@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -54,13 +54,13 @@ const projectsData = [
 
 export default function GameDevPage() {
     const [activeMenu, setActiveMenu] = useState('profile');
-    const [isLoaded, setIsLoaded] = useState(false);
+    // const [isLoaded, setIsLoaded] = useState(false); // Removed unused state
     const [glitchActive, setGlitchActive] = useState(false);
     const [flickerElements, setFlickerElements] = useState<string[]>([]);
     const [scanLinePosition, setScanLinePosition] = useState(0);
 
     useEffect(() => {
-        setIsLoaded(true);
+        // setIsLoaded(true); // Removed unused state update
 
         // Random glitch effect
         const glitchInterval = setInterval(() => {
@@ -72,7 +72,7 @@ export default function GameDevPage() {
         const flickerInterval = setInterval(() => {
             const elements = ['logo', 'menu'];
             const randomElement = elements[Math.floor(Math.random() * elements.length)];
-            setFlickerElements(prev => [...prev, randomElement]);
+            setFlickerElements(prev => [...prev, randomElement as string]);
             setTimeout(() => {
                 setFlickerElements(prev => prev.filter(el => el !== randomElement));
             }, 50); // Reduced from 100ms to 50ms
