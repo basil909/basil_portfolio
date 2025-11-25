@@ -1,1340 +1,510 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-// Menu items for the main navigation
-const menuItems = [
-    { id: 'profile', label: 'PROFILE', active: true },
-    { id: 'skills', label: 'SKILLS' },
-    { id: 'projects', label: 'PROJECTS' },
-    { id: 'contact', label: 'CONTACT' },
-    { id: 'exit', label: 'EXIT' }
+/* ---------- Types & Static Data ---------- */
+type MenuItem = {
+    id: string;
+    label: string;
+    icon?: string;
+};
+
+const menuItems: MenuItem[] = [
+    { id: 'profile', label: 'PROFILE', icon: '👤' },
+    { id: 'skills', label: 'SKILLS', icon: '⚡' },
+    { id: 'projects', label: 'PROJECTS', icon: '🚀' },
+    { id: 'contact', label: 'CONTACT', icon: '📡' },
+    { id: 'exit', label: 'EXIT', icon: '🚪' },
 ];
 
-// Profile stats data
 const profileStats = [
-    { label: 'LEVEL', value: '20', color: 'text-yellow-400' },
-    { label: 'STREET CRED', value: 'BEGINNER', color: 'text-cyan-400' },
-    { label: 'REPUTATION', value: 'NOOB', color: 'text-pink-500' }
+    { label: 'LEVEL', value: '20', colorClass: 'text-yellow-400', shadow: 'shadow-yellow-400/50' },
+    { label: 'STREET CRED', value: 'BEGINNER', colorClass: 'text-cyan-400', shadow: 'shadow-cyan-400/50' },
+    { label: 'REPUTATION', value: 'NOOB', colorClass: 'text-pink-500', shadow: 'shadow-pink-500/50' },
 ];
 
-// Skills data
 const skillsData = [
-    { name: 'UNITY 3D', level: 95, category: 'ENGINE' },
-    { name: 'UNREAL ENGINE', level: 88, category: 'ENGINE' },
-    { name: 'C# SCRIPTING', level: 92, category: 'CODE' },
-    { name: 'BLENDER', level: 85, category: 'ART' },
-    { name: 'GAME DESIGN', level: 90, category: 'DESIGN' },
-    { name: 'VR/AR', level: 78, category: 'TECH' }
+    { name: 'UNITY 3D', level: 95, category: 'ENGINE', color: 'from-cyan-500 to-blue-500' },
+    { name: 'UNREAL ENGINE', level: 88, category: 'ENGINE', color: 'from-purple-500 to-pink-500' },
+    { name: 'C# SCRIPTING', level: 92, category: 'CODE', color: 'from-green-400 to-emerald-600' },
+    { name: 'BLENDER', level: 85, category: 'ART', color: 'from-orange-400 to-red-500' },
+    { name: 'GAME DESIGN', level: 90, category: 'DESIGN', color: 'from-yellow-400 to-amber-600' },
+    { name: 'VR/AR', level: 78, category: 'TECH', color: 'from-indigo-400 to-violet-600' },
 ];
 
-// Projects data
 const projectsData = [
     {
         name: 'CYBER RUNNER',
         status: 'COMPLETED',
-        description: 'Fast-paced 3D endless runner with cyberpunk aesthetics',
-        tech: ['Unity', 'C#', 'Shader Graph']
+        description: 'Fast-paced 3D endless runner with cyberpunk aesthetics. Features procedural generation and neon visuals.',
+        tech: ['Unity', 'C#', 'Shader Graph'],
+        image: 'linear-gradient(45deg, #00f3ff, #ff00ff)',
     },
     {
         name: 'MYSTIC REALMS',
         status: 'IN DEVELOPMENT',
-        description: 'Open-world RPG with dynamic weather system',
-        tech: ['Unreal Engine', 'Blueprint', 'C++']
+        description: 'Open-world RPG with dynamic weather system and AI-driven NPCs. Built with Unreal Engine 5.',
+        tech: ['Unreal Engine', 'Blueprint', 'C++'],
+        image: 'linear-gradient(45deg, #a855f7, #ec4899)',
     },
     {
         name: 'VR SPACE STATION',
         status: 'PROTOTYPE',
-        description: 'Immersive VR experience aboard a space station',
-        tech: ['Unity XR', 'Oculus SDK', 'C#']
-    }
+        description: 'Immersive VR experience aboard a futuristic space station. Interactive zero-gravity mechanics.',
+        tech: ['Unity XR', 'Oculus SDK', 'C#'],
+        image: 'linear-gradient(45deg, #3b82f6, #10b981)',
+    },
 ];
 
+/* ---------- Helper Functions ---------- */
+function createArtifacts(count = 6) {
+    return Array.from({ length: count }).map((_, i) => ({
+        id: `artifact-${i}`,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        width: Math.random() * 4 + 2,
+        height: Math.random() * 40 + 10,
+        delay: Math.random() * 5,
+        duration: Math.random() * 3 + 2,
+    }));
+}
+
+/* ---------- Main Component ---------- */
 export default function GameDevPage() {
     const [activeMenu, setActiveMenu] = useState('profile');
-    // const [isLoaded, setIsLoaded] = useState(false); // Removed unused state
     const [glitchActive, setGlitchActive] = useState(false);
     const [flickerElements, setFlickerElements] = useState<string[]>([]);
-    const [scanLinePosition, setScanLinePosition] = useState(0);
+    const artifacts = useMemo(() => createArtifacts(6), []);
+
+    // Optimized scanline animation using CSS variables for performance
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // setIsLoaded(true); // Removed unused state update
-
-        // Random glitch effect
+        // Glitch effect loop
         const glitchInterval = setInterval(() => {
-            setGlitchActive(true);
-            setTimeout(() => setGlitchActive(false), 150);
-        }, Math.random() * 8000 + 3000);
+            if (Math.random() > 0.7) {
+                setGlitchActive(true);
+                setTimeout(() => setGlitchActive(false), 100 + Math.random() * 100);
+            }
+        }, 3000);
 
-        // Reduced flickering elements - less frequent and shorter duration
+        // Flicker effect loop
         const flickerInterval = setInterval(() => {
-            const elements = ['logo', 'menu'];
-            const randomElement = elements[Math.floor(Math.random() * elements.length)];
-            setFlickerElements(prev => [...prev, randomElement as string]);
-            setTimeout(() => {
-                setFlickerElements(prev => prev.filter(el => el !== randomElement));
-            }, 50); // Reduced from 100ms to 50ms
-        }, Math.random() * 8000 + 5000); // Increased interval
+            const elements = ['logo', 'menu', 'status', 'border'];
+            const target = elements[Math.floor(Math.random() * elements.length)] as string;
+            setFlickerElements(prev => [...prev, target]);
 
-        // Slower scan line animation to reduce flickering
-        const scanLineInterval = setInterval(() => {
-            setScanLinePosition(prev => (prev + 0.5) % 100);
-        }, 100); // Slower update rate
+            setTimeout(() => {
+                setFlickerElements(prev => prev.filter(e => e !== target));
+            }, 50 + Math.random() * 100);
+        }, 2000);
 
         return () => {
             clearInterval(glitchInterval);
             clearInterval(flickerInterval);
-            clearInterval(scanLineInterval);
         };
     }, []);
 
     const renderContent = () => {
         switch (activeMenu) {
-            case 'profile':
-                return <ProfileContent />;
-            case 'skills':
-                return <SkillsContent />;
-            case 'projects':
-                return <ProjectsContent />;
-            case 'contact':
-                return <ContactContent />;
-            default:
-                return <ProfileContent />;
+            case 'profile': return <ProfileContent flicker={flickerElements.includes('profile')} />;
+            case 'skills': return <SkillsContent />;
+            case 'projects': return <ProjectsContent />;
+            case 'contact': return <ContactContent />;
+            default: return <ProfileContent />;
         }
     };
 
     return (
-        <div className="min-h-screen bg-black text-white cyberpunk-font overflow-hidden relative">
-            {/* Background with cyberpunk atmosphere */}
-            <div className="fixed inset-0 bg-gradient-to-br from-red-900/20 via-black to-cyan-900/20"></div>
+        <div ref={containerRef} className="min-h-screen bg-black text-white cyberpunk-font overflow-hidden relative selection:bg-cyan-500 selection:text-black">
+            {/* Ambient Background */}
+            <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />
+            <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none" />
 
-            {/* Animated background elements */}
-            <div className="fixed inset-0 opacity-10">
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,0,111,0.1)_1px,transparent_1px),linear-gradient(-45deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-[size:60px_60px] animate-pulse"></div>
+            {/* Grid Overlay */}
+            <div className="fixed inset-0 perspective-1000 pointer-events-none">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#083344_1px,transparent_1px),linear-gradient(to_bottom,#083344_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-cyan-900/20 to-transparent" />
             </div>
 
-            {/* Dynamic scan lines */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.9)_50%)] bg-[size:4px_4px] opacity-20"></div>
-                <motion.div
-                    className="absolute left-0 w-full h-1 bg-cyan-400/50 blur-sm"
-                    style={{ top: `${scanLinePosition}%` }}
-                    animate={{
-                        opacity: [0.3, 1, 0.3],
-                        scaleX: [0.8, 1.2, 0.8]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                />
+            {/* Scanline */}
+            <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+                <div className="w-full h-1 bg-cyan-400/30 blur-sm absolute top-0 animate-scanline shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
             </div>
 
-            {/* Reduced floating digital artifacts */}
-            <div className="fixed inset-0 pointer-events-none">
-                {Array.from({ length: 4 }).map((_, i) => (
+            {/* Floating Artifacts */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                {artifacts.map(a => (
                     <motion.div
-                        key={i}
-                        className="absolute bg-cyan-400 opacity-40"
+                        key={a.id}
+                        className="absolute bg-cyan-500/20 backdrop-blur-sm"
                         style={{
-                            width: `${Math.random() * 2 + 1}px`,
-                            height: `${Math.random() * 20 + 5}px`,
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            filter: 'blur(0.5px)'
+                            width: a.width,
+                            height: a.height,
+                            left: `${a.left}%`,
+                            top: `${a.top}%`,
                         }}
                         animate={{
-                            opacity: [0.4, 0, 0.4],
-                            scaleY: [1, 0.7, 1],
+                            y: [0, -100, 0],
+                            opacity: [0, 0.5, 0],
                         }}
                         transition={{
-                            duration: Math.random() * 4 + 2,
+                            duration: a.duration,
                             repeat: Infinity,
-                            delay: Math.random() * 3,
+                            delay: a.delay,
+                            ease: "linear"
                         }}
                     />
                 ))}
             </div>
 
-            {/* Main container */}
-            <div className="relative z-10 flex h-screen">
-                {/* Left sidebar - Menu */}
-                <div className="w-80 bg-black/80 backdrop-blur-sm border-r border-cyan-400/30 p-6">
-                    {/* Logo with 3D effect and flickering */}
-                    <motion.div
-                        className={`mb-12 ${flickerElements.includes('logo') ? 'animate-pulse opacity-50' : ''}`}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <div className="relative">
-                            <motion.h1
-                                className="text-3xl font-bold text-yellow-400 mb-2 tracking-wider relative cyberpunk-logo"
-                                style={{
-                                    textShadow: `
-                    2px 2px 0px #000,
-                    4px 4px 0px rgba(255, 255, 0, 0.3),
-                    6px 6px 10px rgba(255, 255, 0, 0.2),
-                    0 0 20px rgba(255, 255, 0, 0.5)
-                  `,
-                                    transform: 'perspective(500px) rotateX(15deg)'
-                                }}
-                                animate={{
-                                    textShadow: [
-                                        '2px 2px 0px #000, 4px 4px 0px rgba(255, 255, 0, 0.3), 6px 6px 10px rgba(255, 255, 0, 0.2), 0 0 20px rgba(255, 255, 0, 0.5)',
-                                        '2px 2px 0px #000, 4px 4px 0px rgba(255, 255, 0, 0.5), 6px 6px 10px rgba(255, 255, 0, 0.4), 0 0 30px rgba(255, 255, 0, 0.7)',
-                                        '2px 2px 0px #000, 4px 4px 0px rgba(255, 255, 0, 0.3), 6px 6px 10px rgba(255, 255, 0, 0.2), 0 0 20px rgba(255, 255, 0, 0.5)'
-                                    ]
-                                }}
-                                transition={{ duration: 3, repeat: Infinity }}
-                            >
-                                CYBERPUNK
-                                {/* Glitch overlay */}
-                                <motion.span
-                                    className="absolute inset-0 text-red-500"
-                                    animate={{
-                                        opacity: [0, 0.8, 0],
-                                        x: [0, -2, 2, 0],
-                                        skewX: [0, -5, 5, 0]
-                                    }}
-                                    transition={{
-                                        duration: 0.1,
-                                        repeat: Infinity,
-                                        repeatDelay: Math.random() * 8 + 4
-                                    }}
-                                >
-                                    CYBERPUNK
-                                </motion.span>
-                            </motion.h1>
+            {/* Main Layout */}
+            <div className="relative z-10 flex flex-col md:flex-row h-screen">
+                {/* Sidebar */}
+                <aside className="w-full md:w-80 bg-black/40 backdrop-blur-xl border-r border-cyan-500/20 flex flex-col relative overflow-hidden">
+                    {/* Decorative Sidebar Line */}
+                    <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent" />
 
-                            <motion.div
-                                className="text-sm text-cyan-400 tracking-[0.3em] relative cyberpunk-font"
-                                style={{
-                                    textShadow: `
-                    1px 1px 0px #000,
-                    2px 2px 0px rgba(0, 255, 255, 0.3),
-                    3px 3px 5px rgba(0, 255, 255, 0.2),
-                    0 0 15px rgba(0, 255, 255, 0.5)
-                  `,
-                                    transform: 'perspective(500px) rotateX(15deg)'
-                                }}
-                                animate={{
-                                    textShadow: [
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(0, 255, 255, 0.3), 3px 3px 5px rgba(0, 255, 255, 0.2), 0 0 15px rgba(0, 255, 255, 0.5)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(0, 255, 255, 0.5), 3px 3px 5px rgba(0, 255, 255, 0.4), 0 0 25px rgba(0, 255, 255, 0.7)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(0, 255, 255, 0.3), 3px 3px 5px rgba(0, 255, 255, 0.2), 0 0 15px rgba(0, 255, 255, 0.5)'
-                                    ]
-                                }}
-                                transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
-                            >
-                                2077
-                            </motion.div>
+                    <div className="p-8">
+                        {/* Logo Area */}
+                        <div className={`mb-12 relative group ${flickerElements.includes('logo') ? 'opacity-60' : 'opacity-100'}`}>
+                            <div className="absolute -inset-2 bg-cyan-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 tracking-tighter relative z-10 cyberpunk-logo" style={{ textShadow: '0 0 20px rgba(250, 204, 21, 0.3)' }}>
+                                CYBER<br />PUNK
+                            </h1>
+                            <div className="text-xs text-cyan-400 tracking-[0.4em] mt-1 font-mono pl-1">2077 EDITION</div>
 
-                            <motion.div
-                                className="absolute -bottom-2 left-0 w-20 h-0.5 bg-gradient-to-r from-yellow-400 to-cyan-400"
-                                animate={{
-                                    width: [80, 100, 80],
-                                    opacity: [0.7, 1, 0.7],
-                                    boxShadow: [
-                                        '0 0 5px rgba(255, 255, 0, 0.5)',
-                                        '0 0 15px rgba(0, 255, 255, 0.8)',
-                                        '0 0 5px rgba(255, 255, 0, 0.5)'
-                                    ]
-                                }}
-                                transition={{ duration: 4, repeat: Infinity }}
-                            />
+                            {/* Glitch Overlay for Logo */}
+                            {glitchActive && (
+                                <div className="absolute inset-0 text-red-500 font-black text-4xl tracking-tighter opacity-50 translate-x-[2px] pointer-events-none mix-blend-screen">
+                                    CYBER<br />PUNK
+                                </div>
+                            )}
                         </div>
-                    </motion.div>
 
-                    {/* Menu items with enhanced effects */}
-                    <nav className={`space-y-2 ${flickerElements.includes('menu') ? 'animate-pulse opacity-70' : ''}`}>
-                        {menuItems.map((item, index) => (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, x: -30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 + index * 0.1 }}
-                            >
-                                {item.id === 'exit' ? (
-                                    <Link href="/">
-                                        <motion.div
-                                            className="flex items-center p-3 cursor-pointer group border border-red-500/30 hover:border-red-500 hover:bg-red-500/10 transition-all duration-200 relative overflow-hidden"
-                                            whileHover={{ x: 5, scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                        >
+                        {/* Navigation */}
+                        <nav className="space-y-3">
+                            {menuItems.map((item) => {
+                                const isActive = activeMenu === item.id;
+                                const isExit = item.id === 'exit';
+
+                                if (isExit) {
+                                    return (
+                                        <Link key={item.id} href="/" className="block mt-8">
                                             <motion.div
-                                                className="w-2 h-2 bg-red-500 mr-3 opacity-70 group-hover:opacity-100 rounded-full"
-                                                animate={{
-                                                    opacity: [0.7, 1, 0.7],
-                                                    scale: [1, 1.2, 1]
-                                                }}
-                                                transition={{ duration: 2, repeat: Infinity }}
-                                            />
-                                            <span
-                                                className="text-red-400 group-hover:text-red-300 tracking-wider relative cyberpunk-menu"
-                                                style={{
-                                                    textShadow: '0 0 10px rgba(239, 68, 68, 0.5)'
-                                                }}
+                                                whileHover={{ scale: 1.02, x: 5 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className="relative overflow-hidden group border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 p-4 cursor-pointer transition-all"
                                             >
-                                                {item.label}
-                                            </span>
-                                            {/* Hover glow effect */}
-                                            <motion.div
-                                                className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100"
-                                                initial={{ scale: 0 }}
-                                                whileHover={{ scale: 1 }}
-                                                transition={{ duration: 0.2 }}
-                                            />
-                                        </motion.div>
-                                    </Link>
-                                ) : (
-                                    <motion.div
-                                        className={`flex items-center p-3 cursor-pointer group transition-all duration-200 relative overflow-hidden ${activeMenu === item.id
-                                            ? 'border border-cyan-400 bg-cyan-400/10'
-                                            : 'border border-gray-700/50 hover:border-cyan-400/50 hover:bg-cyan-400/5'
-                                            }`}
+                                                <div className="absolute inset-0 bg-red-500/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                                                <div className="flex items-center justify-between relative z-10">
+                                                    <span className="text-red-400 font-bold tracking-widest group-hover:text-red-300 transition-colors">SYSTEM EXIT</span>
+                                                    <span className="text-red-500 text-xl">⏻</span>
+                                                </div>
+                                            </motion.div>
+                                        </Link>
+                                    );
+                                }
+
+                                return (
+                                    <motion.button
+                                        key={item.id}
                                         onClick={() => setActiveMenu(item.id)}
-                                        whileHover={{ x: 5, scale: 1.02 }}
+                                        className={`w-full text-left p-4 relative overflow-hidden group transition-all duration-300 ${isActive ? 'bg-cyan-900/20 border-r-4 border-cyan-400' : 'hover:bg-white/5 border-r-4 border-transparent'}`}
+                                        whileHover={{ x: 5 }}
                                         whileTap={{ scale: 0.98 }}
                                     >
-                                        <motion.div
-                                            className={`w-2 h-2 mr-3 rounded-full ${activeMenu === item.id ? 'bg-cyan-400' : 'bg-gray-600 group-hover:bg-cyan-400'
-                                                }`}
-                                            animate={activeMenu === item.id ? {
-                                                opacity: [1, 0.5, 1],
-                                                scale: [1, 1.3, 1],
-                                                boxShadow: [
-                                                    '0 0 5px rgba(34, 211, 238, 0.5)',
-                                                    '0 0 15px rgba(34, 211, 238, 0.8)',
-                                                    '0 0 5px rgba(34, 211, 238, 0.5)'
-                                                ]
-                                            } : {}}
-                                            transition={{ duration: 2, repeat: Infinity }}
-                                        />
-                                        <span
-                                            className={`tracking-wider relative cyberpunk-menu ${activeMenu === item.id ? 'text-cyan-400' : 'text-gray-300 group-hover:text-cyan-400'
-                                                }`}
-                                            style={{
-                                                textShadow: activeMenu === item.id
-                                                    ? '1px 1px 0px #000, 0 0 10px rgba(34, 211, 238, 0.5)'
-                                                    : '1px 1px 0px #000'
-                                            }}
-                                        >
-                                            {item.label}
-                                            {/* Glitch effect for active item */}
-                                            {activeMenu === item.id && (
-                                                <motion.span
-                                                    className="absolute inset-0 text-pink-500"
-                                                    animate={{
-                                                        opacity: [0, 0.6, 0],
-                                                        x: [0, -1, 1, 0],
-                                                        skewX: [0, -2, 2, 0]
-                                                    }}
-                                                    transition={{
-                                                        duration: 0.15,
-                                                        repeat: Infinity,
-                                                        repeatDelay: Math.random() * 6 + 3
-                                                    }}
-                                                >
-                                                    {item.label}
-                                                </motion.span>
-                                            )}
-                                        </span>
-
-                                        {/* Active item glow */}
-                                        {activeMenu === item.id && (
+                                        <div className="flex items-center gap-4 relative z-10">
+                                            <span className={`text-lg ${isActive ? 'text-cyan-400' : 'text-gray-500 group-hover:text-cyan-300'}`}>{item.icon}</span>
+                                            <span className={`font-bold tracking-wider ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.label}</span>
+                                        </div>
+                                        {isActive && (
                                             <motion.div
-                                                className="absolute inset-0 bg-cyan-400/5"
-                                                animate={{ opacity: [0.05, 0.15, 0.05] }}
-                                                transition={{ duration: 3, repeat: Infinity }}
+                                                layoutId="activeGlow"
+                                                className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
                                             />
                                         )}
-                                    </motion.div>
-                                )}
-                            </motion.div>
-                        ))}
-                    </nav>
+                                    </motion.button>
+                                );
+                            })}
+                        </nav>
+                    </div>
 
-                    {/* Bottom info */}
-                    <div className="absolute bottom-6 left-6 right-6">
-                        <div className="border-t border-gray-700 pt-4">
-                            <div className="text-xs text-gray-500 mb-2">SYSTEM STATUS</div>
-                            <div className="flex items-center gap-2">
-                                <motion.div
-                                    className="w-2 h-2 bg-green-400 rounded-full"
-                                    animate={{ opacity: [1, 0.3, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                />
-                                <span className="text-green-400 text-sm">ONLINE</span>
+                    {/* Footer Status */}
+                    <div className="mt-auto p-6 border-t border-white/10 bg-black/60">
+                        <div className="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <span className="flex items-center gap-2">
+                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
+                                ONLINE
+                            </span>
+                            <span>V.2.0.77</span>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Main Content Area */}
+                <main className="flex-1 relative flex flex-col overflow-hidden bg-gradient-to-br from-gray-900/50 to-black/50">
+                    {/* Header */}
+                    <header className="h-20 border-b border-white/10 bg-black/40 backdrop-blur-md flex items-center justify-between px-8 relative z-20">
+                        <div className="flex items-center gap-6">
+                            <div className="hidden md:block">
+                                <div className="text-xs text-cyan-500 tracking-widest mb-1">OPERATOR</div>
+                                <div className="text-white font-bold tracking-wider">MUHAMMAD BASIL C.P</div>
+                            </div>
+                            <div className="h-8 w-[1px] bg-white/20 hidden md:block" />
+                            <div className="px-3 py-1 rounded border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs font-bold tracking-widest">
+                                GAME DEV
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Main content area */}
-                <div className="flex-1 relative">
-                    {/* Top bar with enhanced 3D text */}
-                    <div className={`h-16 bg-black/60 backdrop-blur-sm border-b border-cyan-400/30 flex items-center justify-between px-8 ${flickerElements.includes('status') ? 'animate-pulse opacity-80' : ''}`}>
-                        <div className="flex items-center gap-4">
-                            <motion.div
-                                className="text-cyan-400 text-sm tracking-wider relative cyberpunk-angular"
-                                style={{
-                                    textShadow: `
-                    1px 1px 0px #000,
-                    2px 2px 0px rgba(34, 211, 238, 0.3),
-                    3px 3px 5px rgba(34, 211, 238, 0.2),
-                    0 0 15px rgba(34, 211, 238, 0.4)
-                  `,
-                                    transform: 'perspective(300px) rotateX(10deg)'
-                                }}
-                                animate={{
-                                    textShadow: [
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(34, 211, 238, 0.3), 3px 3px 5px rgba(34, 211, 238, 0.2), 0 0 15px rgba(34, 211, 238, 0.4)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(34, 211, 238, 0.5), 3px 3px 5px rgba(34, 211, 238, 0.4), 0 0 25px rgba(34, 211, 238, 0.6)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(34, 211, 238, 0.3), 3px 3px 5px rgba(34, 211, 238, 0.2), 0 0 15px rgba(34, 211, 238, 0.4)'
-                                    ]
-                                }}
-                                transition={{ duration: 4, repeat: Infinity }}
-                            >
-                                MUHAMMAD BASIL C.P
-                                {/* Random glitch effect */}
-                                <motion.span
-                                    className="absolute inset-0 text-pink-500"
-                                    animate={{
-                                        opacity: [0, 0.7, 0],
-                                        x: [0, -1, 1, 0],
-                                        skewX: [0, -3, 3, 0]
-                                    }}
-                                    transition={{
-                                        duration: 0.1,
-                                        repeat: Infinity,
-                                        repeatDelay: Math.random() * 12 + 6
-                                    }}
-                                >
-                                    MUHAMMAD BASIL C.P
-                                </motion.span>
-                            </motion.div>
-
-                            <motion.div
-                                className="w-px h-6 bg-gray-600"
-                                animate={{
-                                    opacity: [0.6, 1, 0.6],
-                                    scaleY: [1, 1.2, 1]
-                                }}
-                                transition={{ duration: 3, repeat: Infinity }}
-                            />
-
-                            <motion.div
-                                className="text-yellow-400 text-sm tracking-wider relative cyberpunk-angular"
-                                style={{
-                                    textShadow: `
-                    1px 1px 0px #000,
-                    2px 2px 0px rgba(250, 204, 21, 0.3),
-                    3px 3px 5px rgba(250, 204, 21, 0.2),
-                    0 0 15px rgba(250, 204, 21, 0.4)
-                  `,
-                                    transform: 'perspective(300px) rotateX(10deg)'
-                                }}
-                                animate={{
-                                    textShadow: [
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.3), 3px 3px 5px rgba(250, 204, 21, 0.2), 0 0 15px rgba(250, 204, 21, 0.4)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.5), 3px 3px 5px rgba(250, 204, 21, 0.4), 0 0 25px rgba(250, 204, 21, 0.6)',
-                                        '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.3), 3px 3px 5px rgba(250, 204, 21, 0.2), 0 0 15px rgba(250, 204, 21, 0.4)'
-                                    ]
-                                }}
-                                transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}
-                            >
-                                GAME DEVELOPER
-                            </motion.div>
-                        </div>
 
                         <div className="flex items-center gap-4">
-                            <motion.div
-                                className="text-xs text-gray-400 cyberpunk-text"
-                                animate={{ opacity: [0.7, 1, 0.7] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            >
-                                {new Date().toLocaleTimeString()}
-                            </motion.div>
-
-                            <motion.div
-                                className="w-3 h-3 bg-pink-500 rounded-full relative"
-                                animate={{
-                                    opacity: [1, 0.3, 1],
-                                    scale: [1, 1.3, 1],
-                                    boxShadow: [
-                                        '0 0 5px rgba(236, 72, 153, 0.5)',
-                                        '0 0 15px rgba(236, 72, 153, 0.8)',
-                                        '0 0 5px rgba(236, 72, 153, 0.5)'
-                                    ]
-                                }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                                <motion.div
-                                    className="absolute inset-0 bg-pink-500 rounded-full"
-                                    animate={{
-                                        scale: [1, 2, 1],
-                                        opacity: [0.5, 0, 0.5]
-                                    }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                />
-                            </motion.div>
+                            <div className="text-right hidden sm:block">
+                                <div className="text-xs text-gray-500 tracking-widest mb-1">LOCAL TIME</div>
+                                <div className="text-white font-mono">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
                         </div>
-                    </div>
+                    </header>
 
-                    {/* Content area */}
-                    <div className="p-8 h-[calc(100vh-4rem)] overflow-y-auto scroll-smooth">
+                    {/* Content Container */}
+                    <div className="flex-1 overflow-y-auto p-4 md:p-12 scroll-smooth relative">
+                        {/* Content Background Decoration */}
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl pointer-events-none" />
+
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeMenu}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3 }}
-                                className={glitchActive ? 'animate-pulse' : ''}
+                                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                                exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="max-w-5xl mx-auto relative z-10"
                             >
                                 {renderContent()}
                             </motion.div>
                         </AnimatePresence>
                     </div>
-                </div>
+                </main>
             </div>
 
-            {/* Glitch overlay */}
-            {glitchActive && (
-                <div className="fixed inset-0 bg-red-500/5 pointer-events-none z-50"></div>
-            )}
+            {/* Global Glitch Overlay */}
+            <AnimatePresence>
+                {glitchActive && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-white/5 mix-blend-overlay z-[100] pointer-events-none"
+                    >
+                        <div className="absolute inset-0 bg-red-500/10 mix-blend-color-burn" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <style jsx global>{`
+                @keyframes scanline {
+                    0% { top: 0%; opacity: 0; }
+                    10% { opacity: 1; }
+                    90% { opacity: 1; }
+                    100% { top: 100%; opacity: 0; }
+                }
+                .animate-scanline {
+                    animation: scanline 4s linear infinite;
+                }
+            `}</style>
         </div>
     );
 }
 
-// Profile Content Component with enhanced effects
-const ProfileContent = () => {
-    const [flickerStats, setFlickerStats] = useState<number[]>([]);
+/* ---------- Subcomponents ---------- */
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const randomStat = Math.floor(Math.random() * 3);
-            setFlickerStats([randomStat]);
-            setTimeout(() => setFlickerStats([]), 100); // Shorter flicker
-        }, Math.random() * 6000 + 4000); // Less frequent
-
-        return () => clearInterval(interval);
-    }, []);
-
+function ProfileContent({ flicker = false }: { flicker?: boolean }) {
     return (
         <div className="space-y-8">
-            <motion.div
-                className="border border-cyan-400/30 bg-black/40 p-6 relative overflow-hidden"
-                animate={{
-                    borderColor: ['rgba(34, 211, 238, 0.3)', 'rgba(34, 211, 238, 0.6)', 'rgba(34, 211, 238, 0.3)']
-                }}
-                transition={{ duration: 4, repeat: Infinity }}
-            >
-                {/* Animated scan line */}
-                <motion.div
-                    className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 opacity-70"
-                    animate={{ x: ['-100%', '100%'] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
+            <div className={`relative p-8 border border-cyan-500/30 bg-black/60 backdrop-blur-md overflow-hidden group transition-all duration-300 ${flicker ? 'opacity-80 translate-x-1' : ''}`}>
+                <div className="absolute top-0 left-0 w-2 h-full bg-cyan-500/50" />
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-cyan-500 to-transparent opacity-50" />
 
-                <motion.h2
-                    className="text-2xl text-cyan-400 mb-6 tracking-wider relative cyberpunk-angular"
-                    style={{
-                        textShadow: `
-              2px 2px 0px #000,
-              4px 4px 0px rgba(34, 211, 238, 0.4),
-              6px 6px 10px rgba(34, 211, 238, 0.3),
-              0 0 20px rgba(34, 211, 238, 0.6)
-            `,
-                        transform: 'perspective(400px) rotateX(20deg)'
-                    }}
-                    animate={{
-                        textShadow: [
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.7), 6px 6px 10px rgba(34, 211, 238, 0.5), 0 0 30px rgba(34, 211, 238, 0.9)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)'
-                        ]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                >
-                    PROFILE DATA
-                    {/* Glitch overlay */}
-                    <motion.span
-                        className="absolute inset-0 text-pink-500"
-                        animate={{
-                            opacity: [0, 0.8, 0],
-                            x: [0, -2, 2, 0],
-                            skewX: [0, -5, 5, 0]
-                        }}
-                        transition={{
-                            duration: 0.15,
-                            repeat: Infinity,
-                            repeatDelay: Math.random() * 8 + 4
-                        }}
-                    >
-                        PROFILE DATA
-                    </motion.span>
-                </motion.h2>
+                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
+                    <span className="text-cyan-400 text-5xl">01</span>
+                    PROFILE_DATA
+                </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    {profileStats.map((stat, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    {profileStats.map((stat, i) => (
                         <motion.div
                             key={stat.label}
-                            className={`border border-gray-700 bg-black/60 p-4 relative overflow-hidden ${flickerStats.includes(index) ? 'animate-pulse opacity-60' : ''
-                                }`}
                             initial={{ opacity: 0, y: 20 }}
-                            animate={{
-                                opacity: 1,
-                                y: 0,
-                                borderColor: flickerStats.includes(index)
-                                    ? ['rgba(107, 114, 128, 1)', 'rgba(34, 211, 238, 0.8)', 'rgba(107, 114, 128, 1)']
-                                    : 'rgba(107, 114, 128, 1)'
-                            }}
-                            transition={{
-                                delay: index * 0.1,
-                                borderColor: { duration: 0.3 }
-                            }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className={`border border-white/10 bg-white/5 p-6 relative overflow-hidden group hover:border-white/30 transition-colors`}
                         >
-                            {/* Flickering background */}
-                            <motion.div
-                                className="absolute inset-0 bg-cyan-400/5"
-                                animate={{
-                                    opacity: flickerStats.includes(index) ? [0, 0.3, 0] : 0
-                                }}
-                                transition={{ duration: 0.2 }}
-                            />
-
-                            <div className="text-xs text-gray-400 mb-1 relative z-10">{stat.label}</div>
-                            <motion.div
-                                className={`text-2xl font-bold ${stat.color} relative z-10`}
-                                style={{
-                                    textShadow: `
-                    1px 1px 0px #000,
-                    2px 2px 0px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.3)' :
-                                            stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.3)' :
-                                                'rgba(236, 72, 153, 0.3)'},
-                    3px 3px 5px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.2)' :
-                                            stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.2)' :
-                                                'rgba(236, 72, 153, 0.2)'},
-                    0 0 15px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.5)' :
-                                            stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.5)' :
-                                                'rgba(236, 72, 153, 0.5)'}
-                  `,
-                                    transform: 'perspective(300px) rotateX(15deg)'
-                                }}
-                                animate={flickerStats.includes(index) ? {
-                                    scale: [1, 1.1, 1],
-                                    textShadow: [
-                                        `1px 1px 0px #000, 2px 2px 0px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.3)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.3)' : 'rgba(236, 72, 153, 0.3)'}, 3px 3px 5px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.2)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.2)' : 'rgba(236, 72, 153, 0.2)'}, 0 0 15px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.5)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.5)' : 'rgba(236, 72, 153, 0.5)'}`,
-                                        `1px 1px 0px #000, 2px 2px 0px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.8)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.8)' : 'rgba(236, 72, 153, 0.8)'}, 3px 3px 5px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.6)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.6)' : 'rgba(236, 72, 153, 0.6)'}, 0 0 25px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.9)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.9)' : 'rgba(236, 72, 153, 0.9)'}`,
-                                        `1px 1px 0px #000, 2px 2px 0px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.3)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.3)' : 'rgba(236, 72, 153, 0.3)'}, 3px 3px 5px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.2)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.2)' : 'rgba(236, 72, 153, 0.2)'}, 0 0 15px ${stat.color === 'text-yellow-400' ? 'rgba(250, 204, 21, 0.5)' : stat.color === 'text-cyan-400' ? 'rgba(34, 211, 238, 0.5)' : 'rgba(236, 72, 153, 0.5)'}`
-                                    ]
-                                } : {}}
-                                transition={{ duration: 0.3 }}
-                            >
-                                {stat.value}
-                            </motion.div>
-
-                            {/* Digital noise lines */}
-                            <motion.div
-                                className="absolute top-0 left-0 w-full h-px bg-cyan-400 opacity-30"
-                                animate={{
-                                    scaleX: [0, 1, 0],
-                                    opacity: [0.3, 0.8, 0.3]
-                                }}
-                                transition={{
-                                    duration: 0.5,
-                                    repeat: Infinity,
-                                    repeatDelay: Math.random() * 4 + 2
-                                }}
-                            />
+                            <div className={`absolute inset-0 bg-gradient-to-br ${stat.colorClass.replace('text-', 'from-')}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+                            <div className="text-xs text-gray-400 mb-2 tracking-widest">{stat.label}</div>
+                            <div className={`text-3xl font-black ${stat.colorClass} drop-shadow-lg`}>{stat.value}</div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="border-t border-gray-700 pt-6 relative">
-                    <motion.h3
-                        className="text-lg text-yellow-400 mb-4 relative"
-                        style={{
-                            textShadow: `
-                1px 1px 0px #000,
-                2px 2px 0px rgba(250, 204, 21, 0.4),
-                3px 3px 5px rgba(250, 204, 21, 0.3),
-                0 0 15px rgba(250, 204, 21, 0.6)
-              `,
-                            transform: 'perspective(300px) rotateX(15deg)'
-                        }}
-                        animate={{
-                            textShadow: [
-                                '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.4), 3px 3px 5px rgba(250, 204, 21, 0.3), 0 0 15px rgba(250, 204, 21, 0.6)',
-                                '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.7), 3px 3px 5px rgba(250, 204, 21, 0.5), 0 0 25px rgba(250, 204, 21, 0.8)',
-                                '1px 1px 0px #000, 2px 2px 0px rgba(250, 204, 21, 0.4), 3px 3px 5px rgba(250, 204, 21, 0.3), 0 0 15px rgba(250, 204, 21, 0.6)'
-                            ]
-                        }}
-                        transition={{ duration: 2.5, repeat: Infinity }}
-                    >
-                        BIO
-                        {/* Glitch effect */}
-                        <motion.span
-                            className="absolute inset-0 text-red-500"
-                            animate={{
-                                opacity: [0, 0.7, 0],
-                                x: [0, -1, 1, 0],
-                                skewX: [0, -3, 3, 0]
-                            }}
-                            transition={{
-                                duration: 0.1,
-                                repeat: Infinity,
-                                repeatDelay: Math.random() * 10 + 5
-                            }}
-                        >
-                            BIO
-                        </motion.span>
-                    </motion.h3>
-
-                    <motion.p
-                        className="text-gray-300 leading-relaxed relative"
-                        animate={{
-                            opacity: [0.9, 1, 0.9]
-                        }}
-                        transition={{ duration: 4, repeat: Infinity }}
-                    >
-                        Experienced game developer specializing in immersive 3D experiences and cutting-edge
-                        interactive technologies. Passionate about creating worlds that blur the line between
-                        reality and digital dreams. Expert in Unity, Unreal Engine, and emerging VR/AR platforms.
-
-                        {/* Random text glitch */}
-                        <motion.span
-                            className="absolute inset-0 text-pink-500 opacity-0"
-                            animate={{
-                                opacity: [0, 0.3, 0]
-                            }}
-                            transition={{
-                                duration: 0.2,
-                                repeat: Infinity,
-                                repeatDelay: Math.random() * 15 + 8
-                            }}
-                        >
-                            Experienced game developer specializing in immersive 3D experiences and cutting-edge
-                            interactive technologies. Passionate about creating worlds that blur the line between
-                            reality and digital dreams. Expert in Unity, Unreal Engine, and emerging VR/AR platforms.
-                        </motion.span>
-                    </motion.p>
+                <div className="border-t border-white/10 pt-8">
+                    <h3 className="text-xl text-yellow-400 font-bold mb-4 tracking-widest">BIO_LOG</h3>
+                    <p className="text-gray-300 leading-relaxed text-lg font-light max-w-3xl">
+                        Experienced game developer specializing in <span className="text-cyan-400 font-medium">immersive 3D experiences</span> and cutting-edge interactive technologies. Passionate about creating worlds that blur the line between reality and digital dreams.
+                    </p>
                 </div>
-            </motion.div>
-        </div>
-    );
-};
-
-// Skills Content Component with enhanced effects
-const SkillsContent = () => {
-    const [activeSkill, setActiveSkill] = useState<number | null>(null);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const randomSkill = Math.floor(Math.random() * skillsData.length);
-            setActiveSkill(randomSkill);
-            setTimeout(() => setActiveSkill(null), 200); // Shorter duration
-        }, Math.random() * 8000 + 6000); // Less frequent
-
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="space-y-8">
-            <motion.div
-                className="border border-cyan-400/30 bg-black/40 p-6 relative overflow-hidden"
-                animate={{
-                    borderColor: ['rgba(34, 211, 238, 0.3)', 'rgba(236, 72, 153, 0.4)', 'rgba(34, 211, 238, 0.3)']
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-            >
-                {/* Multiple scan lines */}
-                <motion.div
-                    className="absolute top-0 left-0 w-full h-px bg-pink-500 opacity-60"
-                    animate={{ x: ['-100%', '100%'] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                    className="absolute bottom-0 right-0 w-full h-px bg-yellow-400 opacity-60"
-                    animate={{ x: ['100%', '-100%'] }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: "linear", delay: 1 }}
-                />
-
-                <motion.h2
-                    className="text-2xl text-cyan-400 mb-6 tracking-wider relative cyberpunk-title"
-                    style={{
-                        textShadow: `
-              2px 2px 0px #000,
-              4px 4px 0px rgba(34, 211, 238, 0.4),
-              6px 6px 10px rgba(34, 211, 238, 0.3),
-              0 0 20px rgba(34, 211, 238, 0.6)
-            `,
-                        transform: 'perspective(400px) rotateX(20deg)'
-                    }}
-                    animate={{
-                        textShadow: [
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(236, 72, 153, 0.6), 6px 6px 10px rgba(236, 72, 153, 0.4), 0 0 25px rgba(236, 72, 153, 0.8)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)'
-                        ]
-                    }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                >
-                    SKILL MATRIX
-                    {/* Multiple glitch layers */}
-                    <motion.span
-                        className="absolute inset-0 text-pink-500"
-                        animate={{
-                            opacity: [0, 0.8, 0],
-                            x: [0, -3, 3, 0],
-                            skewX: [0, -8, 8, 0]
-                        }}
-                        transition={{
-                            duration: 0.2,
-                            repeat: Infinity,
-                            repeatDelay: Math.random() * 6 + 3
-                        }}
-                    >
-                        SKILL MATRIX
-                    </motion.span>
-                    <motion.span
-                        className="absolute inset-0 text-yellow-400"
-                        animate={{
-                            opacity: [0, 0.6, 0],
-                            x: [0, 2, -2, 0],
-                            skewX: [0, 5, -5, 0]
-                        }}
-                        transition={{
-                            duration: 0.15,
-                            repeat: Infinity,
-                            repeatDelay: Math.random() * 8 + 4,
-                            delay: 0.1
-                        }}
-                    >
-                        SKILL MATRIX
-                    </motion.span>
-                </motion.h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {skillsData.map((skill, index) => (
-                        <motion.div
-                            key={skill.name}
-                            className={`border border-gray-700 bg-black/60 p-4 relative overflow-hidden ${activeSkill === index ? 'border-cyan-400 bg-cyan-400/10' : ''
-                                }`}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{
-                                opacity: 1,
-                                x: 0,
-                                borderColor: activeSkill === index
-                                    ? ['rgba(107, 114, 128, 1)', 'rgba(34, 211, 238, 1)', 'rgba(236, 72, 153, 0.8)', 'rgba(107, 114, 128, 1)']
-                                    : 'rgba(107, 114, 128, 1)',
-                                scale: activeSkill === index ? [1, 1.02, 1] : 1
-                            }}
-                            transition={{
-                                delay: index * 0.1,
-                                borderColor: { duration: 0.5 },
-                                scale: { duration: 0.3 }
-                            }}
-                        >
-                            {/* Intensive flickering background */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 to-pink-500/10"
-                                animate={{
-                                    opacity: activeSkill === index ? [0, 0.5, 0.2, 0.7, 0] : 0
-                                }}
-                                transition={{ duration: 0.4 }}
-                            />
-
-                            {/* Digital noise overlay */}
-                            <motion.div
-                                className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"
-                                animate={{
-                                    opacity: activeSkill === index ? [0.05, 0.2, 0.05] : 0.05
-                                }}
-                                transition={{ duration: 0.3 }}
-                            />
-
-                            <div className="flex justify-between items-center mb-2 relative z-10">
-                                <motion.span
-                                    className="text-white font-medium relative"
-                                    style={{
-                                        textShadow: activeSkill === index
-                                            ? '1px 1px 0px #000, 0 0 10px rgba(34, 211, 238, 0.6)'
-                                            : '1px 1px 0px #000'
-                                    }}
-                                    animate={activeSkill === index ? {
-                                        textShadow: [
-                                            '1px 1px 0px #000, 0 0 10px rgba(34, 211, 238, 0.6)',
-                                            '1px 1px 0px #000, 0 0 20px rgba(236, 72, 153, 0.8)',
-                                            '1px 1px 0px #000, 0 0 10px rgba(34, 211, 238, 0.6)'
-                                        ]
-                                    } : {}}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                    {skill.name}
-                                    {/* Text glitch effect */}
-                                    {activeSkill === index && (
-                                        <motion.span
-                                            className="absolute inset-0 text-pink-500"
-                                            animate={{
-                                                opacity: [0, 0.8, 0],
-                                                x: [0, -1, 1, 0],
-                                                skewX: [0, -3, 3, 0]
-                                            }}
-                                            transition={{
-                                                duration: 0.1,
-                                                repeat: 3,
-                                                repeatDelay: 0.1
-                                            }}
-                                        >
-                                            {skill.name}
-                                        </motion.span>
-                                    )}
-                                </motion.span>
-
-                                <motion.span
-                                    className={`text-xs border px-2 py-1 relative ${activeSkill === index
-                                        ? 'text-cyan-400 border-cyan-400'
-                                        : 'text-gray-400 border-gray-600'
-                                        }`}
-                                    animate={activeSkill === index ? {
-                                        borderColor: ['rgba(34, 211, 238, 1)', 'rgba(236, 72, 153, 1)', 'rgba(34, 211, 238, 1)'],
-                                        color: ['rgba(34, 211, 238, 1)', 'rgba(236, 72, 153, 1)', 'rgba(34, 211, 238, 1)']
-                                    } : {}}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    {skill.category}
-                                </motion.span>
-                            </div>
-
-                            <div className="flex items-center gap-3 relative z-10">
-                                <div className="flex-1 h-2 bg-gray-800 relative overflow-hidden">
-                                    <motion.div
-                                        className="h-full bg-gradient-to-r from-cyan-400 to-pink-500 relative"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${skill.level}%` }}
-                                        transition={{ duration: 1, delay: index * 0.1 }}
-                                    >
-                                        {/* Animated progress bar glow */}
-                                        <motion.div
-                                            className="absolute inset-0 bg-white/20"
-                                            animate={activeSkill === index ? {
-                                                opacity: [0, 0.5, 0],
-                                                scaleX: [1, 1.1, 1]
-                                            } : {}}
-                                            transition={{ duration: 0.4 }}
-                                        />
-                                    </motion.div>
-
-                                    {/* Progress bar scan line */}
-                                    <motion.div
-                                        className="absolute top-0 left-0 w-1 h-full bg-white opacity-70"
-                                        animate={{
-                                            x: [0, skill.level * 3, 0]
-                                        }}
-                                        transition={{
-                                            duration: 2,
-                                            repeat: Infinity,
-                                            ease: "linear",
-                                            delay: index * 0.3
-                                        }}
-                                    />
-                                </div>
-
-                                <motion.span
-                                    className="text-cyan-400 text-sm font-mono relative"
-                                    style={{
-                                        textShadow: activeSkill === index
-                                            ? '0 0 10px rgba(34, 211, 238, 0.8)'
-                                            : '0 0 5px rgba(34, 211, 238, 0.3)'
-                                    }}
-                                    animate={activeSkill === index ? {
-                                        scale: [1, 1.1, 1],
-                                        textShadow: [
-                                            '0 0 10px rgba(34, 211, 238, 0.8)',
-                                            '0 0 20px rgba(236, 72, 153, 1)',
-                                            '0 0 10px rgba(34, 211, 238, 0.8)'
-                                        ]
-                                    } : {}}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                    {skill.level}%
-                                </motion.span>
-                            </div>
-
-                            {/* Random digital artifacts */}
-                            <motion.div
-                                className="absolute top-2 right-2 w-1 h-4 bg-cyan-400 opacity-40"
-                                animate={{
-                                    opacity: [0.4, 1, 0.4],
-                                    scaleY: [1, 0.5, 1]
-                                }}
-                                transition={{
-                                    duration: 0.3,
-                                    repeat: Infinity,
-                                    repeatDelay: Math.random() * 3 + 1
-                                }}
-                            />
-                        </motion.div>
-                    ))}
-                </div>
-            </motion.div>
-        </div>
-    );
-};
-
-// Projects Content Component with enhanced effects
-const ProjectsContent = () => {
-    const [glitchProject, setGlitchProject] = useState<number | null>(null);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const randomProject = Math.floor(Math.random() * projectsData.length);
-            setGlitchProject(randomProject);
-            setTimeout(() => setGlitchProject(null), 250); // Shorter duration
-        }, Math.random() * 10000 + 8000); // Much less frequent
-
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="space-y-8">
-            <motion.div
-                className="border border-cyan-400/30 bg-black/40 p-6 relative overflow-hidden"
-                animate={{
-                    borderColor: [
-                        'rgba(34, 211, 238, 0.3)',
-                        'rgba(250, 204, 21, 0.4)',
-                        'rgba(236, 72, 153, 0.4)',
-                        'rgba(34, 211, 238, 0.3)'
-                    ]
-                }}
-                transition={{ duration: 6, repeat: Infinity }}
-            >
-                {/* Diagonal scan lines */}
-                <motion.div
-                    className="absolute top-0 left-0 w-full h-px bg-yellow-400 opacity-50 transform rotate-45 origin-left"
-                    animate={{
-                        scaleX: [0, 2, 0],
-                        opacity: [0.5, 1, 0.5]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-
-                <motion.h2
-                    className="text-2xl text-cyan-400 mb-6 tracking-wider relative cyberpunk-title"
-                    style={{
-                        textShadow: `
-              2px 2px 0px #000,
-              4px 4px 0px rgba(34, 211, 238, 0.4),
-              6px 6px 10px rgba(34, 211, 238, 0.3),
-              0 0 20px rgba(34, 211, 238, 0.6)
-            `,
-                        transform: 'perspective(400px) rotateX(20deg)'
-                    }}
-                    animate={{
-                        textShadow: [
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(250, 204, 21, 0.6), 6px 6px 10px rgba(250, 204, 21, 0.4), 0 0 25px rgba(250, 204, 21, 0.8)',
-                            '2px 2px 0px #000, 4px 4px 0px rgba(34, 211, 238, 0.4), 6px 6px 10px rgba(34, 211, 238, 0.3), 0 0 20px rgba(34, 211, 238, 0.6)'
-                        ]
-                    }}
-                    transition={{ duration: 4.5, repeat: Infinity }}
-                >
-                    PROJECT DATABASE
-                    {/* Intense glitch effects */}
-                    <motion.span
-                        className="absolute inset-0 text-red-500"
-                        animate={{
-                            opacity: [0, 0.9, 0],
-                            x: [0, -4, 4, 0],
-                            skewX: [0, -10, 10, 0],
-                            scaleX: [1, 0.95, 1.05, 1]
-                        }}
-                        transition={{
-                            duration: 0.25,
-                            repeat: Infinity,
-                            repeatDelay: Math.random() * 5 + 2
-                        }}
-                    >
-                        PROJECT DATABASE
-                    </motion.span>
-                    <motion.span
-                        className="absolute inset-0 text-yellow-400"
-                        animate={{
-                            opacity: [0, 0.7, 0],
-                            x: [0, 3, -3, 0],
-                            skewX: [0, 8, -8, 0]
-                        }}
-                        transition={{
-                            duration: 0.2,
-                            repeat: Infinity,
-                            repeatDelay: Math.random() * 7 + 3,
-                            delay: 0.1
-                        }}
-                    >
-                        PROJECT DATABASE
-                    </motion.span>
-                </motion.h2>
-
-                <div className="space-y-6">
-                    {projectsData.map((project, index) => (
-                        <motion.div
-                            key={project.name}
-                            className={`border border-gray-700 bg-black/60 p-6 relative overflow-hidden ${glitchProject === index ? 'border-pink-500 bg-pink-500/5' : ''
-                                }`}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{
-                                opacity: 1,
-                                y: 0,
-                                borderColor: glitchProject === index
-                                    ? ['rgba(107, 114, 128, 1)', 'rgba(236, 72, 153, 1)', 'rgba(250, 204, 21, 0.8)', 'rgba(107, 114, 128, 1)']
-                                    : 'rgba(107, 114, 128, 1)',
-                                scale: glitchProject === index ? [1, 1.01, 0.99, 1] : 1
-                            }}
-                            transition={{
-                                delay: index * 0.1,
-                                borderColor: { duration: 0.6 },
-                                scale: { duration: 0.4 }
-                            }}
-                        >
-                            {/* Intense background flicker */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-cyan-400/5 to-yellow-400/10"
-                                animate={{
-                                    opacity: glitchProject === index ? [0, 0.3, 0.1, 0.5, 0] : 0
-                                }}
-                                transition={{ duration: 0.5 }}
-                            />
-
-                            {/* Multiple scan lines */}
-                            <motion.div
-                                className="absolute top-0 left-0 w-full h-px bg-cyan-400 opacity-60"
-                                animate={{
-                                    scaleX: glitchProject === index ? [1, 3, 1] : [0, 1, 0],
-                                    opacity: glitchProject === index ? [0.6, 1, 0.6] : [0.6, 0.8, 0.6]
-                                }}
-                                transition={{
-                                    duration: glitchProject === index ? 0.3 : 2,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                            />
-
-                            <div className="flex justify-between items-start mb-4 relative z-10">
-                                <motion.h3
-                                    className="text-xl text-white font-bold relative"
-                                    style={{
-                                        textShadow: glitchProject === index
-                                            ? '2px 2px 0px #000, 0 0 15px rgba(236, 72, 153, 0.8)'
-                                            : '1px 1px 0px #000',
-                                        transform: 'perspective(300px) rotateX(10deg)'
-                                    }}
-                                    animate={glitchProject === index ? {
-                                        textShadow: [
-                                            '2px 2px 0px #000, 0 0 15px rgba(236, 72, 153, 0.8)',
-                                            '2px 2px 0px #000, 0 0 25px rgba(34, 211, 238, 1)',
-                                            '2px 2px 0px #000, 0 0 15px rgba(236, 72, 153, 0.8)'
-                                        ]
-                                    } : {}}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    {project.name}
-                                    {/* Multiple glitch layers */}
-                                    {glitchProject === index && (
-                                        <>
-                                            <motion.span
-                                                className="absolute inset-0 text-pink-500"
-                                                animate={{
-                                                    opacity: [0, 0.9, 0],
-                                                    x: [0, -2, 2, 0],
-                                                    skewX: [0, -5, 5, 0]
-                                                }}
-                                                transition={{
-                                                    duration: 0.1,
-                                                    repeat: 4,
-                                                    repeatDelay: 0.05
-                                                }}
-                                            >
-                                                {project.name}
-                                            </motion.span>
-                                            <motion.span
-                                                className="absolute inset-0 text-cyan-400"
-                                                animate={{
-                                                    opacity: [0, 0.7, 0],
-                                                    x: [0, 1, -1, 0],
-                                                    skewX: [0, 3, -3, 0]
-                                                }}
-                                                transition={{
-                                                    duration: 0.08,
-                                                    repeat: 3,
-                                                    repeatDelay: 0.1,
-                                                    delay: 0.05
-                                                }}
-                                            >
-                                                {project.name}
-                                            </motion.span>
-                                        </>
-                                    )}
-                                </motion.h3>
-
-                                <motion.span
-                                    className={`text-xs px-3 py-1 border relative ${project.status === 'COMPLETED' ? 'border-green-500 text-green-400' :
-                                        project.status === 'IN DEVELOPMENT' ? 'border-yellow-500 text-yellow-400' :
-                                            'border-blue-500 text-blue-400'
-                                        }`}
-                                    animate={glitchProject === index ? {
-                                        scale: [1, 1.1, 0.9, 1],
-                                        opacity: [1, 0.7, 1]
-                                    } : {}}
-                                    transition={{ duration: 0.4 }}
-                                    style={{
-                                        boxShadow: glitchProject === index
-                                            ? `0 0 10px ${project.status === 'COMPLETED' ? 'rgba(34, 197, 94, 0.6)' :
-                                                project.status === 'IN DEVELOPMENT' ? 'rgba(234, 179, 8, 0.6)' :
-                                                    'rgba(59, 130, 246, 0.6)'
-                                            }`
-                                            : 'none'
-                                    }}
-                                >
-                                    {project.status}
-                                </motion.span>
-                            </div>
-
-                            <motion.p
-                                className="text-gray-300 mb-4 relative z-10"
-                                animate={glitchProject === index ? {
-                                    opacity: [1, 0.8, 1]
-                                } : {}}
-                                transition={{ duration: 0.3 }}
-                            >
-                                {project.description}
-                                {/* Text corruption effect */}
-                                {glitchProject === index && (
-                                    <motion.span
-                                        className="absolute inset-0 text-pink-500 opacity-0"
-                                        animate={{
-                                            opacity: [0, 0.4, 0]
-                                        }}
-                                        transition={{
-                                            duration: 0.15,
-                                            repeat: 2,
-                                            repeatDelay: 0.1
-                                        }}
-                                    >
-                                        {project.description}
-                                    </motion.span>
-                                )}
-                            </motion.p>
-
-                            <div className="flex flex-wrap gap-2 relative z-10">
-                                {project.tech.map((tech, techIndex) => (
-                                    <motion.span
-                                        key={techIndex}
-                                        className="text-xs border border-pink-500 text-pink-400 px-2 py-1 relative"
-                                        animate={glitchProject === index ? {
-                                            borderColor: [
-                                                'rgba(236, 72, 153, 1)',
-                                                'rgba(34, 211, 238, 1)',
-                                                'rgba(250, 204, 21, 1)',
-                                                'rgba(236, 72, 153, 1)'
-                                            ],
-                                            color: [
-                                                'rgba(236, 72, 153, 1)',
-                                                'rgba(34, 211, 238, 1)',
-                                                'rgba(250, 204, 21, 1)',
-                                                'rgba(236, 72, 153, 1)'
-                                            ]
-                                        } : {}}
-                                        transition={{
-                                            duration: 0.6,
-                                            delay: techIndex * 0.1
-                                        }}
-                                        style={{
-                                            boxShadow: glitchProject === index
-                                                ? '0 0 8px rgba(236, 72, 153, 0.5)'
-                                                : 'none'
-                                        }}
-                                    >
-                                        {tech}
-                                    </motion.span>
-                                ))}
-                            </div>
-
-                            {/* Digital artifacts */}
-                            <motion.div
-                                className="absolute bottom-2 right-2 w-2 h-6 bg-yellow-400 opacity-30"
-                                animate={{
-                                    opacity: [0.3, 0.8, 0.3],
-                                    scaleY: [1, 0.3, 1]
-                                }}
-                                transition={{
-                                    duration: 0.4,
-                                    repeat: Infinity,
-                                    repeatDelay: Math.random() * 2 + 1
-                                }}
-                            />
-                        </motion.div>
-                    ))}
-                </div>
-            </motion.div>
-        </div>
-    );
-};
-
-// Contact Content Component
-const ContactContent = () => (
-    <div className="space-y-8">
-        <div className="border border-cyan-400/30 bg-black/40 p-6">
-            <h2 className="text-2xl text-cyan-400 mb-6 tracking-wider cyberpunk-title">CONTACT PROTOCOLS</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <motion.a
-                    href="mailto:muhammadbasil@example.com"
-                    className="border border-gray-700 bg-black/60 p-6 hover:border-cyan-400 hover:bg-cyan-400/5 transition-all duration-200 group"
-                    whileHover={{ scale: 1.02 }}
-                >
-                    <div className="text-cyan-400 text-lg mb-2 group-hover:text-cyan-300">EMAIL</div>
-                    <div className="text-gray-400 text-sm">muhammadbasil@example.com</div>
-                </motion.a>
-
-                <motion.a
-                    href="https://www.linkedin.com/in/muhammed-basil-cp-cse007"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border border-gray-700 bg-black/60 p-6 hover:border-cyan-400 hover:bg-cyan-400/5 transition-all duration-200 group"
-                    whileHover={{ scale: 1.02 }}
-                >
-                    <div className="text-cyan-400 text-lg mb-2 group-hover:text-cyan-300">LINKEDIN</div>
-                    <div className="text-gray-400 text-sm">Professional Network</div>
-                </motion.a>
-
-                <motion.a
-                    href="https://github.com/muhammadbasil"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border border-gray-700 bg-black/60 p-6 hover:border-cyan-400 hover:bg-cyan-400/5 transition-all duration-200 group"
-                    whileHover={{ scale: 1.02 }}
-                >
-                    <div className="text-cyan-400 text-lg mb-2 group-hover:text-cyan-300">GITHUB</div>
-                    <div className="text-gray-400 text-sm">Code Repository</div>
-                </motion.a>
-
-                <motion.div
-                    className="border border-gray-700 bg-black/60 p-6"
-                >
-                    <div className="text-yellow-400 text-lg mb-2">STATUS</div>
-                    <div className="flex items-center gap-2">
-                        <motion.div
-                            className="w-2 h-2 bg-green-400 rounded-full"
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <span className="text-green-400 text-sm">AVAILABLE FOR HIRE</span>
-                    </div>
-                </motion.div>
             </div>
         </div>
-    </div>
-);
+    );
+}
+
+function SkillsContent() {
+    return (
+        <div className="space-y-8">
+            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8 relative">
+                <div className="absolute top-0 right-0 p-2">
+                    <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-cyan-500 rounded-full" />
+                        <div className="w-2 h-2 bg-pink-500 rounded-full" />
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+                    </div>
+                </div>
+
+                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
+                    <span className="text-pink-500 text-5xl">02</span>
+                    SKILL_MATRIX
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {skillsData.map((skill, idx) => (
+                        <motion.div
+                            key={skill.name}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="bg-white/5 border border-white/10 p-5 hover:border-cyan-500/50 transition-colors group"
+                        >
+                            <div className="flex justify-between items-center mb-3">
+                                <span className="text-white font-bold tracking-wide">{skill.name}</span>
+                                <span className="text-xs border border-white/20 px-2 py-1 rounded text-gray-400 group-hover:text-white group-hover:border-white/40 transition-all">{skill.category}</span>
+                            </div>
+
+                            <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${skill.level}%` }}
+                                    transition={{ duration: 1, delay: 0.5 + idx * 0.1, ease: "easeOut" }}
+                                    className={`absolute top-0 left-0 h-full bg-gradient-to-r ${skill.color}`}
+                                />
+                            </div>
+                            <div className="text-right mt-1">
+                                <span className="text-xs font-mono text-gray-400">{skill.level}% SYNCHRONIZATION</span>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ProjectsContent() {
+    return (
+        <div className="space-y-8">
+            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8">
+                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
+                    <span className="text-yellow-400 text-5xl">03</span>
+                    PROJECT_DB
+                </h2>
+
+                <div className="grid gap-8">
+                    {projectsData.map((project, i) => (
+                        <motion.div
+                            key={project.name}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="group relative border border-white/10 bg-black/40 p-6 hover:border-cyan-500/50 transition-all overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                            <div className="flex flex-col md:flex-row gap-6 relative z-10">
+                                <div className="w-full md:w-48 h-32 rounded bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center overflow-hidden border border-white/10 group-hover:border-cyan-500/30 transition-colors">
+                                    <div className="text-4xl opacity-20 group-hover:opacity-40 transition-opacity">🎮</div>
+                                </div>
+
+                                <div className="flex-1">
+                                    <div className="flex flex-wrap justify-between items-start mb-3 gap-2">
+                                        <h3 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">{project.name}</h3>
+                                        <span className={`text-xs px-3 py-1 border rounded-full font-bold ${project.status === 'COMPLETED' ? 'border-green-500/50 text-green-400 bg-green-500/10' :
+                                                project.status === 'IN DEVELOPMENT' ? 'border-yellow-500/50 text-yellow-400 bg-yellow-500/10' :
+                                                    'border-blue-500/50 text-blue-400 bg-blue-500/10'
+                                            }`}>
+                                            {project.status}
+                                        </span>
+                                    </div>
+
+                                    <p className="text-gray-400 mb-4 leading-relaxed">{project.description}</p>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.tech.map((t, idx) => (
+                                            <span key={idx} className="text-xs border border-white/10 bg-white/5 px-2 py-1 text-gray-300 group-hover:border-pink-500/30 group-hover:text-pink-400 transition-colors">
+                                                {t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ContactContent() {
+    return (
+        <div className="space-y-8">
+            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8">
+                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
+                    <span className="text-green-500 text-5xl">04</span>
+                    COMMS_LINK
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                        { title: 'EMAIL', value: 'muhammadbasil@example.com', href: 'mailto:muhammadbasil@example.com', color: 'text-cyan-400', border: 'hover:border-cyan-500' },
+                        { title: 'LINKEDIN', value: 'Connect Network', href: 'https://www.linkedin.com/in/muhammed-basil-cp-cse007', color: 'text-blue-400', border: 'hover:border-blue-500' },
+                        { title: 'GITHUB', value: 'Source Codes', href: 'https://github.com/muhammadbasil', color: 'text-purple-400', border: 'hover:border-purple-500' }
+                    ].map((item, i) => (
+                        <motion.a
+                            key={item.title}
+                            href={item.href}
+                            target={item.title === 'EMAIL' ? undefined : "_blank"}
+                            rel="noreferrer"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.1 }}
+                            className={`border border-white/10 bg-white/5 p-8 group transition-all duration-300 ${item.border} hover:bg-white/10`}
+                        >
+                            <div className={`text-sm tracking-widest mb-2 ${item.color} font-bold`}>{item.title}</div>
+                            <div className="text-xl text-white group-hover:translate-x-2 transition-transform">{item.value}</div>
+                            <div className="mt-4 w-8 h-[2px] bg-gray-700 group-hover:w-full group-hover:bg-white transition-all duration-500" />
+                        </motion.a>
+                    ))}
+
+                    <div className="border border-green-500/30 bg-green-900/10 p-8 flex flex-col justify-center items-center text-center">
+                        <div className="w-4 h-4 bg-green-500 rounded-full animate-ping mb-4" />
+                        <div className="text-green-400 font-bold tracking-widest text-lg">STATUS: AVAILABLE</div>
+                        <div className="text-green-500/60 text-xs mt-2">OPEN FOR CONTRACTS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
