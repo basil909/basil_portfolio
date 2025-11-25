@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -78,9 +78,6 @@ export default function GameDevPage() {
     const [flickerElements, setFlickerElements] = useState<string[]>([]);
     const artifacts = useMemo(() => createArtifacts(6), []);
 
-    // Optimized scanline animation using CSS variables for performance
-    const containerRef = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
         // Glitch effect loop
         const glitchInterval = setInterval(() => {
@@ -118,7 +115,7 @@ export default function GameDevPage() {
     };
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-black text-white cyberpunk-font overflow-hidden relative selection:bg-cyan-500 selection:text-black">
+        <div className="min-h-screen bg-black text-white cyberpunk-font overflow-hidden relative selection:bg-cyan-500 selection:text-black">
             {/* Ambient Background */}
             <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />
             <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none" />
@@ -441,8 +438,8 @@ function ProjectsContent() {
                                     <div className="flex flex-wrap justify-between items-start mb-3 gap-2">
                                         <h3 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">{project.name}</h3>
                                         <span className={`text-xs px-3 py-1 border rounded-full font-bold ${project.status === 'COMPLETED' ? 'border-green-500/50 text-green-400 bg-green-500/10' :
-                                                project.status === 'IN DEVELOPMENT' ? 'border-yellow-500/50 text-yellow-400 bg-yellow-500/10' :
-                                                    'border-blue-500/50 text-blue-400 bg-blue-500/10'
+                                            project.status === 'IN DEVELOPMENT' ? 'border-yellow-500/50 text-yellow-400 bg-yellow-500/10' :
+                                                'border-blue-500/50 text-blue-400 bg-blue-500/10'
                                             }`}>
                                             {project.status}
                                         </span>
