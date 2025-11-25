@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import StructuredData from "../components/StructuredData";
 
 export const metadata: Metadata = {
   title: "Muhammed Basil | AI & ML Developer Portfolio",

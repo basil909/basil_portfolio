@@ -1,0 +1,135 @@
+﻿src/components/AchievementSystem.tsx(119,11): error TS2532: Object is possibly 'undefined'.
+src/components/AchievementSystem.tsx(125,11): error TS2532: Object is possibly 'undefined'.
+src/components/AchievementSystem.tsx(131,11): error TS2532: Object is possibly 'undefined'.
+src/components/Contact.tsx(3,27): error TS6133: 'useEffect' is declared but its value is never read.
+src/components/ErrorBoundary.tsx(27,3): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'Component<Props, State, any>'.
+src/components/ErrorBoundary.tsx(38,3): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'Component<Props, State, any>'.
+src/components/ErrorBoundary.tsx(82,46): error TS2345: Argument of type '{ hasError: false; error: undefined; errorInfo: undefined; }' is not assignable to parameter of type 'State | ((prevState: Readonly<State>, props: Readonly<Props>) => State | Pick<State, "error" | "hasError" | "errorInfo"> | null) | Pick<...> | null'.
+  Type '{ hasError: false; error: undefined; errorInfo: undefined; }' is not assignable to type 'Pick<State, "error" | "hasError" | "errorInfo">' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'error' are incompatible.
+      Type 'undefined' is not assignable to type 'Error'.
+src/components/FloatingElements.tsx(41,34): error TS18048: 'element.shape' is possibly 'undefined'.
+src/components/FloatingElements.tsx(41,57): error TS18048: 'element.shape' is possibly 'undefined'.
+src/components/FloatingElements.tsx(72,12): error TS18048: 'element.shape' is possibly 'undefined'.
+src/components/FloatingElements.tsx(74,51): error TS18048: 'element.shape' is possibly 'undefined'.
+src/components/GameContext.tsx(153,9): error TS6133: 'updateGameStats' is declared but its value is never read.
+src/components/GameWorker.ts(134,45): error TS6133: 'level' is declared but its value is never read.
+src/components/GameWorker.ts(135,79): error TS4111: Property 'medium' comes from an index signature, so it must be accessed with ['medium'].
+src/components/HeroGame.tsx(218,7): error TS2375: Type '{ hit: true; id?: number; x?: number; y?: number; size?: number; points?: number; speed?: number; type?: TargetType; movePattern?: "static" | "linear" | "circular"; moveData?: { direction?: { x: number; y: number; }; radius?: number; angle?: number; center?: { x: number; y: number; }; }; }' is not assignable to type 'Target' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Property 'id' is optional in type '{ hit: true; id?: number; x?: number; y?: number; size?: number; points?: number; speed?: number; type?: TargetType; movePattern?: "linear" | "static" | "circular"; moveData?: { direction?: { x: number; y: number; }; radius?: number; angle?: number; center?: { ...; }; }; }' but required in type 'Target'.
+src/components/HeroGame.tsx(355,7): error TS2375: Type 'CSSProperties' is not assignable to type 'MotionStyle' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Type 'Properties<string | number, string & {}>' is not assignable to type 'MakeCustomValueType<{ x?: string | number | MotionValue<number> | MotionValue<string> | MotionValue<any>; y?: string | number | MotionValue<number> | MotionValue<...> | MotionValue<...>; ... 19 more ...; transformPerspective?: string | ... 3 more ... | MotionValue<...>; }>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'rotate' are incompatible.
+      Type 'Rotate | undefined' is not assignable to type 'string | number | CustomValueType | MotionValue<number> | MotionValue<string> | MotionValue<any>'.
+        Type 'undefined' is not assignable to type 'string | number | CustomValueType | MotionValue<number> | MotionValue<string> | MotionValue<any>'.
+src/components/HeroGame.tsx(993,41): error TS2322: Type 'PowerupType | undefined' is not assignable to type 'PowerupType'.
+  Type 'undefined' is not assignable to type 'PowerupType'.
+src/components/MemoryGame.tsx(13,7): error TS6133: 'emojis' is declared but its value is never read.
+src/components/MemoryGame.tsx(72,37): error TS2532: Object is possibly 'undefined'.
+src/components/MemoryGame.tsx(72,58): error TS2532: Object is possibly 'undefined'.
+src/components/MemoryGame.tsx(108,7): error TS2532: Object is possibly 'undefined'.
+src/components/MemoryGame.tsx(125,9): error TS18048: 'selectedPair' is possibly 'undefined'.
+src/components/MemoryGame.tsx(133,11): error TS18048: 'selectedPair' is possibly 'undefined'.
+src/components/MemoryGame.tsx(149,17): error TS2538: Type 'undefined' cannot be used as an index type.
+src/components/MemoryGame.tsx(149,40): error TS2538: Type 'undefined' cannot be used as an index type.
+src/components/Navbar.tsx(14,15): error TS7030: Not all code paths return a value.
+src/components/PhysicsPuzzle.tsx(39,7): error TS6133: 'PHYSICS_TIMESTEP' is declared but its value is never read.
+src/components/PhysicsPuzzle.tsx(40,7): error TS6133: 'GRAVITY' is declared but its value is never read.
+src/components/PhysicsPuzzle.tsx(233,59): error TS2345: Argument of type 'Level | undefined' is not assignable to parameter of type 'Level | (() => Level)'.
+  Type 'undefined' is not assignable to type 'Level | (() => Level)'.
+src/components/PhysicsPuzzle.tsx(385,17): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(388,17): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(391,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(392,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(397,19): error TS18048: 'other' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(398,28): error TS18048: 'other' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(398,47): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(399,28): error TS18048: 'other' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(399,47): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(404,33): error TS18048: 'other' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(408,19): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(409,19): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(415,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(415,31): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(416,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(416,31): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(419,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(420,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(423,37): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(423,54): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(423,71): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(423,88): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(425,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(425,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(426,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(426,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(430,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(430,31): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(431,13): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(431,31): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(434,17): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(434,34): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(435,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(435,32): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(436,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(436,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(436,50): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(437,24): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(437,47): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(438,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(438,38): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(439,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(439,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(439,50): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(442,17): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(442,34): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(443,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(443,32): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(444,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(444,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(444,50): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(445,24): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(445,47): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(446,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(446,38): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(447,15): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(447,33): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(447,50): error TS18048: 'obj' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(459,26): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(459,44): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(460,26): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(460,44): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(462,35): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(462,49): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(469,22): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(469,48): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(470,22): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(470,46): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(476,21): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(476,37): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(483,28): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(483,46): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(484,28): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(484,46): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(493,46): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(493,64): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(497,26): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(497,42): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(504,22): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(505,19): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(505,49): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(506,19): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(506,49): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(509,22): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(510,19): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(510,49): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(511,19): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(511,49): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(521,22): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(522,19): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(523,19): error TS18048: 'obj1' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(526,22): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(527,19): error TS18048: 'obj2' is possibly 'undefined'.
+src/components/PhysicsPuzzle.tsx(528,19): error TS18048: 'obj2' is possibly 'undefined'.
+src/hooks/usePerformance.ts(56,54): error TS2339: Property 'processingStart' does not exist on type 'PerformanceEntry'.
+src/hooks/usePerformance.ts(64,20): error TS2339: Property 'hadRecentInput' does not exist on type 'PerformanceEntry'.
