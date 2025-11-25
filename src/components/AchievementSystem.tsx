@@ -73,16 +73,16 @@ export default function AchievementSystem() {
     // Load achievements from localStorage if available
     const savedAchievements = localStorage.getItem('portfolio_achievements');
     const savedPoints = localStorage.getItem('portfolio_points');
-    
+
     if (savedAchievements) {
       setUserAchievements(JSON.parse(savedAchievements));
     }
-    
+
     if (savedPoints) {
       setTotalPoints(parseInt(savedPoints, 10));
     }
   }, []);
-  
+
   // Separate useEffect for event listeners to avoid dependency issues
   useEffect(() => {
     // Set up event listeners for achievements
@@ -92,91 +92,100 @@ export default function AchievementSystem() {
         const newAchievement = { ...achievement, unlocked: true };
         const updatedAchievements = [...userAchievements, newAchievement];
         const newTotalPoints = totalPoints + newAchievement.points;
-        
+
         setUserAchievements(updatedAchievements);
         setCurrentAchievement(newAchievement);
         setShowAchievement(true);
         setTotalPoints(newTotalPoints);
-        
+
         localStorage.setItem('portfolio_achievements', JSON.stringify(updatedAchievements));
         localStorage.setItem('portfolio_points', newTotalPoints.toString());
-        
+
         setTimeout(() => {
           setShowAchievement(false);
         }, 3000);
       }
     };
-    
+
     // Unlock home achievement on load
     unlockAchievement('visit_home');
-    
+
     // Set up intersection observers for section-based achievements
     const aboutSection = document.getElementById('about');
     const projectsSection = document.getElementById('projects');
     const contactSection = document.getElementById('contact');
-    
+
     const aboutObserver = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        unlockAchievement('visit_about');
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          unlockAchievement('visit_about');
+          break;
+        }
       }
     }, { threshold: 0.5 });
-    
+
     const projectsObserver = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        unlockAchievement('visit_projects');
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          unlockAchievement('visit_projects');
+          break;
+        }
       }
     }, { threshold: 0.5 });
-    
+
     const contactObserver = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        unlockAchievement('visit_contact');
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          unlockAchievement('visit_contact');
+          break;
+        }
       }
     }, { threshold: 0.5 });
-    
+
     if (aboutSection) aboutObserver.observe(aboutSection);
     if (projectsSection) projectsObserver.observe(projectsSection);
     if (contactSection) contactObserver.observe(contactSection);
-    
+
     // Listen for theme toggle
     const handleThemeToggle = () => {
       unlockAchievement('toggle_theme');
     };
-    
+
     // Listen for social link clicks
     const handleSocialClick = () => {
       unlockAchievement('click_social');
     };
-    
+
     document.addEventListener('themeToggle', handleThemeToggle);
-    
+
     // Create a MutationObserver to detect theme changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class' && 
-            (mutation.target as Element).classList.contains('dark')) {
+        if (mutation.attributeName === 'class' &&
+          (mutation.target as Element).classList.contains('dark')) {
           unlockAchievement('toggle_theme');
         }
       });
     });
-    
+
     observer.observe(document.documentElement, { attributes: true });
-    
+
     const socialLinks = document.querySelectorAll('a[href*="github"], a[href*="linkedin"], a[href*="mailto"]');
     socialLinks.forEach(link => {
       link.addEventListener('click', handleSocialClick);
     });
-    
+
     return () => {
       if (aboutSection) aboutObserver.unobserve(aboutSection);
       if (projectsSection) projectsObserver.unobserve(projectsSection);
       if (contactSection) contactObserver.unobserve(contactSection);
-      
+
       document.removeEventListener('themeToggle', handleThemeToggle);
-      
+
       socialLinks.forEach(link => {
         link.removeEventListener('click', handleSocialClick);
       });
-      
+
       observer.disconnect();
     };
   }, [userAchievements, totalPoints]);
@@ -204,9 +213,9 @@ export default function AchievementSystem() {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Points display */}
-      <motion.div 
+      <motion.div
         className="fixed top-20 right-4 bg-white dark:bg-gray-800 rounded-full shadow-lg px-3 py-1 z-40 flex items-center gap-1"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -215,7 +224,7 @@ export default function AchievementSystem() {
         <span className="text-yellow-500">⭐</span>
         <span className="font-bold text-sm">{totalPoints}</span>
       </motion.div>
-      
+
       {/* Achievement button */}
       <motion.button
         className="fixed bottom-4 left-4 bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-40"
