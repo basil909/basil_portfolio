@@ -1,6 +1,6 @@
     'use client';
 
-    import React, { useEffect, useMemo, useState } from 'react';
+    import { useEffect, useMemo, useState } from 'react';
     import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
     import Link from 'next/link';
     import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../../config/site';
@@ -275,9 +275,11 @@
 
                 <div className="relative z-50 flex h-7 items-center justify-between border-b border-cyan-400/20 bg-black/80 px-4 font-mono text-[9px] tracking-[0.25em] text-cyan-400/60 sm:px-8">
                     <div className="flex items-center gap-3">
-                        <span className="hidden sm:inline">NIGHT_CITY // DEV_NODE_07</span>
+                        <span className="hidden sm:inline">
+                            NIGHT_CITY {'//'} DEV_NODE_07
+                        </span>
                         <span className="sm:hidden">DEV_NODE_07</span>
-                        <span className="text-white/20">///</span>
+                        <span className="text-white/20">{'///'}</span>
                         <span className="text-yellow-400/70">SECURE</span>
                     </div>
 
