@@ -37,6 +37,16 @@ npm run dev:turbo
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Contact form and site URL
+
+Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SITE_URL` to the
+canonical production URL. To enable the contact form, also set the three
+`NEXT_PUBLIC_EMAILJS_*` values from your EmailJS service and template settings.
+The public key is intended for browser use; configure EmailJS domain restrictions
+and rate limits in its dashboard. Restart the development server after changing
+environment variables. Until configured, the contact form directs visitors to
+the published email address instead of reporting a false success.
+
 ## Build for Production
 
 ```bash
@@ -69,6 +79,3 @@ npm run kill-port
 ```
 
 Then try running the development server again.
-=======
-# basil_portfolio
->>>>>>> 2eee13f9b74ac97c77da25b6f92888cf0ec194ef

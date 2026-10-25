@@ -1,507 +1,1058 @@
-'use client';
+    'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
+    import React, { useEffect, useMemo, useState } from 'react';
+    import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+    import Link from 'next/link';
+    import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../../config/site';
 
-/* ---------- Types & Static Data ---------- */
-type MenuItem = {
-    id: string;
-    label: string;
-    icon?: string;
-};
+    /*
+    * ART DIRECTION
+    * -------------
+    * ART DIRECTION
+    * -------------
+    * Theme: "A game developer's wall of ideas at 2AM"
+    *
+    * This is intentionally NOT a generic cyberpunk dashboard.
+    * The composition behaves more like an editorial poster / game concept sheet:
+    * oversized typography, asymmetry, negative space, cropped geometry, handwritten
+    * notes, material-like panels, controlled color blocking and visual tension.
+    *
+    * The UI is the frame. The work is the artwork.
+    */
 
-const menuItems: MenuItem[] = [
-    { id: 'profile', label: 'PROFILE', icon: '👤' },
-    { id: 'skills', label: 'SKILLS', icon: '⚡' },
-    { id: 'projects', label: 'PROJECTS', icon: '🚀' },
-    { id: 'contact', label: 'CONTACT', icon: '📡' },
-    { id: 'exit', label: 'EXIT', icon: '🚪' },
-];
+    type MenuId = 'profile' | 'skills' | 'projects' | 'contact';
 
-const profileStats = [
-    { label: 'LEVEL', value: '20', colorClass: 'text-yellow-400', shadow: 'shadow-yellow-400/50' },
-    { label: 'STREET CRED', value: 'BEGINNER', colorClass: 'text-cyan-400', shadow: 'shadow-cyan-400/50' },
-    { label: 'REPUTATION', value: 'NOOB', colorClass: 'text-pink-500', shadow: 'shadow-pink-500/50' },
-];
-
-const skillsData = [
-    { name: 'UNITY 3D', level: 95, category: 'ENGINE', color: 'from-cyan-500 to-blue-500' },
-    { name: 'UNREAL ENGINE', level: 88, category: 'ENGINE', color: 'from-purple-500 to-pink-500' },
-    { name: 'C# SCRIPTING', level: 92, category: 'CODE', color: 'from-green-400 to-emerald-600' },
-    { name: 'BLENDER', level: 85, category: 'ART', color: 'from-orange-400 to-red-500' },
-    { name: 'GAME DESIGN', level: 90, category: 'DESIGN', color: 'from-yellow-400 to-amber-600' },
-    { name: 'VR/AR', level: 78, category: 'TECH', color: 'from-indigo-400 to-violet-600' },
-];
-
-const projectsData = [
-    {
-        name: 'CYBER RUNNER',
-        status: 'COMPLETED',
-        description: 'Fast-paced 3D endless runner with cyberpunk aesthetics. Features procedural generation and neon visuals.',
-        tech: ['Unity', 'C#', 'Shader Graph'],
-        image: 'linear-gradient(45deg, #00f3ff, #ff00ff)',
-    },
-    {
-        name: 'MYSTIC REALMS',
-        status: 'IN DEVELOPMENT',
-        description: 'Open-world RPG with dynamic weather system and AI-driven NPCs. Built with Unreal Engine 5.',
-        tech: ['Unreal Engine', 'Blueprint', 'C++'],
-        image: 'linear-gradient(45deg, #a855f7, #ec4899)',
-    },
-    {
-        name: 'VR SPACE STATION',
-        status: 'PROTOTYPE',
-        description: 'Immersive VR experience aboard a futuristic space station. Interactive zero-gravity mechanics.',
-        tech: ['Unity XR', 'Oculus SDK', 'C#'],
-        image: 'linear-gradient(45deg, #3b82f6, #10b981)',
-    },
-];
-
-/* ---------- Helper Functions ---------- */
-function createArtifacts(count = 6) {
-    return Array.from({ length: count }).map((_, i) => ({
-        id: `artifact-${i}`,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        width: Math.random() * 4 + 2,
-        height: Math.random() * 40 + 10,
-        delay: Math.random() * 5,
-        duration: Math.random() * 3 + 2,
-    }));
-}
-
-/* ---------- Main Component ---------- */
-export default function GameDevPage() {
-    const [activeMenu, setActiveMenu] = useState('profile');
-    const [glitchActive, setGlitchActive] = useState(false);
-    const [flickerElements, setFlickerElements] = useState<string[]>([]);
-    const artifacts = useMemo(() => createArtifacts(6), []);
-
-    useEffect(() => {
-        // Glitch effect loop
-        const glitchInterval = setInterval(() => {
-            if (Math.random() > 0.7) {
-                setGlitchActive(true);
-                setTimeout(() => setGlitchActive(false), 100 + Math.random() * 100);
-            }
-        }, 3000);
-
-        // Flicker effect loop
-        const flickerInterval = setInterval(() => {
-            const elements = ['logo', 'menu', 'status', 'border'];
-            const target = elements[Math.floor(Math.random() * elements.length)] as string;
-            setFlickerElements(prev => [...prev, target]);
-
-            setTimeout(() => {
-                setFlickerElements(prev => prev.filter(e => e !== target));
-            }, 50 + Math.random() * 100);
-        }, 2000);
-
-        return () => {
-            clearInterval(glitchInterval);
-            clearInterval(flickerInterval);
-        };
-    }, []);
-
-    const renderContent = () => {
-        switch (activeMenu) {
-            case 'profile': return <ProfileContent flicker={flickerElements.includes('profile')} />;
-            case 'skills': return <SkillsContent />;
-            case 'projects': return <ProjectsContent />;
-            case 'contact': return <ContactContent />;
-            default: return <ProfileContent />;
-        }
+    type MenuItem = {
+        id: MenuId;
+        label: string;
+        icon: string;
+        code: string;
     };
 
-    return (
-        <div className="min-h-screen bg-black text-white cyberpunk-font overflow-hidden relative selection:bg-cyan-500 selection:text-black">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80" />
-            <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none" />
+    type Skill = {
+        name: string;
+        level: number;
+        category: string;
+        color: string;
+    };
 
-            {/* Grid Overlay */}
-            <div className="fixed inset-0 perspective-1000 pointer-events-none">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#083344_1px,transparent_1px),linear-gradient(to_bottom,#083344_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
-                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-cyan-900/20 to-transparent" />
-            </div>
+    type Project = {
+        name: string;
+        status: 'COMPLETED' | 'IN DEVELOPMENT' | 'PROTOTYPE';
+        description: string;
+        tech: string[];
+        gradient: string;
+        number: string;
+    };
 
-            {/* Scanline */}
-            <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-                <div className="w-full h-1 bg-cyan-400/30 blur-sm absolute top-0 animate-scanline shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
-            </div>
+    const menuItems: MenuItem[] = [
+        { id: 'profile', label: 'PROFILE', icon: '◈', code: '01' },
+        { id: 'skills', label: 'SKILLS', icon: '◇', code: '02' },
+        { id: 'projects', label: 'PROJECTS', icon: '▣', code: '03' },
+        { id: 'contact', label: 'CONTACT', icon: '⌁', code: '04' },
+    ];
 
-            {/* Floating Artifacts */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                {artifacts.map(a => (
-                    <motion.div
-                        key={a.id}
-                        className="absolute bg-cyan-500/20 backdrop-blur-sm"
-                        style={{
-                            width: a.width,
-                            height: a.height,
-                            left: `${a.left}%`,
-                            top: `${a.top}%`,
-                        }}
-                        animate={{
-                            y: [0, -100, 0],
-                            opacity: [0, 0.5, 0],
-                        }}
-                        transition={{
-                            duration: a.duration,
-                            repeat: Infinity,
-                            delay: a.delay,
-                            ease: "linear"
-                        }}
-                    />
-                ))}
-            </div>
+    const profileStats = [
+        { label: 'LEVEL', value: '20', sub: 'DEV_RANK', accent: 'yellow' },
+        { label: 'STREET CRED', value: 'BEGINNER', sub: 'FIELD_EXP', accent: 'cyan' },
+        { label: 'REPUTATION', value: 'NOOB', sub: 'STATUS_FLAG', accent: 'pink' },
+    ];
 
-            {/* Main Layout */}
-            <div className="relative z-10 flex flex-col md:flex-row h-screen">
-                {/* Sidebar */}
-                <aside className="w-full md:w-80 bg-black/40 backdrop-blur-xl border-r border-cyan-500/20 flex flex-col relative overflow-hidden">
-                    {/* Decorative Sidebar Line */}
-                    <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent" />
+    const skillsData: Skill[] = [
+        { name: 'UNITY 3D', level: 95, category: 'ENGINE', color: 'from-cyan-300 to-blue-500' },
+        { name: 'UNREAL ENGINE', level: 88, category: 'ENGINE', color: 'from-violet-400 to-fuchsia-500' },
+        { name: 'C# SCRIPTING', level: 92, category: 'CODE', color: 'from-emerald-300 to-green-500' },
+        { name: 'BLENDER', level: 85, category: 'ART', color: 'from-orange-300 to-red-500' },
+        { name: 'GAME DESIGN', level: 90, category: 'DESIGN', color: 'from-yellow-300 to-amber-500' },
+        { name: 'VR / AR', level: 78, category: 'TECH', color: 'from-blue-400 to-indigo-500' },
+    ];
 
-                    <div className="p-8">
-                        {/* Logo Area */}
-                        <div className={`mb-12 relative group ${flickerElements.includes('logo') ? 'opacity-60' : 'opacity-100'}`}>
-                            <div className="absolute -inset-2 bg-cyan-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 tracking-tighter relative z-10 cyberpunk-logo" style={{ textShadow: '0 0 20px rgba(250, 204, 21, 0.3)' }}>
-                                CYBER<br />PUNK
-                            </h1>
-                            <div className="text-xs text-cyan-400 tracking-[0.4em] mt-1 font-mono pl-1">2077 EDITION</div>
+    const projectsData: Project[] = [
+        {
+            name: 'CYBER RUNNER',
+            status: 'COMPLETED',
+            description:
+                'Fast-paced 3D endless runner with procedural environments, reactive neon materials and a deliberately aggressive visual language.',
+            tech: ['UNITY', 'C#', 'SHADER GRAPH'],
+            gradient: 'from-cyan-400 via-blue-600 to-fuchsia-500',
+            number: '001',
+        },
+        {
+            name: 'MYSTIC REALMS',
+            status: 'IN DEVELOPMENT',
+            description:
+                'Open-world RPG prototype combining dynamic weather, AI-driven NPC behaviour and large-scale Unreal Engine 5 environments.',
+            tech: ['UE5', 'BLUEPRINT', 'C++'],
+            gradient: 'from-violet-500 via-purple-700 to-pink-500',
+            number: '002',
+        },
+        {
+            name: 'VR SPACE STATION',
+            status: 'PROTOTYPE',
+            description:
+                'Immersive VR environment built around zero-gravity interaction, spatial navigation and tactile futuristic interfaces.',
+            tech: ['UNITY XR', 'OCULUS SDK', 'C#'],
+            gradient: 'from-blue-500 via-cyan-500 to-emerald-400',
+            number: '003',
+        },
+    ];
 
-                            {/* Glitch Overlay for Logo */}
-                            {glitchActive && (
-                                <div className="absolute inset-0 text-red-500 font-black text-4xl tracking-tighter opacity-50 translate-x-[2px] pointer-events-none mix-blend-screen">
-                                    CYBER<br />PUNK
-                                </div>
-                            )}
-                        </div>
+    function createArtifacts(count = 12) {
+        return Array.from({ length: count }, (_, index) => ({
+            id: index,
+            left: (index * 37 + 11) % 100,
+            top: (index * 61 + 19) % 100,
+            width: 1 + (index % 3) * 0.5,
+            height: 8 + ((index * 13) % 23),
+            delay: ((index * 7) % 60) / 10,
+            duration: 3 + (index % 4),
+        }));
+    }
 
-                        {/* Navigation */}
-                        <nav className="space-y-3">
-                            {menuItems.map((item) => {
-                                const isActive = activeMenu === item.id;
-                                const isExit = item.id === 'exit';
 
-                                if (isExit) {
-                                    return (
-                                        <Link key={item.id} href="/" className="block mt-8">
-                                            <motion.div
-                                                whileHover={{ scale: 1.02, x: 5 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                className="relative overflow-hidden group border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 p-4 cursor-pointer transition-all"
-                                            >
-                                                <div className="absolute inset-0 bg-red-500/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                                <div className="flex items-center justify-between relative z-10">
-                                                    <span className="text-red-400 font-bold tracking-widest group-hover:text-red-300 transition-colors">SYSTEM EXIT</span>
-                                                    <span className="text-red-500 text-xl">⏻</span>
-                                                </div>
-                                            </motion.div>
-                                        </Link>
-                                    );
-                                }
+    const artNotes = [
+        'MAKE IT FEEL PLAYABLE',
+        'LIGHT / MOTION / WEIGHT',
+        'BUILD THE FEEL FIRST',
+    ];
 
-                                return (
-                                    <motion.button
-                                        key={item.id}
-                                        onClick={() => setActiveMenu(item.id)}
-                                        className={`w-full text-left p-4 relative overflow-hidden group transition-all duration-300 ${isActive ? 'bg-cyan-900/20 border-r-4 border-cyan-400' : 'hover:bg-white/5 border-r-4 border-transparent'}`}
-                                        whileHover={{ x: 5 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        <div className="flex items-center gap-4 relative z-10">
-                                            <span className={`text-lg ${isActive ? 'text-cyan-400' : 'text-gray-500 group-hover:text-cyan-300'}`}>{item.icon}</span>
-                                            <span className={`font-bold tracking-wider ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.label}</span>
-                                        </div>
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeGlow"
-                                                className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                            />
-                                        )}
-                                    </motion.button>
-                                );
-                            })}
-                        </nav>
-                    </div>
+    function CursorGlow() {
+        const [cursor, setCursor] = useState({ x: 50, y: 50 });
 
-                    {/* Footer Status */}
-                    <div className="mt-auto p-6 border-t border-white/10 bg-black/60">
-                        <div className="flex items-center justify-between text-xs font-mono text-gray-500">
-                            <span className="flex items-center gap-2">
-                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-                                ONLINE
-                            </span>
-                            <span>V.2.0.77</span>
-                        </div>
-                    </div>
-                </aside>
+        useEffect(() => {
+            let frame: number | null = null;
+            let clientX = 0;
+            let clientY = 0;
 
-                {/* Main Content Area */}
-                <main className="flex-1 relative flex flex-col overflow-hidden bg-gradient-to-br from-gray-900/50 to-black/50">
-                    {/* Header */}
-                    <header className="h-20 border-b border-white/10 bg-black/40 backdrop-blur-md flex items-center justify-between px-8 relative z-20">
-                        <div className="flex items-center gap-6">
-                            <div className="hidden md:block">
-                                <div className="text-xs text-cyan-500 tracking-widest mb-1">OPERATOR</div>
-                                <div className="text-white font-bold tracking-wider">MUHAMMAD BASIL C.P</div>
-                            </div>
-                            <div className="h-8 w-[1px] bg-white/20 hidden md:block" />
-                            <div className="px-3 py-1 rounded border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs font-bold tracking-widest">
-                                GAME DEV
-                            </div>
-                        </div>
+            const move = (event: MouseEvent) => {
+                clientX = event.clientX;
+                clientY = event.clientY;
 
-                        <div className="flex items-center gap-4">
-                            <div className="text-right hidden sm:block">
-                                <div className="text-xs text-gray-500 tracking-widest mb-1">LOCAL TIME</div>
-                                <div className="text-white font-mono">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                            </div>
-                        </div>
-                    </header>
+                if (frame !== null) return;
 
-                    {/* Content Container */}
-                    <div className="flex-1 overflow-y-auto p-4 md:p-12 scroll-smooth relative">
-                        {/* Content Background Decoration */}
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl pointer-events-none" />
+                frame = window.requestAnimationFrame(() => {
+                    frame = null;
+                    setCursor({
+                        x: (clientX / window.innerWidth) * 100,
+                        y: (clientY / window.innerHeight) * 100,
+                    });
+                });
+            };
 
-                        <AnimatePresence mode="wait">
+            window.addEventListener('mousemove', move);
+            return () => {
+                window.removeEventListener('mousemove', move);
+                if (frame !== null) window.cancelAnimationFrame(frame);
+            };
+        }, []);
+
+        return (
+            <div
+                className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-700"
+                style={{
+                    background: `
+                        radial-gradient(circle 620px at ${cursor.x}% ${cursor.y}%,
+                            rgba(0,229,255,0.11),
+                            transparent 62%),
+                        radial-gradient(circle 520px at 78% 18%,
+                            rgba(255,32,128,0.08),
+                            transparent 65%),
+                        radial-gradient(circle 700px at 18% 88%,
+                            rgba(250,204,21,0.055),
+                            transparent 68%)
+                    `,
+                }}
+            />
+        );
+    }
+
+    export default function GameDevPage() {
+        const [activeMenu, setActiveMenu] = useState<MenuId>('profile');
+        const [glitchActive, setGlitchActive] = useState(false);
+        const [clock, setClock] = useState('');
+        const [booted, setBooted] = useState(false);
+        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+        const shouldReduceMotion = useReducedMotion();
+
+        const artifacts = useMemo(() => createArtifacts(), []);
+
+        useEffect(() => {
+            const timer = window.setTimeout(() => setBooted(true), 450);
+
+            const updateClock = () => {
+                setClock(
+                    new Intl.DateTimeFormat(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    }).format(new Date())
+                );
+            };
+
+            updateClock();
+            const clockTimer = window.setInterval(updateClock, 1000);
+
+            return () => {
+                window.clearTimeout(timer);
+                window.clearInterval(clockTimer);
+            };
+        }, []);
+
+        useEffect(() => {
+            if (shouldReduceMotion) return;
+
+            const glitchTimer = window.setInterval(() => {
+                if (Math.random() > 0.7) {
+                    setGlitchActive(true);
+                    window.setTimeout(() => setGlitchActive(false), 110);
+                }
+            }, 2800);
+
+            return () => window.clearInterval(glitchTimer);
+        }, [shouldReduceMotion]);
+
+        const selectMenu = (id: MenuId) => {
+            setActiveMenu(id);
+            setMobileMenuOpen(false);
+        };
+
+        return (
+            <div className={`game-dev-page cyberpunk-font min-h-screen overflow-hidden bg-[#050608] text-white ${booted ? 'boot-complete' : 'booting'}`}>
+                {/* =========================================================
+                    ATMOSPHERE
+                ========================================================= */}
+
+                <div className="pointer-events-none fixed inset-0 z-0 bg-[#070708]" />
+
+                {/* A moving pool of light gives the page the feeling of a physical space,
+                    not a flat software canvas. */}
+                <CursorGlow />
+
+                {/* Editorial registration marks */}
+                <div className="pointer-events-none fixed inset-0 z-0">
+                    <div className="absolute left-[6vw] top-0 h-full w-px bg-white/[0.055]" />
+                    <div className="absolute right-[6vw] top-0 h-full w-px bg-white/[0.055]" />
+                    <div className="absolute left-[6vw] top-[20vh] h-px w-[88vw] bg-white/[0.035]" />
+                    <div className="absolute left-[6vw] bottom-[11vh] h-px w-[88vw] bg-white/[0.035]" />
+                </div>
+
+                {/* Grain + scan texture */}
+                <div className="pointer-events-none fixed inset-0 z-[2] opacity-[0.075] mix-blend-screen [background-image:radial-gradient(rgba(255,255,255,.8)_0.55px,transparent_.55px)] [background-size:5px_5px]" />
+                <div className="pointer-events-none fixed inset-0 z-[2] opacity-[0.035] [background-image:repeating-linear-gradient(0deg,transparent_0px,transparent_3px,rgba(255,255,255,.7)_4px)]" />
+
+                {/* Oversized ghost type: an art-direction layer rather than decoration. */}
+                <div className="pointer-events-none fixed -right-20 top-[28vh] z-0 select-none font-black text-[17vw] leading-none tracking-[-0.1em] text-white/[0.018]">
+                    PLAY
+                </div>
+
+                {!shouldReduceMotion && (
+                    <div className="pointer-events-none fixed inset-0 z-0">
+                        {artifacts.map((artifact) => (
                             <motion.div
-                                key={activeMenu}
-                                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
-                                className="max-w-5xl mx-auto relative z-10"
-                            >
-                                {renderContent()}
-                            </motion.div>
-                        </AnimatePresence>
+                                key={artifact.id}
+                                className="absolute bg-cyan-300/20"
+                                style={{
+                                    left: `${artifact.left}%`,
+                                    top: `${artifact.top}%`,
+                                    width: artifact.width,
+                                    height: artifact.height,
+                                }}
+                                animate={{ y: [0, -80, 0], opacity: [0, 0.4, 0] }}
+                                transition={{
+                                    duration: artifact.duration,
+                                    delay: artifact.delay,
+                                    repeat: Infinity,
+                                    ease: 'linear',
+                                }}
+                            />
+                        ))}
                     </div>
-                </main>
-            </div>
-
-            {/* Global Glitch Overlay */}
-            <AnimatePresence>
-                {glitchActive && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-white/5 mix-blend-overlay z-[100] pointer-events-none"
-                    >
-                        <div className="absolute inset-0 bg-red-500/10 mix-blend-color-burn" />
-                    </motion.div>
                 )}
-            </AnimatePresence>
 
-            <style jsx global>{`
-                @keyframes scanline {
-                    0% { top: 0%; opacity: 0; }
-                    10% { opacity: 1; }
-                    90% { opacity: 1; }
-                    100% { top: 100%; opacity: 0; }
-                }
-                .animate-scanline {
-                    animation: scanline 4s linear infinite;
-                }
-            `}</style>
-        </div>
-    );
-}
+                {/* =========================================================
+                    TOP SYSTEM STRIP
+                ========================================================= */}
 
-/* ---------- Subcomponents ---------- */
+                <div className="relative z-50 flex h-7 items-center justify-between border-b border-cyan-400/20 bg-black/80 px-4 font-mono text-[9px] tracking-[0.25em] text-cyan-400/60 sm:px-8">
+                    <div className="flex items-center gap-3">
+                        <span className="hidden sm:inline">NIGHT_CITY // DEV_NODE_07</span>
+                        <span className="sm:hidden">DEV_NODE_07</span>
+                        <span className="text-white/20">///</span>
+                        <span className="text-yellow-400/70">SECURE</span>
+                    </div>
 
-function ProfileContent({ flicker = false }: { flicker?: boolean }) {
-    return (
-        <div className="space-y-8">
-            <div className={`relative p-8 border border-cyan-500/30 bg-black/60 backdrop-blur-md overflow-hidden group transition-all duration-300 ${flicker ? 'opacity-80 translate-x-1' : ''}`}>
-                <div className="absolute top-0 left-0 w-2 h-full bg-cyan-500/50" />
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-cyan-500 to-transparent opacity-50" />
+                    <div className="flex items-center gap-3">
+                        <span className="hidden sm:inline">SYS.STATUS</span>
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400 shadow-[0_0_8px_#4ade80]" />
+                        <span>ONLINE</span>
+                    </div>
+                </div>
 
-                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
-                    <span className="text-cyan-400 text-5xl">01</span>
-                    PROFILE_DATA
-                </h2>
+                {/* =========================================================
+                    MAIN SHELL
+                ========================================================= */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    {profileStats.map((stat, i) => (
+                <div id="main-content" className="relative z-10 flex min-h-[calc(100vh-28px)] flex-col lg:flex-row">
+                    {/* =====================================================
+                        SIDEBAR
+                    ===================================================== */}
+
+                    <aside className="relative shrink-0 border-b border-cyan-400/20 bg-[#07090c]/90 backdrop-blur-xl lg:min-h-[calc(100vh-28px)] lg:w-[310px] lg:border-b-0 lg:border-r">
+                        <div className="absolute right-0 top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-cyan-400/50 to-transparent lg:block" />
+
+                        <div className="p-5 sm:p-7 lg:p-8">
+                            {/* Brand */}
+                            <div className="relative mb-6 sm:mb-10">
+                                <div className="mb-5 flex items-center justify-between font-mono text-[8px] tracking-[0.32em] text-white/25">
+                                    <span>MUHAMMAD BASIL / 2026</span>
+                                    <span>01—04</span>
+                                </div>
+
+                                <div className="relative overflow-visible">
+                                    <div className="absolute -left-3 top-1 h-28 w-[3px] bg-yellow-400" />
+
+                                    <div className="mb-3 pl-3 font-mono text-[8px] tracking-[0.4em] text-cyan-300/60">
+                                        GAME DEVELOPER / DIGITAL WORLDS
+                                    </div>
+
+                                    <h1 className="relative pl-3 text-[48px] font-black uppercase leading-[0.76] tracking-[-0.09em] text-white sm:text-[58px]">
+                                        MAKE
+                                        <br />
+                                        <span className="relative inline-block text-yellow-400">
+                                            WORLDS
+                                            <span className="absolute -bottom-1 left-0 h-[5px] w-[70%] -skew-x-12 bg-pink-500" />
+                                        </span>
+                                    </h1>
+
+                                    <p className="mt-5 max-w-[205px] pl-3 font-mono text-[9px] uppercase leading-5 tracking-[0.18em] text-white/35">
+                                        Games are spaces people remember. I build the systems that make those spaces feel alive.
+                                    </p>
+
+                                    {glitchActive && (
+                                        <div className="pointer-events-none absolute -left-1 top-8 translate-x-[4px] select-none text-[48px] font-black leading-[0.76] tracking-[-0.09em] text-cyan-400/35 sm:text-[58px]">
+                                            MAKE
+                                            <br />
+                                            WORLDS
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Mobile menu */}
+                            <button
+                                type="button"
+                                onClick={() => setMobileMenuOpen((value) => !value)}
+                                aria-expanded={mobileMenuOpen}
+                                className="mb-3 flex w-full items-center justify-between border border-cyan-400/20 bg-cyan-400/[0.03] px-4 py-3 font-mono text-[10px] tracking-[0.25em] text-cyan-300 lg:hidden"
+                            >
+                                <span>NAVIGATION // {activeMenu.toUpperCase()}</span>
+                                <span>{mobileMenuOpen ? '▲' : '▼'}</span>
+                            </button>
+
+                            {/* Navigation */}
+                            <nav
+                                className={`${mobileMenuOpen ? 'block' : 'hidden'} space-y-1 lg:block`}
+                                aria-label="Main navigation"
+                            >
+                                <div className="mb-3 hidden font-mono text-[8px] uppercase tracking-[0.35em] text-white/20 lg:block">
+                                    Turn the page →
+                                </div>
+
+                                {menuItems.map((item) => {
+                                    const active = activeMenu === item.id;
+                                    const animationProps = shouldReduceMotion ? {} : { whileHover: { x: 5 }, whileTap: { scale: 0.985 } };
+
+                                    return (
+                                        <motion.button
+                                            key={item.id}
+                                            type="button"
+                                            onClick={() => selectMenu(item.id)}
+                                            {...animationProps}
+                                            className={`group relative flex w-full items-center overflow-hidden border-l-2 px-3 py-4 text-left transition-all ${
+                                                active
+                                                    ? 'border-yellow-400 bg-yellow-400/[0.07]'
+                                                    : 'border-transparent hover:border-cyan-400/50 hover:bg-white/[0.025]'
+                                            }`}
+                                            aria-current={active ? 'page' : undefined}
+                                        >
+                                            {active && (
+                                                <motion.div
+                                                    layoutId="nav-line"
+                                                    className="absolute right-0 top-0 h-full w-px bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]"
+                                                />
+                                            )}
+
+                                            <span
+                                                className={`mr-4 font-mono text-[10px] ${
+                                                    active ? 'text-yellow-400' : 'text-white/25'
+                                                }`}
+                                            >
+                                                {item.code}
+                                            </span>
+
+                                            <span
+                                                className={`mr-3 text-base ${
+                                                    active ? 'text-cyan-300' : 'text-white/30 group-hover:text-cyan-300'
+                                                }`}
+                                            >
+                                                {item.icon}
+                                            </span>
+
+                                            <span
+                                                className={`font-mono text-xs font-bold tracking-[0.22em] ${
+                                                    active ? 'text-white' : 'text-white/45 group-hover:text-white'
+                                                }`}
+                                            >
+                                                {item.label}
+                                            </span>
+
+                                            <span className="ml-auto font-mono text-[8px] text-white/15">
+                                                {active ? 'ACTIVE' : 'OPEN'}
+                                            </span>
+                                        </motion.button>
+                                    );
+                                })}
+
+                                <div className="my-5 h-px bg-white/[0.06]" />
+
+                                <Link href="/" className="group block">
+                                    <div className="relative flex items-center border border-red-500/20 bg-red-500/[0.025] px-4 py-4 transition-all hover:border-red-500/50 hover:bg-red-500/[0.06]">
+                                        <span className="mr-4 font-mono text-[10px] text-red-500/40">XX</span>
+                                        <span className="font-mono text-xs font-bold tracking-[0.2em] text-red-400">
+                                            SYSTEM EXIT
+                                        </span>
+                                        <span className="ml-auto text-red-500">⏻</span>
+                                    </div>
+                                </Link>
+                            </nav>
+                        </div>
+
+                        {/* Sidebar technical footer */}
+                        <div className="border-t border-white/[0.07] bg-black/40 p-5 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
+                            <div className="mb-3 flex items-center justify-between font-mono text-[8px] tracking-[0.25em] text-white/25">
+                                <span>CONNECTION</span>
+                                <span>100%</span>
+                            </div>
+
+                            <div className="mb-4 flex gap-[2px]">
+                                {Array.from({ length: 18 }).map((_, index) => (
+                                    <span
+                                        key={index}
+                                        className={`h-1 flex-1 ${
+                                            index < 16 ? 'bg-cyan-400/50' : 'bg-white/10'
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+
+                            <div className="flex items-center justify-between font-mono text-[9px] text-white/30">
+                                <span>BUILD 2.0.77</span>
+                                <span>© 2026</span>
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* =====================================================
+                        CONTENT
+                    ===================================================== */}
+
+                    <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+                        {/* Header */}
+                        <header className="relative z-20 flex min-h-[82px] shrink-0 items-center justify-between border-b border-white/[0.08] bg-black/40 px-5 backdrop-blur-md sm:px-8">
+                            <div className="min-w-0">
+                                <div className="mb-1 font-mono text-[8px] tracking-[0.4em] text-cyan-400/50">
+                                    OPERATOR_ID
+                                </div>
+                                <div className="truncate font-mono text-sm font-bold tracking-[0.12em] text-white sm:text-base">
+                                    MUHAMMAD BASIL C.P
+                                </div>
+                            </div>
+
+                            <div className="hidden items-center gap-4 sm:flex">
+                                <div className="text-right font-mono">
+                                    <div className="text-[8px] tracking-[0.3em] text-white/25">LOCAL_TIME</div>
+                                    <div className="text-xs text-cyan-300">{clock || '--:--:--'}</div>
+                                </div>
+
+                                <div className="h-8 w-px bg-white/10" />
+
+                                <div className="border border-yellow-400/30 bg-yellow-400/[0.05] px-3 py-2 font-mono text-[9px] font-bold tracking-[0.25em] text-yellow-400">
+                                    GAME_DEV
+                                </div>
+                            </div>
+                        </header>
+
+                        {/* Content viewport */}
+                        <div className="relative flex-1 overflow-y-auto">
+                            {/* Architectural decoration */}
+                            <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 border-l border-b border-cyan-400/[0.08]" />
+                            <div className="pointer-events-none absolute right-8 top-8 hidden font-mono text-[8px] tracking-[0.35em] text-cyan-400/20 md:block">
+                                10.24.77 // SECURE
+                            </div>
+
+                            <div className="pointer-events-none absolute bottom-8 left-8 hidden font-mono text-[8px] tracking-[0.35em] text-white/15 md:block">
+                                NODE_07 / CREATIVE_DIVISION
+                            </div>
+
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeMenu}
+                                    initial={
+                                        shouldReduceMotion
+                                            ? { opacity: 0 }
+                                            : { opacity: 0, y: 20, filter: 'blur(7px)' }
+                                    }
+                                    animate={
+                                        shouldReduceMotion
+                                            ? { opacity: 1 }
+                                            : { opacity: 1, y: 0, filter: 'blur(0px)' }
+                                    }
+                                    exit={
+                                        shouldReduceMotion
+                                            ? { opacity: 0 }
+                                            : { opacity: 0, y: -15, filter: 'blur(7px)' }
+                                    }
+                                    transition={{ duration: 0.35 }}
+                                    className="mx-auto max-w-7xl p-5 sm:p-8 lg:p-12"
+                                >
+                                    {activeMenu === 'profile' && <ProfileContent />}
+                                    {activeMenu === 'skills' && <SkillsContent />}
+                                    {activeMenu === 'projects' && <ProjectsContent />}
+                                    {activeMenu === 'contact' && <ContactContent />}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    </main>
+                </div>
+
+                {/* Glitch layer */}
+                <AnimatePresence>
+                    {glitchActive && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="pointer-events-none fixed inset-0 z-[100] overflow-hidden"
+                        >
+                            <div className="absolute left-0 top-[42%] h-2 w-full bg-red-500/20 mix-blend-screen" />
+                            <div className="absolute left-0 top-[58%] h-px w-full bg-cyan-400/40 mix-blend-screen" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        );
+    }
+
+    /* ================================================================
+    PROFILE
+    ================================================================ */
+
+    function ProfileContent() {
+        return (
+            <section aria-labelledby="profile-title">
+                <PageIntro
+                    number="01"
+                    eyebrow="IDENTITY / PLAYER DATA"
+                    title="PROFILE_DATA"
+                    description="A developer interface built around the idea that a portfolio should feel like an artifact from the world it represents."
+                    accent="yellow"
+                />
+
+                {/* Hero panel */}
+                <div className="relative mt-8 overflow-hidden border border-white/[0.09] bg-[#0b0b0c]">
+                    <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full border border-cyan-300/10" />
+                    <div className="absolute -right-10 -top-14 h-52 w-52 rounded-full border border-pink-400/10" />
+                    <div className="absolute left-0 top-0 h-full w-[5px] bg-yellow-400" />
+
+                    <div className="relative grid lg:grid-cols-[1.2fr_0.8fr]">
+                        <div className="p-6 sm:p-8 lg:p-10">
+                            <div className="mb-6 flex items-center gap-3 font-mono text-[9px] tracking-[0.35em] text-cyan-400/50">
+                                <span className="h-px w-8 bg-cyan-400/40" />
+                                BIO_LOG // 2077
+                            </div>
+
+                            <div className="relative">
+                                <div className="absolute -left-2 top-1 text-[70px] font-black leading-none text-white/[0.025] sm:text-[110px]">
+                                    02
+                                </div>
+
+                                <h3 className="relative max-w-3xl text-4xl font-black uppercase leading-[0.88] tracking-[-0.065em] text-white sm:text-6xl">
+                                    I LIKE
+                                    <br />
+                                    <span className="text-cyan-300">SYSTEMS</span>
+                                    <br />
+                                    WITH A
+                                    <br />
+                                    <span className="text-yellow-400">SOUL.</span>
+                                </h3>
+                            </div>
+
+                            <p className="mt-8 max-w-2xl text-[15px] leading-7 text-white/45 sm:text-base">
+                                I am interested in the tiny things that make a game feel physical:
+                                the weight of a movement, the timing of a sound, the colour of a room,
+                                the strange little interaction a player remembers hours later.
+                            </p>
+
+                            <div className="mt-7 border-l-2 border-pink-500/60 pl-4 font-mono text-[9px] uppercase leading-5 tracking-[0.16em] text-pink-300/45">
+                                Design instinct // technical curiosity // obsessive iteration
+                            </div>
+
+                            <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-3 max-w-md">
+                                {artNotes.map((note, index) => (
+                                    <div
+                                        key={note}
+                                        className={`font-mono text-[8px] uppercase tracking-[0.13em] ${
+                                            index === 1 ? 'rotate-[-2deg] text-yellow-400/45' : 'text-white/30'
+                                        }`}
+                                    >
+                                        <span className="mr-2 text-cyan-400/50">0{index + 1}</span>
+                                        {note}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Diagnostic panel */}
+                        <div className="border-t border-white/[0.07] bg-black/20 p-6 lg:border-l lg:border-t-0">
+                            <div className="mb-6 font-mono text-[9px] tracking-[0.35em] text-white/25">
+                                DIAGNOSTICS
+                            </div>
+
+                            <Diagnostic label="CREATIVE" value="92%" />
+                            <Diagnostic label="SYSTEMS" value="87%" />
+                            <Diagnostic label="3D_PIPELINE" value="90%" />
+                            <Diagnostic label="PROBLEM_SOLVING" value="94%" />
+
+                            <div className="mt-8 border-t border-white/[0.06] pt-5 font-mono text-[9px] leading-5 text-white/25">
+                                <div>NODE: ACTIVE</div>
+                                <div>MODE: BUILD</div>
+                                <div>ACCESS: PUBLIC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Stats */}
+                <div className="mt-5 grid grid-cols-1 gap-px bg-white/[0.07] sm:grid-cols-3">
+                    {profileStats.map((stat, index) => (
                         <motion.div
                             key={stat.label}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className={`border border-white/10 bg-white/5 p-6 relative overflow-hidden group hover:border-white/30 transition-colors`}
+                            transition={{ delay: index * 0.08 }}
+                            className="relative bg-[#080b0e] p-6 sm:p-7"
                         >
-                            <div className={`absolute inset-0 bg-gradient-to-br ${stat.colorClass.replace('text-', 'from-')}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
-                            <div className="text-xs text-gray-400 mb-2 tracking-widest">{stat.label}</div>
-                            <div className={`text-3xl font-black ${stat.colorClass} drop-shadow-lg`}>{stat.value}</div>
+                            <div
+                                className={`absolute left-0 top-0 h-px w-12 ${
+                                    stat.accent === 'yellow'
+                                        ? 'bg-yellow-400'
+                                        : stat.accent === 'pink'
+                                        ? 'bg-pink-400'
+                                        : 'bg-cyan-400'
+                                }`}
+                            />
+
+                            <div className="mb-2 font-mono text-[9px] tracking-[0.25em] text-white/30">
+                                {stat.sub}
+                            </div>
+
+                            <div className="font-mono text-[9px] tracking-[0.2em] text-white/45">
+                                {stat.label}
+                            </div>
+
+                            <div
+                                className={`mt-2 text-2xl font-black tracking-tight sm:text-3xl ${
+                                    stat.accent === 'yellow'
+                                        ? 'text-yellow-400'
+                                        : stat.accent === 'pink'
+                                        ? 'text-pink-400'
+                                        : 'text-cyan-400'
+                                }`}
+                            >
+                                {stat.value}
+                            </div>
                         </motion.div>
                     ))}
                 </div>
+            </section>
+        );
+    }
 
-                <div className="border-t border-white/10 pt-8">
-                    <h3 className="text-xl text-yellow-400 font-bold mb-4 tracking-widest">BIO_LOG</h3>
-                    <p className="text-gray-300 leading-relaxed text-lg font-light max-w-3xl">
-                        Experienced game developer specializing in <span className="text-cyan-400 font-medium">immersive 3D experiences</span> and cutting-edge interactive technologies. Passionate about creating worlds that blur the line between reality and digital dreams.
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-}
+    /* ================================================================
+    SKILLS
+    ================================================================ */
 
-function SkillsContent() {
-    return (
-        <div className="space-y-8">
-            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8 relative">
-                <div className="absolute top-0 right-0 p-2">
-                    <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-cyan-500 rounded-full" />
-                        <div className="w-2 h-2 bg-pink-500 rounded-full" />
-                        <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                    </div>
-                </div>
+    function SkillsContent() {
+        return (
+            <section aria-labelledby="skills-title">
+                <PageIntro
+                    number="02"
+                    eyebrow="CAPABILITIES / LOADOUT"
+                    title="SKILL_MATRIX"
+                    description="The tools and systems currently loaded into the development stack."
+                    accent="cyan"
+                />
 
-                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
-                    <span className="text-pink-500 text-5xl">02</span>
-                    SKILL_MATRIX
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {skillsData.map((skill, idx) => (
+                <div className="mt-8 grid gap-px bg-white/[0.07] md:grid-cols-2">
+                    {skillsData.map((skill, index) => (
                         <motion.div
                             key={skill.name}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.05 }}
-                            className="bg-white/5 border border-white/10 p-5 hover:border-cyan-500/50 transition-colors group"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.06 }}
+                            className="group relative overflow-hidden bg-[#080b0e] p-6 sm:p-7"
                         >
-                            <div className="flex justify-between items-center mb-3">
-                                <span className="text-white font-bold tracking-wide">{skill.name}</span>
-                                <span className="text-xs border border-white/20 px-2 py-1 rounded text-gray-400 group-hover:text-white group-hover:border-white/40 transition-all">{skill.category}</span>
+                            <div className="absolute right-0 top-0 h-16 w-16 border-l border-b border-white/[0.06]" />
+
+                            <div className="mb-5 flex items-start justify-between gap-4">
+                                <div>
+                                    <div className="mb-1 font-mono text-[9px] tracking-[0.3em] text-white/25">
+                                        MODULE_{String(index + 1).padStart(2, '0')}
+                                    </div>
+                                    <h3 className="font-mono text-sm font-bold tracking-[0.15em] text-white sm:text-base">
+                                        {skill.name}
+                                    </h3>
+                                </div>
+
+                                <span className="border border-white/10 px-2 py-1 font-mono text-[8px] tracking-[0.15em] text-white/30">
+                                    {skill.category}
+                                </span>
                             </div>
 
-                            <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="relative h-3 border border-white/10 bg-black">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${skill.level}%` }}
-                                    transition={{ duration: 1, delay: 0.5 + idx * 0.1, ease: "easeOut" }}
-                                    className={`absolute top-0 left-0 h-full bg-gradient-to-r ${skill.color}`}
+                                    transition={{ duration: 1, delay: 0.2 + index * 0.08 }}
+                                    className={`absolute left-0 top-0 h-full bg-gradient-to-r ${skill.color}`}
                                 />
+
+                                <div className="absolute inset-0 flex justify-between px-1">
+                                    {Array.from({ length: 10 }).map((_, tick) => (
+                                        <span key={tick} className="h-full w-px bg-black/40" />
+                                    ))}
+                                </div>
                             </div>
-                            <div className="text-right mt-1">
-                                <span className="text-xs font-mono text-gray-400">{skill.level}% SYNCHRONIZATION</span>
+
+                            <div className="mt-3 flex items-end justify-between">
+                                <div className="font-mono text-[8px] tracking-[0.25em] text-white/20">
+                                    SYNCHRONIZATION
+                                </div>
+                                <div className="font-mono text-sm font-bold text-cyan-300">
+                                    {skill.level}%
+                                </div>
                             </div>
                         </motion.div>
                     ))}
                 </div>
-            </div>
-        </div>
-    );
-}
 
-function ProjectsContent() {
-    return (
-        <div className="space-y-8">
-            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8">
-                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
-                    <span className="text-yellow-400 text-5xl">03</span>
-                    PROJECT_DB
-                </h2>
+                <div className="mt-5 border border-yellow-400/20 bg-yellow-400/[0.025] p-5 font-mono text-[9px] leading-6 tracking-[0.12em] text-yellow-400/50">
+                    <span className="text-yellow-400">SYSTEM_NOTE //</span> Skill values represent
+                    current confidence and practical familiarity, not a claim of absolute mastery.
+                </div>
+            </section>
+        );
+    }
 
-                <div className="grid gap-8">
-                    {projectsData.map((project, i) => (
-                        <motion.div
+    /* ================================================================
+    PROJECTS
+    ================================================================ */
+
+    function ProjectsContent() {
+        return (
+            <section aria-labelledby="projects-title">
+                <PageIntro
+                    number="03"
+                    eyebrow="ARCHIVE / SELECTED BUILDS"
+                    title="PROJECT_DB"
+                    description="A selection of game development experiments, prototypes and worlds."
+                    accent="pink"
+                />
+
+                <div className="mt-8 space-y-5">
+                    {projectsData.map((project, index) => (
+                        <motion.article
                             key={project.name}
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="group relative border border-white/10 bg-black/40 p-6 hover:border-cyan-500/50 transition-all overflow-hidden"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.08 }}
+                            className="group relative overflow-hidden border border-white/10 bg-[#080b0e]"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            {/* Project visual */}
+                            <div className="grid lg:grid-cols-[280px_1fr]">
+                                <div
+                                    className={`relative min-h-[245px] overflow-hidden bg-gradient-to-br ${project.gradient}`}
+                                >
+                                    <div className="absolute inset-0 bg-black/50" />
+                                    <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.16)_47%,transparent_48%)]" />
+                                    <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full border-[30px] border-white/[0.08]" />
+                                    <div className="absolute right-[-60px] top-[-60px] h-56 w-56 rotate-12 border border-white/20" />
+                                    <div className="absolute right-5 top-8 h-20 w-20 border-r border-t border-white/30" />
 
-                            <div className="flex flex-col md:flex-row gap-6 relative z-10">
-                                <div className="w-full md:w-48 h-32 rounded bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center overflow-hidden border border-white/10 group-hover:border-cyan-500/30 transition-colors">
-                                    <div className="text-4xl opacity-20 group-hover:opacity-40 transition-opacity">🎮</div>
-                                </div>
-
-                                <div className="flex-1">
-                                    <div className="flex flex-wrap justify-between items-start mb-3 gap-2">
-                                        <h3 className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">{project.name}</h3>
-                                        <span className={`text-xs px-3 py-1 border rounded-full font-bold ${project.status === 'COMPLETED' ? 'border-green-500/50 text-green-400 bg-green-500/10' :
-                                            project.status === 'IN DEVELOPMENT' ? 'border-yellow-500/50 text-yellow-400 bg-yellow-500/10' :
-                                                'border-blue-500/50 text-blue-400 bg-blue-500/10'
-                                            }`}>
-                                            {project.status}
-                                        </span>
+                                    <div className="absolute left-6 top-6 font-mono text-[8px] tracking-[0.35em] text-white/60">
+                                        FIELD NOTE / {project.number}
                                     </div>
 
-                                    <p className="text-gray-400 mb-4 leading-relaxed">{project.description}</p>
+                                    <div className="absolute bottom-6 left-6 max-w-[85%]">
+                                        <div className="mb-1 font-mono text-[8px] uppercase tracking-[0.35em] text-white/45">
+                                            A SMALL WORLD IN PROGRESS
+                                        </div>
+                                        <div className="text-5xl font-black uppercase leading-[0.8] tracking-[-0.08em] text-white sm:text-6xl">
+                                            {project.name.split(' ')[0]}
+                                        </div>
+                                    </div>
 
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.tech.map((t, idx) => (
-                                            <span key={idx} className="text-xs border border-white/10 bg-white/5 px-2 py-1 text-gray-300 group-hover:border-pink-500/30 group-hover:text-pink-400 transition-colors">
-                                                {t}
+                                    <div className="absolute bottom-5 right-5 rotate-90 font-mono text-[8px] tracking-[0.3em] text-white/40">
+                                        2026 / BUILD
+                                    </div>
+                                </div>
+
+                                {/* Project data */}
+                                <div className="relative p-6 sm:p-8 lg:p-10">
+                                    <div className="absolute right-0 top-0 h-14 w-14 border-l border-b border-white/[0.06]" />
+
+                                    <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                            <div className="mb-1 font-mono text-[8px] tracking-[0.35em] text-cyan-400/40">
+                                                ARCHIVE ENTRY // {project.number}
+                                            </div>
+                                            <h3 className="text-2xl font-black tracking-[-0.03em] text-white transition-colors group-hover:text-cyan-300 sm:text-3xl">
+                                                {project.name}
+                                            </h3>
+                                        </div>
+
+                                        <StatusBadge status={project.status} />
+                                    </div>
+
+                                    <p className="max-w-3xl text-sm leading-7 text-white/45">
+                                        {project.description}
+                                    </p>
+
+                                    <div className="mt-6 flex flex-wrap gap-2">
+                                        {project.tech.map((technology) => (
+                                            <span
+                                                key={technology}
+                                                className="border border-cyan-400/15 bg-cyan-400/[0.025] px-3 py-1.5 font-mono text-[9px] tracking-[0.15em] text-cyan-300/60 transition-colors group-hover:border-cyan-400/30 group-hover:text-cyan-300"
+                                            >
+                                                {technology}
                                             </span>
                                         ))}
                                     </div>
+
+                                    <div className="mt-7 flex items-center gap-3 font-mono text-[8px] tracking-[0.25em] text-white/20">
+                                        <span className="h-px w-10 bg-white/10" />
+                                        SYSTEM ARCHIVED
+                                    </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </motion.article>
                     ))}
                 </div>
-            </div>
-        </div>
-    );
-}
+            </section>
+        );
+    }
 
-function ContactContent() {
-    return (
-        <div className="space-y-8">
-            <div className="border border-cyan-500/30 bg-black/60 backdrop-blur-md p-8">
-                <h2 className="text-4xl font-black text-white mb-8 tracking-tighter flex items-center gap-4">
-                    <span className="text-green-500 text-5xl">04</span>
-                    COMMS_LINK
-                </h2>
+    /* ================================================================
+    CONTACT
+    ================================================================ */
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {[
-                        { title: 'EMAIL', value: 'muhammadbasil@example.com', href: 'mailto:muhammadbasil@example.com', color: 'text-cyan-400', border: 'hover:border-cyan-500' },
-                        { title: 'LINKEDIN', value: 'Connect Network', href: 'https://www.linkedin.com/in/muhammed-basil-cp-cse007', color: 'text-blue-400', border: 'hover:border-blue-500' },
-                        { title: 'GITHUB', value: 'Source Codes', href: 'https://github.com/muhammadbasil', color: 'text-purple-400', border: 'hover:border-purple-500' }
-                    ].map((item, i) => (
+    function ContactContent() {
+        const contacts = [
+            {
+                title: 'EMAIL',
+                value: SITE_EMAIL,
+                href: `mailto:${SITE_EMAIL}`,
+                accent: 'cyan',
+                code: 'MAIL_01',
+            },
+            {
+                title: 'LINKEDIN',
+                value: 'Connect Network',
+                href: LINKEDIN_URL,
+                accent: 'blue',
+                code: 'NET_02',
+            },
+            {
+                title: 'GITHUB',
+                value: 'Source Codes',
+                href: GITHUB_URL,
+                accent: 'pink',
+                code: 'SRC_03',
+            },
+        ];
+
+        return (
+            <section aria-labelledby="contact-title">
+                <PageIntro
+                    number="04"
+                    eyebrow="COMMUNICATIONS / OPEN CHANNEL"
+                    title="COMMS_LINK"
+                    description="For collaborations, development work and interesting projects."
+                    accent="green"
+                />
+
+                <div className="relative mt-8 grid gap-4 md:grid-cols-2">
+                    {contacts.map((item, index) => (
                         <motion.a
                             key={item.title}
                             href={item.href}
-                            target={item.title === 'EMAIL' ? undefined : "_blank"}
-                            rel="noreferrer"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: i * 0.1 }}
-                            className={`border border-white/10 bg-white/5 p-8 group transition-all duration-300 ${item.border} hover:bg-white/10`}
+                            target={item.title === 'EMAIL' ? undefined : '_blank'}
+                            rel={item.title === 'EMAIL' ? undefined : 'noopener noreferrer'}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.08 }}
+                            className="group relative overflow-hidden border border-white/10 bg-[#080b0e] p-6 transition-all hover:border-cyan-400/40 sm:p-8"
                         >
-                            <div className={`text-sm tracking-widest mb-2 ${item.color} font-bold`}>{item.title}</div>
-                            <div className="text-xl text-white group-hover:translate-x-2 transition-transform">{item.value}</div>
-                            <div className="mt-4 w-8 h-[2px] bg-gray-700 group-hover:w-full group-hover:bg-white transition-all duration-500" />
+                            <div className="absolute right-0 top-0 h-20 w-20 border-l border-b border-white/[0.06]" />
+
+                            <div className="mb-7 flex items-center justify-between">
+                                <span className="font-mono text-[9px] tracking-[0.3em] text-cyan-400/40">
+                                    {item.code}
+                                </span>
+                                <span className="text-white/20 transition-colors group-hover:text-cyan-300">
+                                    ↗
+                                </span>
+                            </div>
+
+                            <div className="mb-2 font-mono text-[9px] tracking-[0.3em] text-white/30">
+                                {item.title}
+                            </div>
+
+                            <div className="break-all text-lg font-bold tracking-tight text-white transition-colors group-hover:text-cyan-300 sm:text-xl">
+                                {item.value}
+                            </div>
+
+                            <div className="mt-7 h-px w-10 bg-cyan-400/40 transition-all duration-500 group-hover:w-full" />
                         </motion.a>
                     ))}
 
-                    <div className="border border-green-500/30 bg-green-900/10 p-8 flex flex-col justify-center items-center text-center">
-                        <div className="w-4 h-4 bg-green-500 rounded-full animate-ping mb-4" />
-                        <div className="text-green-400 font-bold tracking-widest text-lg">STATUS: AVAILABLE</div>
-                        <div className="text-green-500/60 text-xs mt-2">OPEN FOR CONTRACTS</div>
+                    {/* Availability panel */}
+                    <div className="relative overflow-hidden border border-green-400/25 bg-green-400/[0.025] p-6 sm:p-8">
+                        <div className="absolute right-0 top-0 h-24 w-24 border-l border-b border-green-400/10" />
+
+                        <div className="mb-8 flex items-center justify-between">
+                            <span className="font-mono text-[9px] tracking-[0.3em] text-green-400/50">
+                                CONNECTION_STATUS
+                            </span>
+                            <span className="h-2 w-2 animate-pulse rounded-full bg-green-400 shadow-[0_0_12px_#4ade80]" />
+                        </div>
+
+                        <div className="text-2xl font-black tracking-[-0.03em] text-green-400">
+                            CHANNEL OPEN
+                        </div>
+
+                        <p className="mt-3 max-w-md font-mono text-[10px] leading-6 tracking-[0.1em] text-green-400/40">
+                            AVAILABLE FOR CONTRACTS / COLLABORATIONS / GAME DEVELOPMENT WORK
+                        </p>
+
+                        <div className="mt-8 flex gap-1">
+                            {Array.from({ length: 24 }).map((_, index) => (
+                                <span key={index} className="h-1 flex-1 bg-green-400/30" />
+                            ))}
+                        </div>
                     </div>
                 </div>
+            </section>
+        );
+    }
+
+    /* ================================================================
+    SHARED COMPONENTS
+    ================================================================ */
+
+    function PageIntro({
+        number,
+        eyebrow,
+        title,
+        description,
+        accent,
+    }: {
+        number: string;
+        eyebrow: string;
+        title: string;
+        description: string;
+        accent: 'yellow' | 'cyan' | 'pink' | 'green';
+    }) {
+        const accents = {
+            yellow: 'text-yellow-400',
+            cyan: 'text-cyan-400',
+            pink: 'text-pink-400',
+            green: 'text-green-400',
+        };
+
+        const lines = {
+            yellow: 'bg-yellow-400',
+            cyan: 'bg-cyan-400',
+            pink: 'bg-pink-400',
+            green: 'bg-green-400',
+        };
+
+        return (
+            <header className="relative">
+                <div className="mb-4 flex items-center gap-3 font-mono text-[9px] tracking-[0.35em] text-white/25">
+                    <span className={`h-px w-8 ${lines[accent]}`} />
+                    {eyebrow}
+                </div>
+
+                <div className="relative flex items-end gap-4">
+                    <span className="absolute -left-2 -top-8 select-none font-black text-[110px] leading-none tracking-[-0.1em] text-white/[0.025] sm:text-[150px]">
+                        {number}
+                    </span>
+
+                    <span className={`relative z-10 font-mono text-4xl font-black sm:text-5xl ${accents[accent]}`}>
+                        {number}
+                    </span>
+
+                    <div className="relative z-10">
+                        <h2 className="text-4xl font-black uppercase tracking-[-0.07em] text-white sm:text-7xl">
+                            {title}
+                        </h2>
+                    </div>
+                </div>
+
+                <p className="mt-5 max-w-2xl border-l border-white/10 pl-4 text-sm leading-6 text-white/35 sm:text-base">
+                    {description}
+                </p>
+            </header>
+        );
+    }
+
+    function Diagnostic({ label, value }: { label: string; value: string }) {
+        return (
+            <div className="mb-5">
+                <div className="mb-2 flex justify-between font-mono text-[8px] tracking-[0.2em]">
+                    <span className="text-white/30">{label}</span>
+                    <span className="text-cyan-400/50">{value}</span>
+                </div>
+
+                <div className="flex gap-1">
+                    {Array.from({ length: 20 }).map((_, index) => (
+                        <span
+                            key={index}
+                            className={`h-1 flex-1 ${
+                                index < Math.round(parseInt(value) / 5)
+                                    ? 'bg-cyan-400/50'
+                                    : 'bg-white/[0.05]'
+                            }`}
+                        />
+                    ))}
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
+
+    function StatusBadge({ status }: { status: Project['status'] }) {
+        const styles = {
+            COMPLETED: 'border-green-400/30 bg-green-400/[0.05] text-green-400',
+            'IN DEVELOPMENT': 'border-yellow-400/30 bg-yellow-400/[0.05] text-yellow-400',
+            PROTOTYPE: 'border-blue-400/30 bg-blue-400/[0.05] text-blue-400',
+        };
+
+        return (
+            <span
+                className={`border px-3 py-2 font-mono text-[8px] font-bold tracking-[0.15em] ${styles[status]}`}
+            >
+                {status}
+            </span>
+        );
+    }

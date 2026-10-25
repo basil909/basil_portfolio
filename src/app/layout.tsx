@@ -1,57 +1,124 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react';
+import { Inter, Orbitron, Rajdhani } from 'next/font/google';
+
+import ErrorBoundary from '../components/ErrorBoundary';
+import {
+  AUTHOR_NAME,
+  GITHUB_URL,
+  JOB_TITLE,
+  LINKEDIN_URL,
+  SITE_URL,
+} from '../config/site';
+import './globals.css';
+
+/* =========================================================
+   FONTS
+========================================================= */
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-orbitron',
+  weight: ['400', '700', '900'],
+});
+
+const rajdhani = Rajdhani({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rajdhani',
+  weight: ['400', '500', '600', '700'],
+});
+
+/* =========================================================
+   SITE CONFIGURATION
+========================================================= */
+
+const TITLE = `${AUTHOR_NAME} | ${JOB_TITLE}`;
+
+const DESCRIPTION =
+  'Computer Science student and AI/ML developer building intelligent systems, web applications, and experimental digital experiences.';
+const TWITTER_DESCRIPTION =
+  'AI/ML developer and Computer Science student building intelligent systems and digital experiences.';
+
+const TWITTER_HANDLE = '@basilcp909';
+
+/* =========================================================
+   METADATA
+========================================================= */
 
 export const metadata: Metadata = {
-  title: "Muhammed Basil | AI & ML Developer Portfolio",
-  description: "Computer Science student and AI/ML developer specializing in machine learning, web development, and intelligent systems. View projects in NLP, computer vision, and full-stack development.",
+  metadataBase: new URL(SITE_URL),
+
+  title: {
+    default: TITLE,
+    template: `%s | ${AUTHOR_NAME}`,
+  },
+
+  description: DESCRIPTION,
+
   keywords: [
-    "Muhammed Basil",
-    "AI Developer",
-    "Machine Learning Engineer",
-    "Full Stack Developer",
-    "Portfolio",
-    "React",
-    "Next.js",
-    "Python",
-    "NLP",
-    "Computer Vision",
-    "Web Development"
+    'Muhammed Basil',
+    'AI Developer',
+    'AI & ML Developer',
+    'Machine Learning',
+    'Artificial Intelligence',
+    'Full Stack Developer',
+    'Python',
+    'React',
+    'Next.js',
+    'NLP',
+    'Computer Vision',
+    'Developer Portfolio',
   ],
-  authors: [{ name: "Muhammed Basil" }],
-  creator: "Muhammed Basil",
-  publisher: "Muhammed Basil",
+
+  authors: [{ name: AUTHOR_NAME, url: SITE_URL }],
+  creator: AUTHOR_NAME,
+  applicationName: `${AUTHOR_NAME} Portfolio`,
+  category: 'technology',
+  referrer: 'origin-when-cross-origin',
+
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://basil-portfolio.vercel.app'),
-  alternates: {
-    canonical: '/',
-  },
+
+  alternates: { canonical: '/' },
+
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://basil-portfolio.vercel.app',
-    title: 'Muhammed Basil | AI & ML Developer Portfolio',
-    description: 'Computer Science student and AI/ML developer specializing in machine learning, web development, and intelligent systems.',
-    siteName: 'Muhammed Basil Portfolio',
+    url: SITE_URL,
+    siteName: AUTHOR_NAME,
+    title: TITLE,
+    description: DESCRIPTION,
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Muhammed Basil - AI & ML Developer Portfolio',
+        alt: `${AUTHOR_NAME} — ${JOB_TITLE}`,
+        type: 'image/png',
       },
     ],
   },
+
   twitter: {
     card: 'summary_large_image',
-    title: 'Muhammed Basil | AI & ML Developer Portfolio',
-    description: 'Computer Science student and AI/ML developer specializing in machine learning, web development, and intelligent systems.',
-    images: ['/og-image.jpg'],
-    creator: '@basilcp909',
+    title: TITLE,
+    description: TWITTER_DESCRIPTION,
+    images: ['/og-image.png'],
+    creator: TWITTER_HANDLE,
+    site: TWITTER_HANDLE,
   },
+
   robots: {
     index: true,
     follow: true,
@@ -63,73 +130,101 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
+
+  icons: {
+    icon: '/icon.svg',
   },
-  category: 'technology',
-  classification: 'portfolio',
-  referrer: 'origin-when-cross-origin',
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#111827' },
-  ],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
-  other: {
-    'msapplication-TileColor': '#3B82F6',
-    'msapplication-config': '/browserconfig.xml',
-  },
+  manifest: '/manifest.webmanifest',
 };
+
+/* =========================================================
+   VIEWPORT
+========================================================= */
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  colorScheme: 'dark light',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a09' },
+    { media: '(prefers-color-scheme: light)', color: '#eeeae1' },
+  ],
+};
+
+/* =========================================================
+   THEME INITIALIZATION
+   Runs synchronously in <head> before first paint (no flash).
+========================================================= */
+
+const themeScript = `(function(){try{var d=document.documentElement,s=localStorage.getItem('theme'),t=s==='dark'||s==='light'?s:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.classList.toggle('light',t==='light');d.style.colorScheme=t}catch(e){}})();`;
+
+/* =========================================================
+   STRUCTURED DATA (serialized once at module load)
+========================================================= */
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person`,
+      name: AUTHOR_NAME,
+      url: SITE_URL,
+      jobTitle: JOB_TITLE,
+      description: DESCRIPTION,
+      sameAs: [GITHUB_URL, LINKEDIN_URL],
+      image: `${SITE_URL}/og-image.png`,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: `${AUTHOR_NAME} Portfolio`,
+      description: `Portfolio of ${AUTHOR_NAME}, an AI/ML developer and Computer Science student.`,
+      inLanguage: 'en',
+      publisher: { '@id': `${SITE_URL}/#person` },
+    },
+  ],
+}).replace(/</g, '\\u003c'); // prevents `</script>` injection
+
+/* =========================================================
+   BODY CONFIGURATION
+========================================================= */
+
+const bodyClassName = [
+  inter.variable,
+  orbitron.variable,
+  rajdhani.variable,
+  inter.className,
+  'antialiased',
+].join(' ');
+
+/* =========================================================
+   ROOT LAYOUT
+========================================================= */
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  // Apply theme immediately with no transitions
-                  const savedTheme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-                  
-                  // Prevent transitions during initial load
-                  document.documentElement.classList.add('theme-switching');
-                  
-                  if (isDark) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.style.colorScheme = 'dark';
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.style.colorScheme = 'light';
-                  }
-                  
-                  // Mark as initialized and remove switching class
-                  document.documentElement.classList.add('theme-initialized');
-                  setTimeout(() => {
-                    document.documentElement.classList.remove('theme-switching');
-                  }, 10);
-                } catch (err) {}
-              })();
-            `,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" suppressHydrationWarning>
-        {children}
+
+      <body className={bodyClassName} suppressHydrationWarning>
+        <a
+          href="#main-content"
+          className="sr-only fixed left-4 top-4 z-[300] bg-[var(--primary)] px-4 py-3 font-semibold text-[var(--ink)] focus:not-sr-only"
+        >
+          Skip to content
+        </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: structuredData }}
+        />
+        <ErrorBoundary>{children}</ErrorBoundary>
       </body>
     </html>
   );

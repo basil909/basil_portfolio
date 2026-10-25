@@ -1,38 +1,19 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next';
+import { SITE_URL } from '../config/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://basil-portfolio.vercel.app'
-  
   return [
     {
-      url: baseUrl,
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 1,
     },
     {
-      url: `${baseUrl}/#about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#projects`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/game-dev`,
+      url: `${SITE_URL}/game-dev`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
-  ]
+  ];
 }

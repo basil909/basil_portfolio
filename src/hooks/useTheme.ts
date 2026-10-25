@@ -1,125 +1,140 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+export type Theme = 'light' | 'dark';
+
+const STORAGE_KEY = 'theme';
+
+function getSystemTheme(): Theme {
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    return 'dark';
+  }
+
+  return 'light';
+}
+
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') {
+    return 'dark';
+  }
+
+  try {
+    const savedTheme = localStorage.getItem(STORAGE_KEY);
+
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme;
+    }
+  } catch {
+    // Ignore localStorage errors.
+  }
+
+  return getSystemTheme();
+}
+
+function applyTheme(theme: Theme) {
+  const html = document.documentElement;
+
+  /*
+   * Dark is the default theme.
+   * Light mode is represented by the `.light` class.
+   */
+  html.classList.toggle('light', theme === 'light');
+
+  html.style.colorScheme = theme;
+}
 
 export function useTheme() {
-  const [isDark, setIsDark] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [theme, setThemeState] =
+    useState<Theme>(getInitialTheme);
 
-  // Initialize theme on mount
+  const [isInitialized, setIsInitialized] =
+    useState(false);
+
+  /*
+   * Sync React state with the theme already applied
+   * by the initialization script in layout.tsx.
+   */
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    const html = document.documentElement;
 
-    // Use a flag to track if component is mounted
-    let isMounted = true;
+    const currentTheme: Theme =
+      html.classList.contains('light')
+        ? 'light'
+        : 'dark';
 
-    // Check current theme immediately
-    const checkTheme = () => {
-      if (!isMounted) return;
-      
-      const hasThemeInitialized = document.documentElement.classList.contains('theme-initialized');
-      const hasDarkClass = document.documentElement.classList.contains('dark');
-      
-      if (hasThemeInitialized) {
-        setIsDark(hasDarkClass);
-        setIsInitialized(true);
-      } else {
-        // Fallback if theme script hasn't run yet
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-        
-        setIsDark(shouldBeDark);
-        setIsInitialized(true);
+    setThemeState(currentTheme);
+    setIsInitialized(true);
+  }, []);
+
+  const setTheme = useCallback(
+    (nextTheme: Theme) => {
+      applyTheme(nextTheme);
+
+      setThemeState(nextTheme);
+
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          nextTheme,
+        );
+      } catch {
+        // Ignore localStorage errors.
       }
-    };
 
-    // Check immediately
-    checkTheme();
+      window.dispatchEvent(
+        new CustomEvent('themechange', {
+          detail: {
+            theme: nextTheme,
+          },
+        }),
+      );
+    },
+    [],
+  );
 
-    // Also check after a microtask to ensure DOM is ready
-    queueMicrotask(checkTheme);
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Optimized theme toggle function
   const toggleTheme = useCallback(() => {
-    const newTheme = !isDark;
-    
-    // Update state immediately for instant UI feedback
-    setIsDark(newTheme);
-    
-    // Batch DOM operations for maximum performance
-    const html = document.documentElement;
-    
-    // Disable all transitions and animations during switch
-    html.classList.add('theme-switching');
-    
-    // Apply theme changes in a single batch
-    if (newTheme) {
-      html.classList.add('dark');
-      html.style.colorScheme = 'dark';
-    } else {
-      html.classList.remove('dark');
-      html.style.colorScheme = 'light';
-    }
-    
-    // Force immediate style recalculation
-    html.offsetHeight;
-    
-    // Use microtask for immediate execution of side effects
-    queueMicrotask(() => {
-      // Save preference
-      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-      
-      // Dispatch event for other components
-      document.dispatchEvent(new CustomEvent('themeToggle', { 
-        detail: { theme: newTheme ? 'dark' : 'light' } 
-      }));
-    });
-    
-    // Remove switching class after one frame
-    requestAnimationFrame(() => {
-      html.classList.remove('theme-switching');
-    });
-  }, [isDark]);
+    setThemeState((currentTheme) => {
+      const nextTheme: Theme =
+        currentTheme === 'dark'
+          ? 'light'
+          : 'dark';
 
-  // Force theme without animation
-  const setTheme = useCallback((theme: 'light' | 'dark') => {
-    const shouldBeDark = theme === 'dark';
-    const html = document.documentElement;
-    
-    // Add switching class
-    html.classList.add('theme-switching');
-    
-    // Apply changes
-    if (shouldBeDark) {
-      html.classList.add('dark');
-      html.style.colorScheme = 'dark';
-    } else {
-      html.classList.remove('dark');
-      html.style.colorScheme = 'light';
-    }
-    
-    setIsDark(shouldBeDark);
-    
-    // Save and cleanup
-    queueMicrotask(() => {
-      localStorage.setItem('theme', theme);
-      setTimeout(() => {
-        html.classList.remove('theme-switching');
-      }, 16);
+      applyTheme(nextTheme);
+
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          nextTheme,
+        );
+      } catch {
+        // Ignore localStorage errors.
+      }
+
+      window.dispatchEvent(
+        new CustomEvent('themechange', {
+          detail: {
+            theme: nextTheme,
+          },
+        }),
+      );
+
+      return nextTheme;
     });
   }, []);
+
+  const isDark = theme === 'dark';
+  const isLight = theme === 'light';
 
   return {
+    theme,
     isDark,
+    isLight,
     isInitialized,
-    toggleTheme,
     setTheme,
-    theme: isDark ? 'dark' : 'light'
+    toggleTheme,
   };
 }

@@ -51,7 +51,7 @@ export const usePerformance = () => {
     // Track First Input Delay
     const fidObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      const fidEntry = entries[0];
+      const fidEntry = entries[0] as any;
       if (fidEntry) {
         setMetrics(prev => ({ ...prev, fid: fidEntry.processingStart - fidEntry.startTime }));
       }
@@ -61,7 +61,7 @@ export const usePerformance = () => {
     const clsObserver = new PerformanceObserver((list) => {
       let clsValue = 0;
       for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) {
+        if (!(entry as any).hadRecentInput) {
           clsValue += (entry as any).value;
         }
       }
@@ -104,7 +104,7 @@ export const usePerformance = () => {
     // Update web vitals when metrics change
     const updateWebVitals = () => {
       const vitals: WebVitals[] = [];
-      
+
       if (metrics.fcp !== null) {
         vitals.push({
           name: 'FCP',
@@ -112,7 +112,7 @@ export const usePerformance = () => {
           rating: calculateRating('fcp', metrics.fcp),
         });
       }
-      
+
       if (metrics.lcp !== null) {
         vitals.push({
           name: 'LCP',
@@ -120,7 +120,7 @@ export const usePerformance = () => {
           rating: calculateRating('lcp', metrics.lcp),
         });
       }
-      
+
       if (metrics.fid !== null) {
         vitals.push({
           name: 'FID',
@@ -128,7 +128,7 @@ export const usePerformance = () => {
           rating: calculateRating('fid', metrics.fid),
         });
       }
-      
+
       if (metrics.cls !== null) {
         vitals.push({
           name: 'CLS',
@@ -136,7 +136,7 @@ export const usePerformance = () => {
           rating: calculateRating('cls', metrics.cls),
         });
       }
-      
+
       if (metrics.ttfb !== null) {
         vitals.push({
           name: 'TTFB',
@@ -144,7 +144,7 @@ export const usePerformance = () => {
           rating: calculateRating('ttfb', metrics.ttfb),
         });
       }
-      
+
       setWebVitals(vitals);
     };
 

@@ -1,20 +1,10 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next';
+import { SITE_URL } from '../config/site';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/private/', '/admin/'],
-      },
-      {
-        userAgent: 'Googlebot',
-        allow: '/',
-        disallow: ['/private/'],
-      },
-    ],
-    sitemap: 'https://basil-portfolio.vercel.app/sitemap.xml',
-    host: 'https://basil-portfolio.vercel.app',
-  }
+    rules: { userAgent: '*', allow: '/' },
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
+  };
 }
