@@ -9,6 +9,6 @@ export const SITE_URL =
 export const AUTHOR_NAME = 'Muhammed Basil';
 export const JOB_TITLE = 'AI & ML Developer';
 export const SITE_EMAIL = 'basilcp090@gmail.com';
-export const GITHUB_URL = 'https://github.com/basilcp909';
+export const GITHUB_URL = 'https://github.com/basil909';
 export const LINKEDIN_URL =
   'https://www.linkedin.com/in/muhammed-basil-cp-cse007';
