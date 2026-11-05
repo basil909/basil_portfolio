@@ -39,3 +39,10 @@ next-env.d.ts
 .vscode
 *.swp
 *.swo
+# logs
+*.log
+build-errors.txt
+build-output.txt
+build_log.txt
+tsc_log*.txt
+typescript-errors.txt

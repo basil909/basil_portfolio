@@ -1,6 +1,6 @@
 const DEFAULT_SITE_URL =
   process.env['NODE_ENV'] === 'production'
-    ? 'https://basil-portfolio.app'
+    ? 'https://basil-portfolio-topaz.vercel.app'
     : 'http://localhost:3000';
 
 export const SITE_URL =
