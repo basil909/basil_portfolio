@@ -16,13 +16,13 @@ import {
   m,
   useMotionTemplate,
   useMotionValue,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
 import type { MotionStyle, Variants } from 'framer-motion';
 import { GITHUB_URL, LINKEDIN_URL } from '../config/site';
+import { useMotionReduced } from '../hooks/useMotionReduced';
 
 /* ============================================================================
    Configuration
@@ -680,7 +680,7 @@ function Reveal({ children, className = '' }: { children: ReactNode; className?:
 ============================================================================ */
 
 export default function Hero() {
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useMotionReduced();
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef);
 

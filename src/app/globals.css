@@ -1351,3 +1351,47 @@ html.light {
    Global CSS intentionally stays restrained.
    Section-specific visuals belong to their components.
 ========================================================= */
+
+/* Lenis smooth scroll: it drives the easing, so native smooth-scroll must be off. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* =========================================================
+   LOW-POWER MODE
+   <html data-perf="low"> is set before first paint (layout.tsx) on slow
+   devices and connections. Same end-state approach as reduced motion.
+========================================================= */
+
+html[data-perf='low'] *,
+html[data-perf='low'] *::before,
+html[data-perf='low'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Skip layout and paint for sections far below the fold. */
+#contact,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

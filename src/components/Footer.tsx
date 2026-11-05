@@ -123,8 +123,9 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 ['01', 'About', '#about'],
-                ['02', 'Projects', '#projects'],
-                ['03', 'Contact', '#contact'],
+                ['02', 'Experience', '#experience'],
+                ['03', 'Projects', '#projects'],
+                ['04', 'Contact', '#contact'],
               ].map(([number, label, href]) => (
                 <li key={label}>
                   <a

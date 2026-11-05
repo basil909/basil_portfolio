@@ -1,6 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { useMotionReduced } from '../hooks/useMotionReduced';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
@@ -31,7 +32,7 @@ const projects: Project[] = [
       'Reinforcement Learning',
     ],
     github: 'https://github.com/basil909/malayalam-chatbot',
-    image: '/images/vakyam-ai.png',
+    image: '/images/vakyam-ai.webp',
     period: "Feb'25 – Mar'25",
     category: 'AI',
   },
@@ -50,7 +51,7 @@ const projects: Project[] = [
       'LightGBM',
     ],
     github: 'https://github.com/basil909?tab=repositories',
-    image: '/images/url-detection.png',
+    image: '/images/url-detection.webp',
     period: "Apr'24 – May'24",
     category: 'Security',
   },
@@ -67,8 +68,8 @@ const projects: Project[] = [
       'Tesseract OCR',
       'PyMuPDF',
     ],
-    github: 'https://github.com/basil909?tab=repositories',
-    image: '/images/securescan.png',
+    github: 'https://github.com/basil909/pii-detection-system',
+    image: '/images/securescan.webp',
     period: "Jun'23 – Jul'23",
     category: 'Security',
   },
@@ -111,7 +112,7 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
         alt=""
         fill
         sizes="(max-width: 1024px) 100vw, 58vw"
-        className={`object-cover transition-all duration-700 ease-out ${
+        className={`object-cover transition-[transform,filter] duration-700 ease-out ${
           active
             ? 'scale-[1.035] grayscale-0 brightness-100'
             : 'scale-100 grayscale brightness-[0.72]'
@@ -161,7 +162,7 @@ export default function Projects() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const inView = useInView(sectionRef, { once: true, amount: 0.08 });
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useMotionReduced();
 
   const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];
   const visibleProjects =
@@ -412,7 +413,7 @@ export default function Projects() {
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm sm:p-6"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-dialog-title"
@@ -425,6 +426,7 @@ export default function Projects() {
           >
             <motion.div
               ref={dialogRef}
+              data-lenis-prevent
               className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto border border-[var(--line)] bg-[var(--surface)] shadow-2xl"
               initial={
                 reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.985 }

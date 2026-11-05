@@ -2,7 +2,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMotionReduced } from '../hooks/useMotionReduced';
 import { useInView } from 'react-intersection-observer';
 import emailjs from '@emailjs/browser';
 import { emailjsConfig } from '../config/emailjs';
@@ -134,7 +135,7 @@ export default function Contact() {
 
   const formRef = useRef<HTMLFormElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useMotionReduced();
 
   const reveal = {
     hidden: {
@@ -204,6 +205,13 @@ export default function Contact() {
     event.preventDefault();
 
     if (isSubmitting) return;
+
+    // Honeypot: real visitors never see this field, bots fill it. Pretend success, send nothing.
+    const trap = formRef.current?.elements.namedItem('website');
+    if (trap instanceof HTMLInputElement && trap.value) {
+      setIsSubmitted(true);
+      return;
+    }
 
     setSubmitError('');
 
@@ -568,6 +576,13 @@ export default function Contact() {
                 noValidate
                 className="border border-[var(--line)] bg-[var(--background)] p-5 sm:p-7 lg:p-8"
               >
+                <div aria-hidden="true" className="fixed -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+                  <label>
+                    Website
+                    <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+                  </label>
+                </div>
+
                 <div className="mb-8 flex items-center justify-between border-b border-[var(--line)] pb-4">
                   <div>
                     <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--primary)]">

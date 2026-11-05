@@ -5,7 +5,8 @@ import type { MouseEvent as ReactMouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
+import { useMotionReduced } from '../hooks/useMotionReduced';
 
 import { useTheme } from '../hooks/useTheme';
 
@@ -19,6 +20,7 @@ type NavItem = { name: string; href: string; hash?: string };
 
 const NAV_ITEMS: readonly NavItem[] = [
   { name: 'About', href: '/#about', hash: '#about' },
+  { name: 'Experience', href: '/#experience', hash: '#experience' },
   { name: 'Projects', href: '/#projects', hash: '#projects' },
   { name: 'Contact', href: '/#contact', hash: '#contact' },
   { name: 'Game Dev', href: '/game-dev' },
@@ -129,7 +131,7 @@ export default function Navbar() {
 
   const pathname = usePathname();
   const { isDark, toggleTheme, isInitialized } = useTheme();
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useMotionReduced();
 
   /* ---- Scroll state (rAF-throttled; React bails out when value is unchanged) ---- */
   useEffect(() => {
@@ -219,10 +221,10 @@ export default function Navbar() {
       >
         <nav
           aria-label="Main navigation"
-          className={`relative border-b border-[var(--line)] backdrop-blur-md transition-[background-color,box-shadow] duration-300 ${
+          className={`relative border-b border-[var(--line)] transition-[background-color,box-shadow] duration-300 ${
             scrolled
               ? 'bg-[var(--background)]/95 shadow-[0_8px_30px_rgba(0,0,0,0.14)]'
-              : 'bg-[var(--background)]/80'
+              : 'bg-[var(--background)]/90'
           }`}
         >
           <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">

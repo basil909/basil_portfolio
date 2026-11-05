@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Inter, Orbitron, Rajdhani } from 'next/font/google';
 
 import ErrorBoundary from '../components/ErrorBoundary';
+import SmoothScroll from '../components/SmoothScroll';
 import {
   AUTHOR_NAME,
   GITHUB_URL,
@@ -133,6 +134,7 @@ export const metadata: Metadata = {
 
   icons: {
     icon: '/icon.svg',
+    apple: '/apple-icon.png',
   },
   manifest: '/manifest.webmanifest',
 };
@@ -160,6 +162,14 @@ export const viewport: Viewport = {
 const themeScript = `(function(){try{var d=document.documentElement,s=localStorage.getItem('theme'),t=s==='dark'||s==='light'?s:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.classList.toggle('light',t==='light');d.style.colorScheme=t}catch(e){}})();`;
 
 /* =========================================================
+   LOW-POWER DETECTION
+   Flags slow devices/connections before first paint so CSS and JS can drop
+   the expensive effects. `?perf=low` / `?perf=full` force a mode for testing.
+========================================================= */
+
+const perfScript = `(function(){try{var d=document.documentElement,n=navigator,c=n.connection||{},q=location.search.match(/[?&]perf=(low|full)/),low=q?q[1]==='low':!!(c.saveData||/^(slow-2g|2g)$/.test(c.effectiveType||'')||(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=2));if(low)d.dataset.perf='low'}catch(e){}})();`;
+
+/* =========================================================
    STRUCTURED DATA (serialized once at module load)
 ========================================================= */
 
@@ -174,6 +184,17 @@ const structuredData = JSON.stringify({
       jobTitle: JOB_TITLE,
       description: DESCRIPTION,
       sameAs: [GITHUB_URL, LINKEDIN_URL],
+      alumniOf: {
+        '@type': 'CollegeOrUniversity',
+        name: 'Lovely Professional University',
+      },
+      knowsAbout: [
+        'Machine Learning',
+        'Natural Language Processing',
+        'Data Science',
+        'Python',
+        'Full-Stack Web Development',
+      ],
       image: `${SITE_URL}/og-image.png`,
     },
     {
@@ -211,6 +232,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: perfScript }} />
       </head>
 
       <body className={bodyClassName} suppressHydrationWarning>
@@ -224,7 +246,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData }}
         />
-        <ErrorBoundary>{children}</ErrorBoundary>
+        <SmoothScroll>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </SmoothScroll>
       </body>
     </html>
   );

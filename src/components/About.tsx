@@ -185,7 +185,7 @@ function IdentityDossier() {
     <div className="mx-auto max-w-[470px] lg:mx-0">
       <div className="relative aspect-[4/5] overflow-hidden border border-[var(--line-strong)] bg-[var(--surface)]">
         <Image
-          src="/images/avatar.png"
+          src="/images/avatar.webp"
           alt="Portrait of Muhammed Basil"
           fill
           sizes="(max-width: 1024px) 90vw, 470px"
