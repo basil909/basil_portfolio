@@ -93,7 +93,7 @@ const V = {
 const TYPED_TEXTS = [
   'AI & ML Engineering',
   'Full-Stack Developer',
-  'Computer Science Student',
+  'Computer Science Graduate',
   'NLP Enthusiast',
 ] as const;
 
@@ -714,7 +714,7 @@ export default function Hero() {
             <div className="absolute left-[5%] top-[72%] h-2 w-2 -translate-x-1/2 -translate-y-1/2">
               <span className="hero-anim hero-beacon block h-full w-full bg-[var(--primary)]" />
             </div>
-            <div className="absolute bottom-0 left-[5%] top-0 w-[30vw] max-w-[520px] bg-[var(--primary)]/[0.014]" />
+            <div className="absolute bottom-0 left-[5%] top-0 w-[30vw] max-w-[520px] bg-[color:color-mix(in_srgb,var(--primary)_1.4%,transparent)]" />
           </div>
 
           {/* min-h-svh lives here so the marquee + footer sit at the bottom on tall screens */}
@@ -768,13 +768,11 @@ export default function Hero() {
                   <Reveal>
                     <span className="relative block pl-[0.055em]">
                       BASIL
-                      <span className="text-[var(--primary)]">.</span>
+                      <span className="text-[var(--primary)] before:content-['.']" aria-hidden="true" />
                       <span className="ml-[0.12em] align-baseline font-mono text-[0.26em] font-bold tracking-[0.02em] text-[var(--primary)]">
                         C.P.
                       </span>
-                      <span className="absolute bottom-[0.18em] right-[0.02em] hidden translate-x-full font-mono text-[10px] font-normal tracking-[0.2em] text-[var(--muted)] xl:block">
-                        ENGINEER / BUILDER
-                      </span>
+                      <span className="absolute bottom-[0.18em] right-[0.02em] hidden translate-x-full font-mono text-[10px] font-normal tracking-[0.2em] text-[var(--muted)] xl:block after:content-['ENGINEER_/_BUILDER']" aria-hidden="true" />
                     </span>
                   </Reveal>
                 </Block>

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE_URL } from '../config/site';
 
 // Update when page content changes; a per-build date makes the field meaningless.
-const LAST_MODIFIED = new Date('2026-10-25');
+const LAST_MODIFIED = new Date('2026-11-10');
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

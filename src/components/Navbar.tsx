@@ -223,8 +223,8 @@ export default function Navbar() {
           aria-label="Main navigation"
           className={`relative border-b border-[var(--line)] transition-[background-color,box-shadow] duration-300 ${
             scrolled
-              ? 'bg-[var(--background)]/95 shadow-[0_8px_30px_rgba(0,0,0,0.14)]'
-              : 'bg-[var(--background)]/90'
+              ? 'bg-[color:color-mix(in_srgb,var(--background)_95%,transparent)] shadow-[0_8px_30px_rgba(0,0,0,0.14)]'
+              : 'bg-[color:color-mix(in_srgb,var(--background)_90%,transparent)]'
           }`}
         >
           <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
@@ -235,15 +235,15 @@ export default function Navbar() {
               aria-label="Muhammed Basil home"
               className={`group flex items-center gap-3 ${FOCUS_RING}`}
             >
-              <span className="relative flex h-8 w-8 items-center justify-center border border-[var(--primary)] font-[var(--font-rajdhani)] text-xs font-bold text-[var(--primary)] transition-colors group-hover:bg-[var(--primary)] group-hover:text-[var(--ink)]">
+              <span className="relative flex h-8 w-8 items-center justify-center border border-[var(--primary)] font-[family-name:var(--font-rajdhani)] text-xs font-bold text-[var(--primary)] transition-colors group-hover:bg-[var(--primary)] group-hover:text-[var(--ink)]">
                 MB
               </span>
 
               <span className="hidden sm:block">
-                <span className="block font-[var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
+                <span className="block font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
                   Muhammed Basil
                 </span>
-                <span className="mt-0.5 block font-[var(--font-rajdhani)] text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                <span className="mt-0.5 block font-[family-name:var(--font-rajdhani)] text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                   AI / ML Developer
                 </span>
               </span>
@@ -260,7 +260,7 @@ export default function Navbar() {
                       aria-current={isCurrent(item) ? 'page' : undefined}
                       className="group flex items-center gap-2 text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary)]"
                     >
-                      <span className="font-[var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
+                      <span className="font-[family-name:var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
                         {pad(i + 1)}
                       </span>
                       <span className="relative py-2">
@@ -325,10 +325,10 @@ export default function Navbar() {
               >
                 <div className="mx-auto max-w-[1440px] px-5 py-5 sm:px-8">
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="font-[var(--font-rajdhani)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+                    <span className="font-[family-name:var(--font-rajdhani)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
                       Navigation
                     </span>
-                    <span className="font-[var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)]">
+                    <span className="font-[family-name:var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)]">
                       {pad(1)} — {pad(NAV_ITEMS.length)}
                     </span>
                   </div>
@@ -343,7 +343,7 @@ export default function Navbar() {
                           className="group flex w-full items-center justify-between py-4 text-left transition-colors hover:text-[var(--primary)] focus:outline-none focus-visible:text-[var(--primary)]"
                         >
                           <span className="flex items-center gap-4">
-                            <span className="font-[var(--font-rajdhani)] text-xs text-[var(--muted-dark)] group-hover:text-[var(--primary)]">
+                            <span className="font-[family-name:var(--font-rajdhani)] text-xs text-[var(--muted-dark)] group-hover:text-[var(--primary)]">
                               {pad(i + 1)}
                             </span>
                             <span className="text-base font-semibold uppercase tracking-[0.08em]">

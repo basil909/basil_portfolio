@@ -99,11 +99,11 @@ const PARTICLES = PARTICLE_DATA.map(({ left, top, size, x, y, duration, delay })
 
 // Full class strings so Tailwind can detect them at build time.
 const AXIS_TICKS = [
-  'left-[13%] h-3 bg-[var(--primary)]/[0.18]',
-  'left-[25%] h-2 bg-[var(--primary)]/[0.12]',
-  'left-[50%] h-4 -translate-x-1/2 bg-[var(--primary)]/[0.24]',
-  'left-[75%] h-2 bg-[var(--primary)]/[0.12]',
-  'right-[13%] h-3 bg-[var(--primary)]/[0.18]',
+  'left-[13%] h-3 bg-[color:color-mix(in_srgb,var(--primary)_18%,transparent)]',
+  'left-[25%] h-2 bg-[color:color-mix(in_srgb,var(--primary)_12%,transparent)]',
+  'left-[50%] h-4 -translate-x-1/2 bg-[color:color-mix(in_srgb,var(--primary)_24%,transparent)]',
+  'left-[75%] h-2 bg-[color:color-mix(in_srgb,var(--primary)_12%,transparent)]',
+  'right-[13%] h-3 bg-[color:color-mix(in_srgb,var(--primary)_18%,transparent)]',
 ] as const;
 
 const CORNERS = [
@@ -124,9 +124,9 @@ function Marker({ left, top, label, side, caption }: MarkerData) {
     <div className="absolute flex items-center gap-2" style={{ left, top }}>
       {side === 'left' && rule}
 
-      <span className="h-1.5 w-1.5 bg-[var(--primary)]/[0.5]" />
+      <span className="h-1.5 w-1.5 bg-[color:color-mix(in_srgb,var(--primary)_50%,transparent)]" />
 
-      <span className="font-mono text-[7px] tracking-[0.22em] text-[var(--muted-dark)] opacity-70">{label}</span>
+      <span className="font-mono text-[9px] tracking-[0.22em] text-[var(--muted-dark)] opacity-70">{label}</span>
 
       {side === 'right' && rule}
 
@@ -149,10 +149,10 @@ function DesktopDecor() {
 
       {/* Center crosshair */}
       <div className="absolute left-1/2 top-[38%] h-14 w-14 -translate-x-1/2 -translate-y-1/2">
-        <span className="absolute left-1/2 top-0 h-full w-px bg-[var(--primary)]/[0.12]" />
-        <span className="absolute left-0 top-1/2 h-px w-full bg-[var(--primary)]/[0.12]" />
-        <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 border border-[var(--primary)]/[0.35]" />
-        <span className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--primary)]/[0.08]" />
+        <span className="absolute left-1/2 top-0 h-full w-px bg-[color:color-mix(in_srgb,var(--primary)_12%,transparent)]" />
+        <span className="absolute left-0 top-1/2 h-px w-full bg-[color:color-mix(in_srgb,var(--primary)_12%,transparent)]" />
+        <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 border border-[color:color-mix(in_srgb,var(--primary)_35%,transparent)]" />
+        <span className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[color:color-mix(in_srgb,var(--primary)_8%,transparent)]" />
       </div>
 
       {MARKERS.map((marker) => (
@@ -189,10 +189,10 @@ export default function BackgroundAnimation() {
       <div className="absolute inset-0 opacity-[0.018]" style={COARSE_GRID} />
 
       {/* Page construction lines */}
-      <div className="absolute inset-y-0 left-[5%] w-px bg-[var(--foreground)]/[0.045]" />
-      <div className="absolute inset-y-0 right-[5%] w-px bg-[var(--foreground)]/[0.045]" />
-      <div className="absolute left-0 top-[18%] h-px w-full bg-[var(--foreground)]/[0.025]" />
-      <div className="absolute left-0 top-[72%] h-px w-full bg-[var(--foreground)]/[0.025]" />
+      <div className="absolute inset-y-0 left-[5%] w-px bg-[color:color-mix(in_srgb,var(--foreground)_4.5%,transparent)]" />
+      <div className="absolute inset-y-0 right-[5%] w-px bg-[color:color-mix(in_srgb,var(--foreground)_4.5%,transparent)]" />
+      <div className="absolute left-0 top-[18%] h-px w-full bg-[color:color-mix(in_srgb,var(--foreground)_2.5%,transparent)]" />
+      <div className="absolute left-0 top-[72%] h-px w-full bg-[color:color-mix(in_srgb,var(--foreground)_2.5%,transparent)]" />
 
       {/* Atmospheric field */}
       <div
@@ -208,20 +208,20 @@ export default function BackgroundAnimation() {
 
       {/* Scan lines: full-size wrappers, so the % translate spans the whole page */}
       <div className="bgfx bgfx-scan bgfx-scan-y absolute inset-0">
-        <span className="block h-px w-full bg-[var(--primary)]/[0.07]" />
+        <span className="block h-px w-full bg-[color:color-mix(in_srgb,var(--primary)_7%,transparent)]" />
       </div>
       <div className="bgfx bgfx-scan bgfx-scan-x absolute inset-0">
-        <span className="block h-full w-px bg-[var(--primary)]/[0.045]" />
+        <span className="block h-full w-px bg-[color:color-mix(in_srgb,var(--primary)_4.5%,transparent)]" />
       </div>
 
       {/* Main system axis */}
-      <div className="absolute left-1/2 top-[38%] h-px w-[74%] -translate-x-1/2 bg-[var(--primary)]/[0.085]" />
+      <div className="absolute left-1/2 top-[38%] h-px w-[74%] -translate-x-1/2 bg-[color:color-mix(in_srgb,var(--primary)_8.5%,transparent)]" />
 
       {/* Tiny moving particles */}
       {PARTICLES.map(({ key, style }) => (
         <span
           key={key}
-          className="bgfx bgfx-float absolute rounded-full bg-[var(--primary)]/[0.14] dark:bg-[var(--primary)]/[0.18]"
+          className="bgfx bgfx-float absolute rounded-full bg-[color:color-mix(in_srgb,var(--primary)_14%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--primary)_18%,transparent)]"
           style={style}
         />
       ))}
@@ -230,11 +230,11 @@ export default function BackgroundAnimation() {
       <DesktopDecor />
 
       {/* Bottom depth fade */}
-      <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[var(--background)] via-[var(--background)]/[0.68] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[var(--background)] via-[color:color-mix(in_srgb,var(--background)_68%,transparent)] to-transparent" />
 
       {/* Edge falloff */}
-      <div className="absolute inset-y-0 left-0 w-[10%] bg-gradient-to-r from-[var(--background)]/[0.32] to-transparent" />
-      <div className="absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-[var(--background)]/[0.32] to-transparent" />
+      <div className="absolute inset-y-0 left-0 w-[10%] bg-gradient-to-r from-[color:color-mix(in_srgb,var(--background)_32%,transparent)] to-transparent" />
+      <div className="absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-[color:color-mix(in_srgb,var(--background)_32%,transparent)] to-transparent" />
 
       {/* Final vignette — keeps content dominant */}
       <div className="absolute inset-0 opacity-40" style={VIGNETTE_STYLE} />

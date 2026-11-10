@@ -44,9 +44,9 @@ const rajdhani = Rajdhani({
 const TITLE = `${AUTHOR_NAME} | ${JOB_TITLE}`;
 
 const DESCRIPTION =
-  'Computer Science student and AI/ML developer building intelligent systems, web applications, and experimental digital experiences.';
+  'AI/ML developer and Computer Science graduate building NLP, machine learning and full-stack web applications with Python, FastAPI and Next.js.';
 const TWITTER_DESCRIPTION =
-  'AI/ML developer and Computer Science student building intelligent systems and digital experiences.';
+  'AI/ML developer and Computer Science graduate building intelligent systems and digital experiences.';
 
 const TWITTER_HANDLE = '@basilcp909';
 
@@ -202,7 +202,7 @@ const structuredData = JSON.stringify({
       '@id': `${SITE_URL}/#website`,
       url: SITE_URL,
       name: `${AUTHOR_NAME} Portfolio`,
-      description: `Portfolio of ${AUTHOR_NAME}, an AI/ML developer and Computer Science student.`,
+      description: `Portfolio of ${AUTHOR_NAME}, an AI/ML developer and Computer Science graduate.`,
       inLanguage: 'en',
       publisher: { '@id': `${SITE_URL}/#person` },
     },

@@ -44,8 +44,14 @@ function ArrowUpIcon() {
 
 function ArrowIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-      <path d="M5 12h13M13 6l6 6-6 6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+      className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+    >
+      <path d="M5 12h13M13 6l6 6-6 6"strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -74,11 +80,11 @@ export default function Footer() {
         {/* Top identity row */}
         <div className="mb-16 flex flex-col gap-8 border-b border-[var(--line)] pb-10 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-4 font-[var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
+            <p className="mb-4 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
               Portfolio / 2026
             </p>
 
-            <h2 className="font-[var(--font-orbitron)] text-[clamp(2.4rem,6vw,6.5rem)] font-black uppercase leading-[0.88] tracking-[-0.06em]">
+            <h2 className="font-[family-name:var(--font-orbitron)] text-[clamp(2.4rem,6vw,6.5rem)] font-black uppercase leading-[0.88] tracking-[-0.06em]">
               Build something
               <br />
               <span className="text-[var(--primary)]">intelligent.</span>
@@ -100,9 +106,9 @@ export default function Footer() {
           <div>
             <div className="mb-8 flex items-center gap-3">
               <span className="relative h-2 w-2 bg-[var(--primary)]">
-                <span className="absolute -inset-1 border border-[var(--primary)]/30" />
+                <span className="absolute -inset-1 border border-[color:color-mix(in_srgb,var(--primary)_30%,transparent)]" />
               </span>
-              <span className="font-[var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.12em]">
+              <span className="font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.12em]">
                 Muhammed Basil
               </span>
             </div>
@@ -116,7 +122,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <nav aria-label="Footer navigation">
-            <p className="mb-6 font-[var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
+            <p className="mb-6 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
               Navigate
             </p>
 
@@ -132,7 +138,7 @@ export default function Footer() {
                     href={href}
                     className="group flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--primary)]"
                   >
-                    <span className="font-[var(--font-rajdhani)] text-xs text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
+                    <span className="font-[family-name:var(--font-rajdhani)] text-xs text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
                       {number}
                     </span>
                     <span>{label}</span>
@@ -145,7 +151,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <p className="mb-6 font-[var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
+            <p className="mb-6 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
               Connect
             </p>
 
@@ -186,7 +192,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-8 border-l-2 border-[var(--primary)] pl-4">
-              <p className="font-[var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+              <p className="font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
                 Based in
               </p>
               <p className="mt-1 text-sm font-medium">Kerala, India</p>

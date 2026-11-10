@@ -381,7 +381,7 @@ export default function Contact() {
 
               <h2
                 id="contact-title"
-                className="font-[var(--font-orbitron)] text-[clamp(3rem,8vw,8rem)] font-black leading-[0.82] tracking-[-0.075em]"
+                className="font-[family-name:var(--font-orbitron)] text-[clamp(3rem,8vw,8rem)] font-black leading-[0.82] tracking-[-0.075em]"
               >
                 LET&apos;S
                 <br />
@@ -414,11 +414,11 @@ export default function Contact() {
           >
             <div className="flex h-full flex-col">
               <div>
-                <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
                   Start a conversation
                 </span>
 
-                <h3 className="mt-4 max-w-md font-[var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-3xl">
+                <h3 className="mt-4 max-w-md font-[family-name:var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-3xl">
                   Good work starts with a good brief.
                 </h3>
 
@@ -439,7 +439,7 @@ export default function Contact() {
                   </span>
 
                   <span className="min-w-0">
-                    <span className="block font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Email
                     </span>
 
@@ -459,7 +459,7 @@ export default function Contact() {
                   </span>
 
                   <span>
-                    <span className="block font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Location
                     </span>
 
@@ -471,7 +471,7 @@ export default function Contact() {
               </div>
 
               <div className="mt-auto pt-10">
-                <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
                   Find me online
                 </span>
 
@@ -541,11 +541,11 @@ export default function Contact() {
                   </svg>
                 </div>
 
-                <span className="mt-8 font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                <span className="mt-8 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
                   Transmission complete
                 </span>
 
-                <h3 className="mt-3 font-[var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
+                <h3 className="mt-3 font-[family-name:var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
                   Message sent.
                 </h3>
 
@@ -585,7 +585,7 @@ export default function Contact() {
 
                 <div className="mb-8 flex items-center justify-between border-b border-[var(--line)] pb-4">
                   <div>
-                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
                       Contact form
                     </span>
 
@@ -594,7 +594,7 @@ export default function Contact() {
                     </h3>
                   </div>
 
-                  <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
                     04 — 01
                   </span>
                 </div>
@@ -615,7 +615,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="mb-2 block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       01 / Name
                     </label>
@@ -645,7 +645,7 @@ export default function Contact() {
                     {errors.name && (
                       <p
                         id="name-error"
-                        className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-red-500"
+                        className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
                         role="alert"
                       >
                         {errors.name}
@@ -657,7 +657,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="mb-2 block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       02 / Email
                     </label>
@@ -686,7 +686,7 @@ export default function Contact() {
                     {errors.email && (
                       <p
                         id="email-error"
-                        className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-red-500"
+                        className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
                         role="alert"
                       >
                         {errors.email}
@@ -698,7 +698,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       03 / Message
                     </label>
@@ -729,7 +729,7 @@ export default function Contact() {
                       {errors.message ? (
                         <p
                           id="message-error"
-                          className="font-mono text-[8px] uppercase tracking-[0.12em] text-red-500"
+                          className="font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
                           role="alert"
                         >
                           {errors.message}
@@ -738,7 +738,7 @@ export default function Contact() {
                         <span />
                       )}
 
-                      <span className="shrink-0 font-mono text-[8px] text-[var(--muted)]">
+                      <span className="shrink-0 font-mono text-[9px] text-[var(--muted)]">
                         {formData.message.length}/500
                       </span>
                     </div>
@@ -790,15 +790,15 @@ export default function Contact() {
           animate={inView ? 'visible' : 'hidden'}
           className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4"
         >
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             AI / ML / Software engineering
           </span>
 
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             Response channel / Email
           </span>
 
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             ↓ 04
           </span>
         </motion.div>

@@ -158,11 +158,11 @@ export default function About() {
 function AboutBackground() {
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-      <div className="absolute left-[5%] top-0 h-full w-px bg-[var(--foreground)]/[0.035]" />
-      <div className="absolute right-[5%] top-0 h-full w-px bg-[var(--foreground)]/[0.035]" />
+      <div className="absolute left-[5%] top-0 h-full w-px bg-[color:color-mix(in_srgb,var(--foreground)_3.5%,transparent)]" />
+      <div className="absolute right-[5%] top-0 h-full w-px bg-[color:color-mix(in_srgb,var(--foreground)_3.5%,transparent)]" />
       <div className="absolute inset-0 opacity-[0.018]" style={GRID_STYLE} />
-      <div className="absolute right-[5%] top-[16%] h-px w-[24%] bg-[var(--primary)]/[0.08]" />
-      <div className="absolute left-[5%] top-[76%] h-px w-[18%] bg-[var(--primary)]/[0.06]" />
+      <div className="absolute right-[5%] top-[16%] h-px w-[24%] bg-[color:color-mix(in_srgb,var(--primary)_8%,transparent)]" />
+      <div className="absolute left-[5%] top-[76%] h-px w-[18%] bg-[color:color-mix(in_srgb,var(--primary)_6%,transparent)]" />
     </div>
   );
 }
@@ -214,7 +214,7 @@ function IdentityDossier() {
             <p className={`mt-1 ${DISPLAY} text-base font-bold tracking-[-0.02em] text-white`}>M. BASIL</p>
           </div>
 
-          <span className={`border border-[var(--primary)]/50 px-2 py-1 ${LABEL} tracking-[0.18em] text-[var(--primary)]`}>
+          <span className={`border border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] px-2 py-1 ${LABEL} tracking-[0.18em] text-[var(--primary)]`}>
             AI / ML
           </span>
         </div>
@@ -276,7 +276,7 @@ function Narrative() {
 
       <div className="mt-9 max-w-2xl border-l-2 border-[var(--primary)] pl-5 sm:pl-7">
         <p className="text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
-          I&apos;m Muhammed Basil, a Computer Science undergraduate focused on web development, artificial
+          I&apos;m Muhammed Basil, a Computer Science graduate (B.Tech, Lovely Professional University) focused on web development, artificial
           intelligence, and immersive technologies.
         </p>
 

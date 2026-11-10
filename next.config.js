@@ -21,6 +21,11 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Downloadable, but kept out of search results (it contains contact details).
+        source: '/:file(.*\.pdf)',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
         source: '/(.*)',
         headers: [
           { key: 'X-Frame-Options', value: 'DENY' },

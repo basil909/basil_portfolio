@@ -109,7 +109,7 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
     <div className="relative h-full min-h-[330px] overflow-hidden bg-[#0d0d0c]">
       <Image
         src={project.image}
-        alt=""
+        alt={`${project.title} project preview`}
         fill
         sizes="(max-width: 1024px) 100vw, 58vw"
         className={`object-cover transition-[transform,filter] duration-700 ease-out ${
@@ -123,11 +123,11 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.2)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.06)_1px,transparent_1px)] bg-[48px_48px] opacity-30" />
 
       <div className="absolute inset-x-5 top-5 flex items-start justify-between">
-        <span className="border border-[var(--primary)]/60 bg-black/50 px-2.5 py-1 font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[var(--primary)]">
+        <span className="border border-[color:color-mix(in_srgb,var(--primary)_60%,transparent)] bg-black/50 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--primary)]">
           {project.category}
         </span>
 
-        <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/45">
+        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
           {project.period}
         </span>
       </div>
@@ -135,21 +135,21 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
       <div className="absolute bottom-5 left-5 right-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="h-px w-8 bg-[var(--primary)]" />
-          <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/50">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
             System / {project.index}
           </span>
         </div>
 
-        <div className="font-mono text-[8px] uppercase tracking-[0.16em] text-white/40">
+        <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
           Input → Model → Output
         </div>
       </div>
 
       {/* Focus corners */}
-      <span className="absolute left-3 top-3 h-6 w-6 border-l border-t border-[var(--primary)]/70" />
+      <span className="absolute left-3 top-3 h-6 w-6 border-l border-t border-[color:color-mix(in_srgb,var(--primary)_70%,transparent)]" />
       <span className="absolute right-3 top-3 h-6 w-6 border-r border-t border-white/20" />
       <span className="absolute bottom-3 left-3 h-6 w-6 border-b border-l border-white/20" />
-      <span className="absolute bottom-3 right-3 h-6 w-6 border-b border-r border-[var(--primary)]/70" />
+      <span className="absolute bottom-3 right-3 h-6 w-6 border-b border-r border-[color:color-mix(in_srgb,var(--primary)_70%,transparent)]" />
     </div>
   );
 }
@@ -243,8 +243,8 @@ export default function Projects() {
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute left-[5%] top-0 h-full w-px bg-[var(--line)] opacity-60" />
         <div className="absolute right-[5%] top-0 h-full w-px bg-[var(--line)] opacity-60" />
-        <div className="absolute left-[5%] top-[18%] h-px w-[22%] bg-[var(--primary)]/[0.07]" />
-        <div className="absolute right-[5%] top-[76%] h-px w-[18%] bg-[var(--primary)]/[0.06]" />
+        <div className="absolute left-[5%] top-[18%] h-px w-[22%] bg-[color:color-mix(in_srgb,var(--primary)_7%,transparent)]" />
+        <div className="absolute right-[5%] top-[76%] h-px w-[18%] bg-[color:color-mix(in_srgb,var(--primary)_6%,transparent)]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1600px]">
@@ -260,7 +260,7 @@ export default function Projects() {
 
               <h2
                 id="projects-title"
-                className="font-[var(--font-orbitron)] text-[clamp(3rem,8vw,8rem)] font-black leading-[0.82] tracking-[-0.075em]"
+                className="font-[family-name:var(--font-orbitron)] text-[clamp(3rem,8vw,8rem)] font-black leading-[0.82] tracking-[-0.075em]"
               >
                 BUILT TO
                 <br />
@@ -306,7 +306,7 @@ export default function Projects() {
             })}
           </div>
 
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             {visibleProjects.length.toString().padStart(2, '0')} systems
           </span>
         </motion.div>
@@ -336,16 +336,16 @@ export default function Projects() {
 
                 <div className="flex flex-col border-t border-[var(--line)] lg:border-l lg:border-t-0">
                   <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4">
-                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
                       Project / {project.index}
                     </span>
-                    <span className="font-mono text-[8px] uppercase tracking-[0.16em] text-[var(--primary)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--primary)]">
                       {project.category}
                     </span>
                   </div>
 
                   <div className="flex flex-1 flex-col p-6 sm:p-8 lg:p-10">
-                    <h3 className="max-w-xl font-[var(--font-orbitron)] text-2xl font-bold leading-[0.98] tracking-[-0.045em] sm:text-4xl">
+                    <h3 className="max-w-xl font-[family-name:var(--font-orbitron)] text-2xl font-bold leading-[0.98] tracking-[-0.045em] sm:text-4xl">
                       {project.title}
                     </h3>
 
@@ -357,10 +357,10 @@ export default function Projects() {
 
                     <div className="mt-8">
                       <div className="mb-3 flex items-center justify-between border-b border-[var(--line)] pb-2">
-                        <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--foreground)]">
+                        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--foreground)]">
                           Stack
                         </span>
-                        <span className="font-mono text-[8px] text-[var(--muted-dark)]">
+                        <span className="font-mono text-[9px] text-[var(--muted-dark)]">
                           {project.tech.length.toString().padStart(2, '0')} modules
                         </span>
                       </div>
@@ -369,7 +369,7 @@ export default function Projects() {
                         {project.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="border border-[var(--line)] px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--muted)] transition-colors group-hover:border-[var(--primary)]/50 group-hover:text-[var(--foreground)]"
+                            className="border border-[var(--line)] px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] group-hover:text-[var(--foreground)]"
                           >
                             {tech}
                           </span>
@@ -401,10 +401,10 @@ export default function Projects() {
           {...reveal(0.25)}
           className="mt-12 flex flex-col gap-3 border-t border-[var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between"
         >
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             Archive / End of selected systems
           </span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             More experiments in progress
           </span>
         </motion.div>
@@ -442,7 +442,7 @@ export default function Projects() {
                 <div className="relative min-h-[280px] bg-[#0d0d0c] lg:min-h-[580px]">
                   <Image
                     src={selectedProject.image}
-                    alt=""
+                    alt={`${selectedProject.title} project preview`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 65vw"
                     className="object-cover"
@@ -450,21 +450,21 @@ export default function Projects() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
                   <div className="absolute left-5 top-5 flex items-center gap-3 sm:left-7 sm:top-7">
-                    <span className="bg-[var(--primary)] px-2.5 py-1 font-mono text-[8px] font-bold uppercase tracking-[0.16em] text-black">
+                    <span className="bg-[var(--primary)] px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-black">
                       {selectedProject.category}
                     </span>
-                    <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/50">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/50">
                       {selectedProject.period}
                     </span>
                   </div>
 
                   <div className="absolute bottom-6 left-5 right-5 sm:left-7 sm:bottom-8">
-                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/50">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
                       System / {selectedProject.index}
                     </span>
                     <h3
                       id="project-dialog-title"
-                      className="mt-2 max-w-2xl font-[var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] text-white sm:text-4xl"
+                      className="mt-2 max-w-2xl font-[family-name:var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] text-white sm:text-4xl"
                     >
                       {selectedProject.title}
                     </h3>
@@ -473,7 +473,7 @@ export default function Projects() {
 
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4 sm:px-8">
-                    <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--primary)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--primary)]">
                       System report
                     </span>
 
@@ -490,7 +490,7 @@ export default function Projects() {
 
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <div>
-                      <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
+                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
                         Overview
                       </span>
                       <p className="mt-4 text-sm leading-7 text-[var(--muted)] sm:text-base sm:leading-8">
@@ -500,10 +500,10 @@ export default function Projects() {
 
                     <div className="mt-10 border-t border-[var(--line)] pt-6">
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="font-mono text-[8px] uppercase tracking-[0.18em]">
+                        <span className="font-mono text-[9px] uppercase tracking-[0.18em]">
                           Modules
                         </span>
-                        <span className="font-mono text-[8px] text-[var(--muted-dark)]">
+                        <span className="font-mono text-[9px] text-[var(--muted-dark)]">
                           {selectedProject.tech.length.toString().padStart(2, '0')}
                         </span>
                       </div>
@@ -512,7 +512,7 @@ export default function Projects() {
                         {selectedProject.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="border border-[var(--line)] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--muted)]"
+                            className="border border-[var(--line)] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted)]"
                           >
                             {tech}
                           </span>
