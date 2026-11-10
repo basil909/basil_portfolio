@@ -21,7 +21,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import type { MotionStyle, Variants } from 'framer-motion';
-import { GITHUB_URL, LINKEDIN_URL } from '../config/site';
+import { GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../config/site';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 
 /* ============================================================================
@@ -834,6 +834,15 @@ export default function Hero() {
                     className={`inline-flex items-center border border-[var(--line-strong)] px-6 py-4 text-[var(--foreground)] hover:border-[var(--primary)] ${CTA_BASE}`}
                   >
                     Start a conversation
+                  </a>
+
+                  <a
+                    href={RESUME_URL}
+                    download
+                    className={`group inline-flex items-center gap-4 border border-[var(--primary)] px-6 py-4 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--ink)] ${CTA_BASE}`}
+                  >
+                    Download résumé
+                    <span aria-hidden="true">↓</span>
                   </a>
                 </Block>
 

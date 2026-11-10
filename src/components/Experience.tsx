@@ -1,8 +1,8 @@
+import { RESUME_URL } from '../config/site';
+
 /* -------------------------------------------------------------------------- */
 /*  Data                                                                      */
 /* -------------------------------------------------------------------------- */
-
-const RESUME_HREF = '/Muhammed-Basil-CP-Resume.pdf';
 
 const EXPERIENCE = [
   {
@@ -97,7 +97,7 @@ export default function Experience() {
           </div>
 
           <a
-            href={RESUME_HREF}
+            href={RESUME_URL}
             download
             className={`inline-flex w-fit shrink-0 items-center gap-4 border border-[var(--primary)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--ink)] ${FOCUS_RING}`}
           >
