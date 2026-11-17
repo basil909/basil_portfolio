@@ -88,20 +88,20 @@ export default function Footer() {
         {/* Top identity row */}
         <div className="mb-16 flex flex-col gap-8 border-b border-[var(--line)] pb-10 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-4 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
+            <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
               Portfolio / 2026
             </p>
 
             <h2 className="font-[family-name:var(--font-orbitron)] text-[clamp(2.4rem,6vw,6.5rem)] font-black uppercase leading-[0.88] tracking-[-0.06em]">
               Build something
               <br />
-              <span className="text-[var(--primary)]">intelligent.</span>
+              <span className="text-[var(--primary-text)]">intelligent.</span>
             </h2>
           </div>
 
           <a
             href="#contact"
-            className="group inline-flex w-fit items-center gap-3 border-b border-[var(--foreground)] pb-2 text-sm font-semibold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+            className="group inline-flex w-fit items-center gap-3 border-b border-[var(--foreground)] pb-2 text-sm font-semibold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)]"
           >
             Start a conversation
             <ArrowIcon />
@@ -130,7 +130,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <nav aria-label="Footer navigation">
-            <p className="mb-6 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
+            <p className="mb-6 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
               Navigate
             </p>
 
@@ -144,9 +144,9 @@ export default function Footer() {
                 <li key={label}>
                   <a
                     href={href}
-                    className="group flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--primary)]"
+                    className="group flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--primary-text)]"
                   >
-                    <span className="font-[family-name:var(--font-rajdhani)] text-xs text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
+                    <span className="font-mono text-xs text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary-text)]">
                       {number}
                     </span>
                     <span>{label}</span>
@@ -159,7 +159,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <p className="mb-6 font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
+            <p className="mb-6 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
               Connect
             </p>
 
@@ -169,7 +169,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-black"
+                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
               >
                 <span className="h-5 w-5">
                   <GithubIcon />
@@ -181,7 +181,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-black"
+                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
               >
                 <span className="h-5 w-5">
                   <LinkedinIcon />
@@ -191,7 +191,7 @@ export default function Footer() {
               <a
                 href={`mailto:${SITE_EMAIL}`}
                 aria-label="Email"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-black"
+                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
               >
                 <span className="h-5 w-5">
                   <MailIcon />
@@ -199,8 +199,8 @@ export default function Footer() {
               </a>
             </div>
 
-            <div className="mt-8 border-l-2 border-[var(--primary)] pl-4">
-              <p className="font-[family-name:var(--font-rajdhani)] text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            <div className="mt-8 border-l-2 border-[var(--primary-text)] pl-4">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
                 Based in
               </p>
               <p className="mt-1 text-sm font-medium">Kerala, India</p>
@@ -225,7 +225,7 @@ export default function Footer() {
             <button
               type="button"
               onClick={scrollToTop}
-              className="group inline-flex items-center gap-2 font-semibold uppercase tracking-[0.12em] text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
+              className="group inline-flex items-center gap-2 font-semibold uppercase tracking-[0.12em] text-[var(--muted)] transition-colors hover:text-[var(--primary-text)]"
             >
               Back to top
               <span className="h-4 w-4 transition-transform group-hover:-translate-y-0.5">

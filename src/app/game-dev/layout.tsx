@@ -1,5 +1,16 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Rajdhani } from 'next/font/google';
+
+// Only this page uses Rajdhani, so it is loaded here instead of site-wide.
+const rajdhani = Rajdhani({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rajdhani',
+  weight: ['400', '500', '600', '700'],
+  // Next otherwise preloads it on every page; it is only needed on this one.
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: 'Game Development',
@@ -23,5 +34,5 @@ export const metadata: Metadata = {
 export default function GameDevLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return children;
+  return <div className={rajdhani.variable}>{children}</div>;
 }

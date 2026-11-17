@@ -58,10 +58,10 @@ const CERTIFICATIONS = [
 /* -------------------------------------------------------------------------- */
 
 const DISPLAY = 'font-[family-name:var(--font-orbitron)]';
-const LABEL = 'font-mono text-[9px] uppercase tracking-[0.2em]';
+const LABEL = 'font-mono text-[10px] uppercase tracking-[0.2em]';
 const SUBHEAD = `${LABEL} mb-6 border-b border-[var(--line)] pb-3 text-[10px] font-bold tracking-[0.22em]`;
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
 
 function Bullet() {
   return <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-[var(--primary)]" aria-hidden="true" />;
@@ -82,7 +82,7 @@ export default function Experience() {
         <div className="mb-14 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:mb-20">
           <div>
             <div className="mb-5 flex items-center gap-3">
-              <span className={`${LABEL} tracking-[0.22em] text-[var(--primary)]`}>02 / Background</span>
+              <span className={`${LABEL} tracking-[0.22em] text-[var(--primary-text)]`}>02 / Background</span>
               <span className="h-px w-10 bg-[var(--primary)]" aria-hidden="true" />
             </div>
 
@@ -90,7 +90,7 @@ export default function Experience() {
               id="experience-title"
               className={`${DISPLAY} text-[clamp(1.875rem,8vw,3.5rem)] font-black uppercase leading-[0.92] tracking-[-0.06em] lg:text-[clamp(2.25rem,4.6vw,5rem)]`}
             >
-              Experience <span className="text-[var(--primary)]">&amp;</span>
+              Experience <span className="text-[var(--primary-text)]">&amp;</span>
               <br />
               education.
             </h2>
@@ -99,7 +99,7 @@ export default function Experience() {
           <a
             href={RESUME_URL}
             download
-            className={`inline-flex w-fit shrink-0 items-center gap-4 border border-[var(--primary)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--ink)] ${FOCUS_RING}`}
+            className={`inline-flex w-fit shrink-0 items-center gap-4 border border-[var(--primary-text)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--primary-text)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--ink)] ${FOCUS_RING}`}
           >
             Download résumé
             <span aria-hidden="true">↓</span>
@@ -115,7 +115,7 @@ export default function Experience() {
                 <li key={job.role + job.org} className="bg-[var(--surface)] p-6 sm:p-8">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                     <h4 className={`${DISPLAY} text-base font-bold uppercase tracking-wide sm:text-lg`}>{job.role}</h4>
-                    <p className={`${LABEL} shrink-0 text-[var(--primary)]`}>{job.period}</p>
+                    <p className={`${LABEL} shrink-0 text-[var(--primary-text)]`}>{job.period}</p>
                   </div>
                   <p className="mt-2 text-sm font-medium text-[var(--muted)]">{job.org}</p>
 
@@ -137,8 +137,8 @@ export default function Experience() {
               <h3 className={SUBHEAD}>Education</h3>
               <ol className="space-y-6">
                 {EDUCATION.map((item) => (
-                  <li key={item.school} className="border-l-2 border-[var(--primary)] pl-5">
-                    <p className={`${LABEL} text-[var(--primary)]`}>{item.period}</p>
+                  <li key={item.school} className="border-l-2 border-[var(--primary-text)] pl-5">
+                    <p className={`${LABEL} text-[var(--primary-text)]`}>{item.period}</p>
                     <h4 className="mt-2 text-base font-semibold">{item.school}</h4>
                     <p className="mt-1 text-sm text-[var(--muted)]">{item.detail}</p>
                   </li>

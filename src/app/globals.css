@@ -35,14 +35,21 @@
   --primary: #ffd447;
   --primary-light: #ffe58a;
   --primary-dark: #d4a900;
+  /* Accent as TEXT / focus colour. Same yellow in dark mode; a deep amber in
+     light mode, where yellow on cream is ~1.2:1 and unreadable. */
+  --primary-text: #ffd447;
 
   /* Secondary / technical */
   --secondary: #63d9e8;
   --accent: #63d9e8;
 
   /* Text hierarchy */
+  /* Both pass WCAG AA (4.5:1) on every background/surface. */
   --muted: #96938c;
-  --muted-dark: #68655f;
+  --muted-dark: #8a877f;
+
+  /* Error text / borders. */
+  --danger: #f87171;
 
   /* =======================================================
      RGB Channels
@@ -144,8 +151,11 @@ html.light {
 
   --foreground-rgb: 17 17 16;
 
-  --muted: #69665f;
-  --muted-dark: #858078;
+  --muted: #58554f;
+  --muted-dark: #605c55;
+
+  --primary-text: #755300;
+  --danger: #b91c1c;
 
   --border: rgb(var(--foreground-rgb) / 0.14);
   --border-hover: rgb(var(--foreground-rgb) / 0.28);
@@ -264,7 +274,7 @@ html.light {
   ======================================================= */
 
   :focus {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--primary-text);
     outline-offset: 3px;
   }
 
@@ -273,7 +283,7 @@ html.light {
   }
 
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--primary-text);
     outline-offset: 3px;
   }
 
@@ -387,298 +397,18 @@ html.light {
    LAYOUT UTILITIES
 ========================================================= */
 
-@layer components {
-  .portfolio-container {
-    width: min(
-      100% - (var(--page-gutter) * 2),
-      var(--content-width)
-    );
-
-    margin-inline: auto;
-  }
-
-  .portfolio-section {
-    position: relative;
-    padding-block: var(--section-space);
-  }
-
-  .portfolio-section-tight {
-    position: relative;
-    padding-block: clamp(4rem, 8vw, 8rem);
-  }
-
-  .portfolio-rule {
-    width: 100%;
-    height: 1px;
-    background: var(--line);
-  }
-
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns:
-      repeat(
-        12,
-        minmax(0, 1fr)
-      );
-  }
-
-  .portfolio-kicker,
-  .editorial-label {
-    color: var(--muted);
-
-    font-family: var(--font-rajdhani);
-    font-size: 0.7rem;
-    font-weight: 700;
-
-    letter-spacing: 0.16em;
-    line-height: 1;
-
-    text-transform: uppercase;
-  }
-
-  .portfolio-note {
-    color: var(--muted);
-
-    font-family: "Courier New", monospace;
-    font-size: 0.7rem;
-
-    letter-spacing: 0.035em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .portfolio-marker {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-
-    color: var(--muted);
-
-    font-family: "Courier New", monospace;
-    font-size: 0.68rem;
-
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .portfolio-marker::before {
-    content: "";
-
-    width: 18px;
-    height: 1px;
-
-    flex: 0 0 auto;
-
-    background: var(--primary);
-  }
-
-  .portfolio-accent {
-    color: var(--primary);
-  }
-
-  .portfolio-accent-cyan {
-    color: var(--accent);
-  }
-
-  .portfolio-grid-line {
-    position: relative;
-  }
-
-  .portfolio-grid-line::after {
-    content: "";
-
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    width: 1px;
-    height: 100%;
-
-    background: var(--line);
-  }
-
-  .editorial-frame {
-    position: relative;
-
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  .editorial-frame::before {
-    content: "";
-
-    position: absolute;
-    top: -1px;
-    left: -1px;
-
-    width: 34px;
-    height: 1px;
-
-    background: var(--primary);
-  }
-
-  .editorial-accent-line {
-    position: relative;
-  }
-
-  .editorial-accent-line::before {
-    content: "";
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 2px;
-    height: 100%;
-
-    background: var(--primary);
-  }
-
-  .portfolio-index {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-
-    color: var(--muted);
-
-    font-family: "Courier New", monospace;
-    font-size: 0.68rem;
-
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.08em;
-  }
-
-  .portfolio-index::before {
-    content: "";
-
-    width: 7px;
-    height: 7px;
-
-    flex: 0 0 auto;
-
-    border: 1px solid var(--primary);
-    background: var(--primary);
-  }
-
-  .portfolio-corner {
-    position: relative;
-  }
-
-  .portfolio-corner::after {
-    content: "";
-
-    position: absolute;
-    right: 0;
-    bottom: 0;
-
-    width: 22px;
-    height: 22px;
-
-    border-right: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line-strong);
-
-    pointer-events: none;
-  }
-
-  .portfolio-mono {
-    font-family: "Courier New", monospace;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .portfolio-signal {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    color: var(--muted);
-
-    font-family: var(--font-rajdhani);
-    font-size: 0.68rem;
-    font-weight: 700;
-
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .portfolio-signal::before {
-    content: "";
-
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: var(--primary);
-
-    box-shadow:
-      0 0 0 3px
-      rgb(var(--primary-rgb) / 0.08);
-  }
-}
-
 /* =========================================================
    TYPOGRAPHY
 ========================================================= */
 
 @layer components {
-  .text-premium {
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-  }
 
-  .text-hero {
-    font-weight: 900;
-    letter-spacing: -0.065em;
-    line-height: 0.82;
-  }
-
-  .editorial-display {
-    font-family: var(--font-orbitron);
-    font-weight: 900;
-
-    letter-spacing: -0.07em;
-    line-height: 0.82;
-
-    text-transform: uppercase;
-  }
-
-  .cyberpunk-font,
-  .cyberpunk-menu,
-  .cyberpunk-angular {
+  .cyberpunk-font {
     font-family: var(--font-rajdhani);
     font-weight: 600;
 
     letter-spacing: 0.08em;
     text-transform: uppercase;
-  }
-
-  .cyberpunk-title,
-  .cyberpunk-logo {
-    font-family: var(--font-orbitron);
-    font-weight: 900;
-
-    letter-spacing: 0.035em;
-    line-height: 0.9;
-
-    text-transform: uppercase;
-  }
-
-  .cyberpunk-logo {
-    letter-spacing: 0.08em;
-  }
-
-  .cyberpunk-text {
-    font-family: var(--font-rajdhani);
-    font-weight: 500;
-    letter-spacing: 0.025em;
-  }
-
-  .cyberpunk-data {
-    font-family: "Courier New", monospace;
-    font-size: 0.82em;
-
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.06em;
   }
 }
 
@@ -686,303 +416,17 @@ html.light {
    MATERIALS
 ========================================================= */
 
-@layer components {
-  .glass {
-    background: var(--glass-bg);
-
-    border: 1px solid var(--glass-border);
-
-    box-shadow:
-      0 12px 35px -28px
-      var(--shadow-color);
-
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-  }
-
-  .glass-strong {
-    background: var(--surface);
-
-    border: 1px solid var(--line-strong);
-
-    box-shadow:
-      0 18px 45px -32px
-      var(--shadow-color);
-
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-  }
-
-  .shadow-premium {
-    box-shadow:
-      0 18px 45px -30px
-      var(--shadow-color);
-  }
-
-  .shadow-premium-lg {
-    box-shadow:
-      0 30px 70px -38px
-      var(--shadow-color);
-  }
-
-  .shadow-glow {
-    box-shadow:
-      0 0 0 1px
-      rgb(var(--primary-rgb) / 0.16),
-      0 12px 32px
-      rgb(var(--primary-rgb) / 0.05);
-  }
-
-  /* =======================================================
-     Semantic Accent Utilities
-  ======================================================= */
-
-  .accent-fill {
-    background: var(--primary);
-  }
-
-  .accent-text {
-    color: var(--primary);
-  }
-
-  .accent-border {
-    position: relative;
-
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-md);
-
-    background: var(--surface);
-  }
-
-  .accent-border::before {
-    content: "";
-
-    position: absolute;
-    top: -1px;
-    left: 12px;
-
-    width: 42px;
-    height: 1px;
-
-    background: var(--primary);
-  }
-}
-
 /* =========================================================
    INTERACTION
 ========================================================= */
-
-@layer components {
-  .portfolio-link {
-    position: relative;
-
-    display: inline-flex;
-    align-items: center;
-
-    gap: 0.5rem;
-
-    color: var(--foreground);
-    text-decoration: none;
-  }
-
-  .portfolio-link::after {
-    content: "";
-
-    position: absolute;
-    right: 0;
-    bottom: -0.3rem;
-    left: 0;
-
-    height: 1px;
-
-    transform: scaleX(0);
-    transform-origin: right;
-
-    background: var(--primary);
-
-    transition:
-      transform 350ms var(--ease-out);
-  }
-
-  .portfolio-link:hover::after,
-  .portfolio-link:focus-visible::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  .portfolio-button {
-    display: inline-flex;
-
-    min-height: 48px;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 0.65rem;
-
-    padding: 0.75rem 1.1rem;
-
-    border: 1px solid var(--primary);
-
-    background: var(--primary);
-    color: var(--ink);
-
-    font-weight: 700;
-    text-decoration: none;
-
-    transition:
-      transform 250ms var(--ease-out),
-      background-color 250ms var(--ease-out),
-      color 250ms var(--ease-out);
-  }
-
-  .portfolio-button:hover {
-    transform: translateY(-2px);
-
-    background: var(--foreground);
-    color: var(--background);
-  }
-
-  .portfolio-button-secondary {
-    border-color: var(--border);
-
-    background: transparent;
-    color: var(--foreground);
-  }
-
-  .portfolio-button-secondary:hover {
-    border-color: var(--primary);
-
-    background: transparent;
-    color: var(--primary);
-  }
-}
 
 /* =========================================================
    PAGE TEXTURE
 ========================================================= */
 
-@layer components {
-  .portfolio-texture {
-    position: relative;
-    isolation: isolate;
-  }
-
-  .portfolio-texture::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-
-    pointer-events: none;
-
-    opacity: 0.08;
-
-    background-image:
-      linear-gradient(
-        rgb(var(--foreground-rgb) / 0.025) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        90deg,
-        rgb(var(--foreground-rgb) / 0.018) 1px,
-        transparent 1px
-      );
-
-    background-size: 56px 56px;
-
-    -webkit-mask-image:
-      linear-gradient(
-        to bottom,
-        black,
-        transparent 88%
-      );
-
-    mask-image:
-      linear-gradient(
-        to bottom,
-        black,
-        transparent 88%
-      );
-  }
-}
-
 /* =========================================================
    ANIMATION UTILITIES
 ========================================================= */
-
-@layer components {
-  .animate-float-slow {
-    animation:
-      float-slow
-      8s
-      ease-in-out
-      infinite;
-  }
-
-  .animate-glow {
-    animation:
-      accent-breathe
-      4s
-      ease-in-out
-      infinite;
-  }
-
-  .animate-shimmer {
-    background-image:
-      linear-gradient(
-        90deg,
-        transparent 0%,
-        rgb(var(--primary-rgb) / 0.12) 50%,
-        transparent 100%
-      );
-
-    background-size: 200% 100%;
-
-    animation:
-      shimmer
-      4s
-      linear
-      infinite;
-  }
-
-  .animate-scale-in {
-    animation:
-      scale-in
-      0.6s
-      var(--ease-out)
-      both;
-  }
-
-  .animate-fade-in-up {
-    animation:
-      fade-in-up
-      0.7s
-      var(--ease-out)
-      both;
-  }
-
-  .animate-wave {
-    display: inline-block;
-
-    transform-origin: 70% 70%;
-
-    animation:
-      wave
-      3s
-      ease-in-out
-      infinite;
-  }
-
-  .animate-blink {
-    animation:
-      blink
-      1.2s
-      steps(1, end)
-      infinite;
-  }
-}
 
 /* =========================================================
    THEME SWITCHING
@@ -991,100 +435,9 @@ html.light {
    Keep animations alive.
 ========================================================= */
 
-.theme-switching,
-.theme-switching *,
-.theme-switching *::before,
-.theme-switching *::after {
-  transition-property: none !important;
-}
-
 /* =========================================================
    KEYFRAMES
 ========================================================= */
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes accent-breathe {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.78;
-  }
-}
-
-@keyframes shimmer {
-  from {
-    background-position: -200% 0;
-  }
-
-  to {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes wave {
-  0%,
-  60%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  10% {
-    transform: rotate(10deg);
-  }
-
-  20% {
-    transform: rotate(-6deg);
-  }
-
-  30% {
-    transform: rotate(8deg);
-  }
-
-  40% {
-    transform: rotate(-3deg);
-  }
-
-  50% {
-    transform: rotate(6deg);
-  }
-}
 
 @keyframes blink {
   0%,
@@ -1111,18 +464,6 @@ html.light {
   body::before {
     background-size: 56px 56px;
   }
-
-  .portfolio-grid {
-    grid-template-columns:
-      repeat(
-        6,
-        minmax(0, 1fr)
-      );
-  }
-
-  .portfolio-grid-line::after {
-    display: none;
-  }
 }
 
 @media (max-width: 768px) {
@@ -1137,64 +478,11 @@ html.light {
     opacity: 0.18;
     background-size: 44px 44px;
   }
-
-  /*
-   * Backdrop filters are intentionally disabled on smaller
-   * screens to reduce compositing cost.
-  */
-
-  .glass,
-  .glass-strong {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-
-  .shadow-premium {
-    box-shadow:
-      0 12px 30px -20px
-      var(--shadow-color);
-  }
-
-  .shadow-premium-lg {
-    box-shadow:
-      0 18px 45px -25px
-      var(--shadow-color);
-  }
-
-  .shadow-glow {
-    box-shadow:
-      0 0 0 1px
-      rgb(var(--primary-rgb) / 0.12);
-  }
-
-  .portfolio-texture::before {
-    background-size: 40px 40px;
-    opacity: 0.05;
-  }
-
-  .editorial-display {
-    letter-spacing: -0.065em;
-  }
 }
 
 @media (max-width: 480px) {
-  body::before,
-  .portfolio-texture::before {
+  body::before {
     display: none;
-  }
-
-  .portfolio-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .shadow-premium,
-  .shadow-premium-lg,
-  .shadow-glow {
-    box-shadow: none;
-  }
-
-  .cyberpunk-logo {
-    letter-spacing: 0.06em;
   }
 }
 
@@ -1242,23 +530,6 @@ html.light {
 
     scroll-behavior: auto !important;
   }
-
-  .animate-float-slow,
-  .animate-glow,
-  .animate-shimmer,
-  .animate-wave,
-  .animate-blink,
-  .gradient-text-animated {
-    animation: none !important;
-  }
-
-  .animate-scale-in,
-  .animate-fade-in-up {
-    animation: none !important;
-
-    opacity: 1 !important;
-    transform: none !important;
-  }
 }
 
 /* =========================================================
@@ -1302,47 +573,8 @@ html.light {
     color: black;
   }
 
-  body::before,
-  .portfolio-texture::before {
+  body::before {
     display: none;
-  }
-
-  .glass,
-  .glass-strong {
-    background: white;
-
-    border: 1px solid #bbb;
-
-    box-shadow: none;
-
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-
-  .shadow-premium,
-  .shadow-premium-lg,
-  .shadow-glow {
-    box-shadow: none;
-  }
-
-  .accent-border {
-    padding: 0;
-
-    border: 1px solid #999;
-
-    background: transparent;
-  }
-
-  .accent-border > * {
-    background: white;
-  }
-
-  .animate-float-slow,
-  .animate-glow,
-  .animate-shimmer,
-  .animate-wave,
-  .animate-blink {
-    animation: none;
   }
 }
 
@@ -1460,4 +692,120 @@ footer {
   animation-name: gd-float;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+
+/* =========================================================
+   MOTION (CSS replacements for the former framer-motion code)
+   All off under prefers-reduced-motion; low-power mode shortens
+   them to ~0ms via the rule above.
+========================================================= */
+
+/* Navbar: drop in on load; theme icon pops when toggled. */
+@keyframes nav-drop {
+  from {
+    transform: translateY(-100%);
+  }
+}
+.nav-drop {
+  animation: nav-drop 0.6s var(--ease-out);
+}
+
+@keyframes nav-icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.7);
+  }
+}
+.nav-icon-in {
+  animation: nav-icon-in 0.2s ease-out;
+}
+
+/* Project dialog (Projects.tsx). The *-out classes end with animationend. */
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes modal-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.985);
+  }
+}
+@keyframes modal-panel-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+}
+.modal-backdrop-in {
+  animation: modal-fade-in 0.3s ease-out;
+}
+.modal-backdrop-out {
+  animation: modal-fade-out 0.3s ease-in forwards;
+}
+.modal-panel-in {
+  animation: modal-panel-in 0.35s var(--ease-out);
+}
+.modal-panel-out {
+  animation: modal-panel-out 0.3s ease-in forwards;
+}
+
+/* Game Dev page entrances. */
+@keyframes gd-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(7px);
+  }
+}
+@keyframes gd-rise {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+}
+@keyframes gd-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+@keyframes gd-bar {
+  from {
+    width: 0;
+  }
+}
+.gd-panel-in {
+  animation: gd-panel-in 0.35s ease-out;
+}
+.gd-rise {
+  animation: gd-rise 0.45s ease-out both;
+}
+.gd-slide {
+  animation: gd-slide 0.45s ease-out both;
+}
+.gd-bar {
+  animation: gd-bar 1s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-drop,
+  .nav-icon-in,
+  .modal-backdrop-in,
+  .modal-backdrop-out,
+  .modal-panel-in,
+  .modal-panel-out,
+  .gd-panel-in,
+  .gd-rise,
+  .gd-slide,
+  .gd-bar,
+  .gd-artifact {
+    animation: none;
+  }
 }

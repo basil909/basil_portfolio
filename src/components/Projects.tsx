@@ -1,11 +1,10 @@
 'use client';
 
-import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 import RevealSection, { revealDelay } from './RevealSection';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 
 type Project = {
@@ -124,12 +123,13 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.2)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.06)_1px,transparent_1px)] bg-[48px_48px] opacity-30" />
 
+      {/* Always over a dark photo, so the bright yellow (not --primary-text) reads in both themes. */}
       <div className="absolute inset-x-5 top-5 flex items-start justify-between">
-        <span className="border border-[color:color-mix(in_srgb,var(--primary)_60%,transparent)] bg-black/50 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--primary)]">
+        <span className="border border-[color:color-mix(in_srgb,var(--primary)_60%,transparent)] bg-black/50 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--primary)]">
           {project.category}
         </span>
 
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/75">
           {project.period}
         </span>
       </div>
@@ -137,12 +137,12 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
       <div className="absolute bottom-5 left-5 right-5">
         <div className="mb-3 flex items-center gap-3">
           <span className="h-px w-8 bg-[var(--primary)]" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/75">
             System / {project.index}
           </span>
         </div>
 
-        <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+        <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">
           Input → Model → Output
         </div>
       </div>
@@ -160,6 +160,8 @@ export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [filterUsed, setFilterUsed] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // True while the dialog plays its exit animation (CSS); it unmounts after.
+  const [closing, setClosing] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -172,6 +174,24 @@ export default function Projects() {
       ? projects
       : projects.filter((project) => project.category === activeFilter);
 
+  const finishClose = useCallback(() => {
+    setClosing(false);
+    setSelectedProject(null);
+  }, []);
+
+  // Reduced motion / low power: no exit animation, so close immediately.
+  const closeProject = useCallback(() => {
+    if (reducedMotion) finishClose();
+    else setClosing(true);
+  }, [reducedMotion, finishClose]);
+
+  // Safety net in case `animationend` never arrives (e.g. a background tab).
+  useEffect(() => {
+    if (!closing) return undefined;
+    const id = window.setTimeout(finishClose, 600);
+    return () => window.clearTimeout(id);
+  }, [closing, finishClose]);
+
   useEffect(() => {
     if (!selectedProject) return;
 
@@ -180,7 +200,7 @@ export default function Projects() {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setSelectedProject(null);
+        closeProject();
         return;
       }
 
@@ -215,7 +235,7 @@ export default function Projects() {
       if (triggerRef.current?.isConnected) triggerRef.current.focus();
       triggerRef.current = null;
     };
-  }, [selectedProject, lenis]);
+  }, [selectedProject, lenis, closeProject]);
 
   const openProject = (
     project: Project,
@@ -243,7 +263,7 @@ export default function Projects() {
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <div className="mb-5 flex items-center gap-4">
-                <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--primary)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--primary-text)]">
                   03 / Selected work
                 </span>
                 <span className="hidden h-px w-14 bg-[var(--primary)] sm:block" />
@@ -255,12 +275,12 @@ export default function Projects() {
               >
                 BUILT TO
                 <br />
-                <span className="text-[var(--primary)]">SOLVE.</span>
+                <span className="text-[var(--primary-text)]">SOLVE.</span>
               </h2>
             </div>
 
             <div className="max-w-sm text-right">
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted)]">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
                 Systems / 03
               </p>
               <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
@@ -287,10 +307,10 @@ export default function Projects() {
                     setFilterUsed(true);
                   }}
                   aria-pressed={active}
-                  className={`border px-4 py-2.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
+                  className={`border px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] ${
                     active
                       ? 'border-[var(--primary)] bg-[var(--primary)] text-black'
-                      : 'border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--foreground)]'
+                      : 'border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--primary-text)] hover:text-[var(--foreground)]'
                   }`}
                 >
                   {category}
@@ -299,7 +319,7 @@ export default function Projects() {
             })}
           </div>
 
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
             {visibleProjects.length.toString().padStart(2, '0')} systems
           </span>
         </div>
@@ -316,7 +336,7 @@ export default function Projects() {
                 <button
                   type="button"
                   onClick={(event) => openProject(project, event)}
-                  className="relative block min-h-[330px] cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--primary)]"
+                  className="relative block min-h-[330px] cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--primary-text)]"
                   aria-label={`Open ${project.title} details`}
                 >
                   <ProjectVisual project={project} active={false} />
@@ -324,10 +344,10 @@ export default function Projects() {
 
                 <div className="flex flex-col border-t border-[var(--line)] lg:border-l lg:border-t-0">
                   <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
                       Project / {project.index}
                     </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--primary)]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--primary-text)]">
                       {project.category}
                     </span>
                   </div>
@@ -337,7 +357,7 @@ export default function Projects() {
                       {project.title}
                     </h3>
 
-                    <div className="mt-7 border-l-2 border-[var(--primary)] pl-5">
+                    <div className="mt-7 border-l-2 border-[var(--primary-text)] pl-5">
                       <p className="text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">
                         {project.description}
                       </p>
@@ -345,10 +365,10 @@ export default function Projects() {
 
                     <div className="mt-8">
                       <div className="mb-3 flex items-center justify-between border-b border-[var(--line)] pb-2">
-                        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--foreground)]">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--foreground)]">
                           Stack
                         </span>
-                        <span className="font-mono text-[9px] text-[var(--muted-dark)]">
+                        <span className="font-mono text-[10px] text-[var(--muted-dark)]">
                           {project.tech.length.toString().padStart(2, '0')} modules
                         </span>
                       </div>
@@ -357,7 +377,7 @@ export default function Projects() {
                         {project.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="border border-[var(--line)] px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] group-hover:text-[var(--foreground)]"
+                            className="border border-[var(--line)] px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] group-hover:text-[var(--foreground)]"
                           >
                             {tech}
                           </span>
@@ -370,7 +390,7 @@ export default function Projects() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group/open inline-flex items-center gap-4 border-b border-[var(--foreground)] pb-2 font-mono text-[9px] font-bold uppercase tracking-[0.18em] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus-visible:border-[var(--primary)] focus-visible:text-[var(--primary)]"
+                        className="group/open inline-flex items-center gap-4 border-b border-[var(--foreground)] pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:border-[var(--primary-text)] focus-visible:text-[var(--primary-text)]"
                       >
                         <span className="h-4 w-4">
                           <GithubIcon />
@@ -388,42 +408,36 @@ export default function Projects() {
           style={revealDelay(0.25)}
           className="reveal mt-12 flex flex-col gap-3 border-t border-[var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between"
         >
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             Archive / End of selected systems
           </span>
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             More experiments in progress
           </span>
         </div>
       </div>
 
-      <LazyMotion features={domAnimation} strict>
-      <AnimatePresence>
         {selectedProject && (
-          <m.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6"
+          <div
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 ${
+              closing ? 'modal-backdrop-out' : 'modal-backdrop-in'
+            }`}
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-dialog-title"
             onMouseDown={(event) => {
-              if (event.target === event.currentTarget) setSelectedProject(null);
+              if (event.target === event.currentTarget) closeProject();
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            onAnimationEnd={(event) => {
+              if (closing && event.target === event.currentTarget) finishClose();
+            }}
           >
-            <m.div
+            <div
               ref={dialogRef}
               data-lenis-prevent
-              className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto border border-[var(--line)] bg-[var(--surface)] shadow-2xl"
-              initial={
-                reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.985 }
-              }
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={
-                reducedMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.99 }
-              }
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className={`relative max-h-[92vh] w-full max-w-6xl overflow-y-auto border border-[var(--line)] bg-[var(--surface)] shadow-2xl ${
+                closing ? 'modal-panel-out' : 'modal-panel-in'
+              }`}
               onMouseDown={(event) => event.stopPropagation()}
             >
               <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
@@ -438,16 +452,16 @@ export default function Projects() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
                   <div className="absolute left-5 top-5 flex items-center gap-3 sm:left-7 sm:top-7">
-                    <span className="bg-[var(--primary)] px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-black">
+                    <span className="bg-[var(--primary)] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-black">
                       {selectedProject.category}
                     </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/50">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/75">
                       {selectedProject.period}
                     </span>
                   </div>
 
                   <div className="absolute bottom-6 left-5 right-5 sm:left-7 sm:bottom-8">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/75">
                       System / {selectedProject.index}
                     </span>
                     <h3
@@ -461,15 +475,15 @@ export default function Projects() {
 
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4 sm:px-8">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--primary)]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--primary-text)]">
                       System report
                     </span>
 
                     <button
                       ref={closeButtonRef}
                       type="button"
-                      onClick={() => setSelectedProject(null)}
-                      className="flex h-9 w-9 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-colors hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                      onClick={closeProject}
+                      className="flex h-9 w-9 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-colors hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                       aria-label="Close project details"
                     >
                       ×
@@ -478,7 +492,7 @@ export default function Projects() {
 
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <div>
-                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-dark)]">
                         Overview
                       </span>
                       <p className="mt-4 text-sm leading-7 text-[var(--muted)] sm:text-base sm:leading-8">
@@ -488,10 +502,10 @@ export default function Projects() {
 
                     <div className="mt-10 border-t border-[var(--line)] pt-6">
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="font-mono text-[9px] uppercase tracking-[0.18em]">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
                           Modules
                         </span>
-                        <span className="font-mono text-[9px] text-[var(--muted-dark)]">
+                        <span className="font-mono text-[10px] text-[var(--muted-dark)]">
                           {selectedProject.tech.length.toString().padStart(2, '0')}
                         </span>
                       </div>
@@ -500,7 +514,7 @@ export default function Projects() {
                         {selectedProject.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="border border-[var(--line)] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted)]"
+                            className="border border-[var(--line)] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]"
                           >
                             {tech}
                           </span>
@@ -517,7 +531,7 @@ export default function Projects() {
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-3 border border-[var(--line)] px-4 py-4 font-mono text-[9px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                        className="inline-flex items-center justify-center gap-3 border border-[var(--line)] px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                       >
                         <span className="h-4 w-4">
                           <GithubIcon />
@@ -530,7 +544,7 @@ export default function Projects() {
                           href={selectedProject.demo}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 bg-[var(--primary)] px-4 py-4 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-black transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                          className="inline-flex items-center justify-center gap-3 bg-[var(--primary)] px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-black transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                         >
                           <span className="h-4 w-4">
                             <ExternalIcon />
@@ -542,11 +556,9 @@ export default function Projects() {
                   </div>
                 </div>
               </div>
-            </m.div>
-          </m.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-      </LazyMotion>
     </RevealSection>
   );
 }

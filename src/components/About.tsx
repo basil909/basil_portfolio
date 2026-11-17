@@ -36,9 +36,9 @@ const CORNERS = [
 /* -------------------------------------------------------------------------- */
 
 const DISPLAY = 'font-[family-name:var(--font-orbitron)]';
-const LABEL = 'font-mono text-[9px] uppercase tracking-[0.2em]';
+const LABEL = 'font-mono text-[10px] uppercase tracking-[0.2em]';
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
 
 const GRID_BG =
   'linear-gradient(to right, var(--foreground) 1px, transparent 1px), linear-gradient(to bottom, var(--foreground) 1px, transparent 1px)';
@@ -120,7 +120,7 @@ function SectionHeader() {
   return (
     <div className="mb-14 flex items-end justify-between border-b border-[var(--line)] pb-5">
       <div className="flex items-center gap-4">
-        <span className={`${LABEL} text-[10px] tracking-[0.24em] text-[var(--primary)]`}>01 / Profile</span>
+        <span className={`${LABEL} text-[10px] tracking-[0.24em] text-[var(--primary-text)]`}>01 / Profile</span>
         <span className="hidden h-px w-14 bg-[var(--primary)] sm:block" aria-hidden="true" />
       </div>
 
@@ -149,12 +149,12 @@ function IdentityDossier() {
         />
 
         {CORNERS.map((cls) => (
-          <span key={cls} className={`absolute h-7 w-7 border-[var(--primary)] ${cls}`} aria-hidden="true" />
+          <span key={cls} className={`absolute h-7 w-7 border-[var(--primary-text)] ${cls}`} aria-hidden="true" />
         ))}
 
         <div className="absolute left-5 right-5 top-5 flex justify-between">
           <span className={`${LABEL} text-white/70`}>Identity / 001</span>
-          <span className={`${LABEL} text-[var(--primary)]`}>Kerala / IN</span>
+          <span className={`${LABEL} text-[var(--primary-text)]`}>Kerala / IN</span>
         </div>
 
         <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
@@ -163,7 +163,7 @@ function IdentityDossier() {
             <p className={`mt-1 ${DISPLAY} text-base font-bold tracking-[-0.02em] text-white`}>M. BASIL</p>
           </div>
 
-          <span className={`border border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] px-2 py-1 ${LABEL} tracking-[0.18em] text-[var(--primary)]`}>
+          <span className={`border border-[color:color-mix(in_srgb,var(--primary)_50%,transparent)] px-2 py-1 ${LABEL} tracking-[0.18em] text-[var(--primary-text)]`}>
             AI / ML
           </span>
         </div>
@@ -190,7 +190,7 @@ function IdentityDossier() {
             }`}
           >
             <dt className="text-[var(--muted)]">{label}</dt>
-            <dd className={accent ? 'text-[var(--primary)]' : 'text-[var(--foreground)]'}>{value}</dd>
+            <dd className={accent ? 'text-[var(--primary-text)]' : 'text-[var(--foreground)]'}>{value}</dd>
           </div>
         ))}
       </dl>
@@ -218,12 +218,12 @@ function Narrative() {
       >
         I build
         <br />
-        <span className="text-[var(--primary)]">intelligent</span>
+        <span className="text-[var(--primary-text)]">intelligent</span>
         <br />
         systems.
       </h2>
 
-      <div className="mt-9 max-w-2xl border-l-2 border-[var(--primary)] pl-5 sm:pl-7">
+      <div className="mt-9 max-w-2xl border-l-2 border-[var(--primary-text)] pl-5 sm:pl-7">
         <p className="text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
           I&apos;m Muhammed Basil, a Computer Science graduate (B.Tech, Lovely Professional University) focused on web development, artificial
           intelligence, and immersive technologies.
@@ -275,7 +275,7 @@ function Capability({
       />
 
       <div className="flex items-start justify-between">
-        <span className={`${DISPLAY} text-2xl font-black text-[var(--primary)]`} aria-hidden="true">
+        <span className={`${DISPLAY} text-2xl font-black text-[var(--primary-text)]`} aria-hidden="true">
           {number}
         </span>
         <span className={`${LABEL} tracking-[0.18em] text-[var(--muted)]`}>{label}</span>
@@ -307,7 +307,7 @@ function NextSection() {
 
       <a
         href="#projects"
-        className={`group inline-flex w-fit shrink-0 items-center gap-4 border-b border-[var(--foreground)] pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] ${FOCUS_RING}`}
+        className={`group inline-flex w-fit shrink-0 items-center gap-4 border-b border-[var(--foreground)] pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] ${FOCUS_RING}`}
       >
         Explore work
         <span

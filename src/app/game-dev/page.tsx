@@ -1,7 +1,6 @@
     'use client';
 
     import { useEffect, useRef, useState } from 'react';
-    import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
     import Link from 'next/link';
     import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../../config/site';
     import { useMotionReduced } from '../../hooks/useMotionReduced';
@@ -214,7 +213,6 @@
         };
 
         return (
-            <LazyMotion features={domAnimation} strict>
             <div className="game-dev-page cyberpunk-font min-h-screen overflow-hidden bg-[#050608] text-white">
                 {/* =========================================================
                     ATMOSPHERE
@@ -267,7 +265,7 @@
                     TOP SYSTEM STRIP
                 ========================================================= */}
 
-                <div className="relative z-50 flex h-7 items-center justify-between border-b border-cyan-400/20 bg-black/80 px-4 font-mono text-[9px] tracking-[0.25em] text-cyan-400/60 sm:px-8">
+                <div className="relative z-50 flex h-7 items-center justify-between border-b border-cyan-400/20 bg-black/80 px-4 font-mono text-[10px] tracking-[0.25em] text-cyan-400/70 sm:px-8">
                     <div className="flex items-center gap-3">
                         <Link
                             href="/"
@@ -275,12 +273,12 @@
                         >
                             &larr; PORTFOLIO
                         </Link>
-                        <span className="text-white/20">{'///'}</span>
+                        <span className="text-white/50">{'///'}</span>
                         <span className="hidden sm:inline">
                             NIGHT_CITY {'//'} DEV_NODE_07
                         </span>
                         <span className="sm:hidden">DEV_NODE_07</span>
-                        <span className="text-white/20">{'///'}</span>
+                        <span className="text-white/50">{'///'}</span>
                         <span className="text-yellow-400/70">SECURE</span>
                     </div>
 
@@ -306,7 +304,7 @@
                         <div className="p-5 sm:p-7 lg:p-8">
                             {/* Brand */}
                             <div className="relative mb-6 sm:mb-10">
-                                <div className="mb-5 flex items-center justify-between font-mono text-[8px] tracking-[0.32em] text-white/25">
+                                <div className="mb-5 flex items-center justify-between font-mono text-[10px] tracking-[0.32em] text-white/50">
                                     <span>MUHAMMED BASIL / 2026</span>
                                     <span>01—04</span>
                                 </div>
@@ -314,7 +312,7 @@
                                 <div className="relative overflow-visible">
                                     <div className="absolute -left-3 top-1 h-28 w-[3px] bg-yellow-400" />
 
-                                    <div className="mb-3 pl-3 font-mono text-[8px] tracking-[0.4em] text-cyan-300/60">
+                                    <div className="mb-3 pl-3 font-mono text-[10px] tracking-[0.4em] text-cyan-300/60">
                                         GAME DEVELOPER / DIGITAL WORLDS
                                     </div>
 
@@ -327,12 +325,12 @@
                                         </span>
                                     </h1>
 
-                                    <p className="mt-5 max-w-[205px] pl-3 font-mono text-[9px] uppercase leading-5 tracking-[0.18em] text-white/35">
+                                    <p className="mt-5 max-w-[205px] pl-3 font-mono text-[10px] uppercase leading-5 tracking-[0.18em] text-white/50">
                                         Games are spaces people remember. I build the systems that make those spaces feel alive.
                                     </p>
 
                                     {glitchActive && (
-                                        <div className="pointer-events-none absolute -left-1 top-8 translate-x-[4px] select-none text-[48px] font-black leading-[0.76] tracking-[-0.09em] text-cyan-400/35 sm:text-[58px]">
+                                        <div className="pointer-events-none absolute -left-1 top-8 translate-x-[4px] select-none text-[48px] font-black leading-[0.76] tracking-[-0.09em] text-cyan-400/70 sm:text-[58px]">
                                             MAKE
                                             <br />
                                             WORLDS
@@ -357,21 +355,18 @@
                                 className={`${mobileMenuOpen ? 'block' : 'hidden'} space-y-1 lg:block`}
                                 aria-label="Main navigation"
                             >
-                                <div className="mb-3 hidden font-mono text-[8px] uppercase tracking-[0.35em] text-white/20 lg:block">
+                                <div className="mb-3 hidden font-mono text-[10px] uppercase tracking-[0.35em] text-white/50 lg:block">
                                     Turn the page →
                                 </div>
 
                                 {menuItems.map((item) => {
                                     const active = activeMenu === item.id;
-                                    const animationProps = shouldReduceMotion ? {} : { whileHover: { x: 5 }, whileTap: { scale: 0.985 } };
-
                                     return (
-                                        <m.button
+                                        <button
                                             key={item.id}
                                             type="button"
                                             onClick={() => selectMenu(item.id)}
-                                            {...animationProps}
-                                            className={`group relative flex w-full items-center overflow-hidden border-l-2 px-3 py-4 text-left transition-all ${
+                                            className={`group relative flex w-full items-center overflow-hidden border-l-2 px-3 py-4 text-left transition-all hover:translate-x-[5px] active:scale-[0.985] motion-reduce:hover:translate-x-0 motion-reduce:active:scale-100 ${
                                                 active
                                                     ? 'border-yellow-400 bg-yellow-400/[0.07]'
                                                     : 'border-transparent hover:border-cyan-400/50 hover:bg-white/[0.025]'
@@ -384,7 +379,7 @@
 
                                             <span
                                                 className={`mr-4 font-mono text-[10px] ${
-                                                    active ? 'text-yellow-400' : 'text-white/25'
+                                                    active ? 'text-yellow-400' : 'text-white/50'
                                                 }`}
                                             >
                                                 {item.code}
@@ -392,7 +387,7 @@
 
                                             <span
                                                 className={`mr-3 text-base ${
-                                                    active ? 'text-cyan-300' : 'text-white/30 group-hover:text-cyan-300'
+                                                    active ? 'text-cyan-300' : 'text-white/50 group-hover:text-cyan-300'
                                                 }`}
                                             >
                                                 {item.icon}
@@ -406,10 +401,10 @@
                                                 {item.label}
                                             </span>
 
-                                            <span className="ml-auto font-mono text-[8px] text-white/15">
+                                            <span className="ml-auto font-mono text-[10px] text-white/50">
                                                 {active ? 'ACTIVE' : 'OPEN'}
                                             </span>
-                                        </m.button>
+                                        </button>
                                     );
                                 })}
 
@@ -417,7 +412,7 @@
 
                                 <Link href="/" className="group block">
                                     <div className="relative flex items-center border border-red-500/20 bg-red-500/[0.025] px-4 py-4 transition-all hover:border-red-500/50 hover:bg-red-500/[0.06]">
-                                        <span className="mr-4 font-mono text-[10px] text-red-500/40">XX</span>
+                                        <span className="mr-4 font-mono text-[10px] text-red-400/80">XX</span>
                                         <span className="font-mono text-xs font-bold tracking-[0.2em] text-red-400">
                                             SYSTEM EXIT
                                         </span>
@@ -429,7 +424,7 @@
 
                         {/* Sidebar technical footer */}
                         <div className="border-t border-white/[0.07] bg-black/40 p-5 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
-                            <div className="mb-3 flex items-center justify-between font-mono text-[8px] tracking-[0.25em] text-white/25">
+                            <div className="mb-3 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-white/50">
                                 <span>CONNECTION</span>
                                 <span>100%</span>
                             </div>
@@ -445,7 +440,7 @@
                                 ))}
                             </div>
 
-                            <div className="flex items-center justify-between font-mono text-[9px] text-white/30">
+                            <div className="flex items-center justify-between font-mono text-[10px] text-white/50">
                                 <span>BUILD 2.0.77</span>
                                 <span>© 2026</span>
                             </div>
@@ -460,7 +455,7 @@
                         {/* Header */}
                         <header className="relative z-20 flex min-h-[82px] shrink-0 items-center justify-between border-b border-white/[0.08] bg-black/40 px-5 backdrop-blur-md sm:px-8">
                             <div className="min-w-0">
-                                <div className="mb-1 font-mono text-[8px] tracking-[0.4em] text-cyan-400/50">
+                                <div className="mb-1 font-mono text-[10px] tracking-[0.4em] text-cyan-400/70">
                                     OPERATOR_ID
                                 </div>
                                 <div className="truncate font-mono text-sm font-bold tracking-[0.12em] text-white sm:text-base">
@@ -470,13 +465,13 @@
 
                             <div className="hidden items-center gap-4 sm:flex">
                                 <div className="text-right font-mono">
-                                    <div className="text-[8px] tracking-[0.3em] text-white/25">LOCAL_TIME</div>
+                                    <div className="text-[10px] tracking-[0.3em] text-white/50">LOCAL_TIME</div>
                                     <LocalClock />
                                 </div>
 
                                 <div className="h-8 w-px bg-white/10" />
 
-                                <div className="border border-yellow-400/30 bg-yellow-400/[0.05] px-3 py-2 font-mono text-[9px] font-bold tracking-[0.25em] text-yellow-400">
+                                <div className="border border-yellow-400/30 bg-yellow-400/[0.05] px-3 py-2 font-mono text-[10px] font-bold tracking-[0.25em] text-yellow-400">
                                     GAME_DEV
                                 </div>
                             </div>
@@ -486,61 +481,33 @@
                         <div className="relative flex-1 overflow-y-auto">
                             {/* Architectural decoration */}
                             <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 border-l border-b border-cyan-400/[0.08]" />
-                            <div className="pointer-events-none absolute right-8 top-8 hidden font-mono text-[8px] tracking-[0.35em] text-cyan-400/20 md:block">
+                            <div className="pointer-events-none absolute right-8 top-8 hidden font-mono text-[10px] tracking-[0.35em] text-cyan-400/70 md:block">
                                 10.24.77 // SECURE
                             </div>
 
-                            <div className="pointer-events-none absolute bottom-8 left-8 hidden font-mono text-[8px] tracking-[0.35em] text-white/15 md:block">
+                            <div className="pointer-events-none absolute bottom-8 left-8 hidden font-mono text-[10px] tracking-[0.35em] text-white/50 md:block">
                                 NODE_07 / CREATIVE_DIVISION
                             </div>
 
-                            <AnimatePresence mode="wait">
-                                <m.div
-                                    key={activeMenu}
-                                    initial={
-                                        shouldReduceMotion
-                                            ? { opacity: 0 }
-                                            : { opacity: 0, y: 20, filter: 'blur(7px)' }
-                                    }
-                                    animate={
-                                        shouldReduceMotion
-                                            ? { opacity: 1 }
-                                            : { opacity: 1, y: 0, filter: 'blur(0px)' }
-                                    }
-                                    exit={
-                                        shouldReduceMotion
-                                            ? { opacity: 0 }
-                                            : { opacity: 0, y: -15, filter: 'blur(7px)' }
-                                    }
-                                    transition={{ duration: 0.35 }}
-                                    className="mx-auto max-w-7xl p-5 sm:p-8 lg:p-12"
-                                >
+                            {/* Keyed by panel so each switch replays the CSS entrance. */}
+                            <div key={activeMenu} className="gd-panel-in mx-auto max-w-7xl p-5 sm:p-8 lg:p-12">
                                     {activeMenu === 'profile' && <ProfileContent />}
                                     {activeMenu === 'skills' && <SkillsContent />}
                                     {activeMenu === 'projects' && <ProjectsContent />}
                                     {activeMenu === 'contact' && <ContactContent />}
-                                </m.div>
-                            </AnimatePresence>
+                            </div>
                         </div>
                     </main>
                 </div>
 
                 {/* Glitch layer */}
-                <AnimatePresence>
-                    {glitchActive && (
-                        <m.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="pointer-events-none fixed inset-0 z-[100] overflow-hidden"
-                        >
+                {glitchActive && (
+                        <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
                             <div className="absolute left-0 top-[42%] h-2 w-full bg-red-500/20 mix-blend-screen" />
                             <div className="absolute left-0 top-[58%] h-px w-full bg-cyan-400/40 mix-blend-screen" />
-                        </m.div>
-                    )}
-                </AnimatePresence>
+                        </div>
+                )}
             </div>
-            </LazyMotion>
         );
     }
 
@@ -568,7 +535,7 @@
 
                     <div className="relative grid lg:grid-cols-[1.2fr_0.8fr]">
                         <div className="p-6 sm:p-8 lg:p-10">
-                            <div className="mb-6 flex items-center gap-3 font-mono text-[9px] tracking-[0.35em] text-cyan-400/50">
+                            <div className="mb-6 flex items-center gap-3 font-mono text-[10px] tracking-[0.35em] text-cyan-400/70">
                                 <span className="h-px w-8 bg-cyan-400/40" />
                                 BIO_LOG // 2077
                             </div>
@@ -595,7 +562,7 @@
                                 the strange little interaction a player remembers hours later.
                             </p>
 
-                            <div className="mt-7 border-l-2 border-pink-500/60 pl-4 font-mono text-[9px] uppercase leading-5 tracking-[0.16em] text-pink-300/45">
+                            <div className="mt-7 border-l-2 border-pink-500/60 pl-4 font-mono text-[10px] uppercase leading-5 tracking-[0.16em] text-pink-300/70">
                                 Design instinct // technical curiosity // obsessive iteration
                             </div>
 
@@ -603,11 +570,11 @@
                                 {artNotes.map((note, index) => (
                                     <div
                                         key={note}
-                                        className={`font-mono text-[8px] uppercase tracking-[0.13em] ${
-                                            index === 1 ? 'rotate-[-2deg] text-yellow-400/45' : 'text-white/30'
+                                        className={`font-mono text-[10px] uppercase tracking-[0.13em] ${
+                                            index === 1 ? 'rotate-[-2deg] text-yellow-400/70' : 'text-white/50'
                                         }`}
                                     >
-                                        <span className="mr-2 text-cyan-400/50">0{index + 1}</span>
+                                        <span className="mr-2 text-cyan-400/70">0{index + 1}</span>
                                         {note}
                                     </div>
                                 ))}
@@ -616,7 +583,7 @@
 
                         {/* Diagnostic panel */}
                         <div className="border-t border-white/[0.07] bg-black/20 p-6 lg:border-l lg:border-t-0">
-                            <div className="mb-6 font-mono text-[9px] tracking-[0.35em] text-white/25">
+                            <div className="mb-6 font-mono text-[10px] tracking-[0.35em] text-white/50">
                                 DIAGNOSTICS
                             </div>
 
@@ -625,7 +592,7 @@
                             <Diagnostic label="3D_PIPELINE" value="90%" />
                             <Diagnostic label="PROBLEM_SOLVING" value="94%" />
 
-                            <div className="mt-8 border-t border-white/[0.06] pt-5 font-mono text-[9px] leading-5 text-white/25">
+                            <div className="mt-8 border-t border-white/[0.06] pt-5 font-mono text-[10px] leading-5 text-white/50">
                                 <div>NODE: ACTIVE</div>
                                 <div>MODE: BUILD</div>
                                 <div>ACCESS: PUBLIC</div>
@@ -637,12 +604,10 @@
                 {/* Stats */}
                 <div className="mt-5 grid grid-cols-1 gap-px bg-white/[0.07] sm:grid-cols-3">
                     {profileStats.map((stat, index) => (
-                        <m.div
+                        <div
                             key={stat.label}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.08 }}
-                            className="relative bg-[#080b0e] p-6 sm:p-7"
+                            style={{ animationDelay: `${index * 0.08}s` }}
+                            className="gd-rise relative bg-[#080b0e] p-6 sm:p-7"
                         >
                             <div
                                 className={`absolute left-0 top-0 h-px w-12 ${
@@ -654,11 +619,11 @@
                                 }`}
                             />
 
-                            <div className="mb-2 font-mono text-[9px] tracking-[0.25em] text-white/30">
+                            <div className="mb-2 font-mono text-[10px] tracking-[0.25em] text-white/50">
                                 {stat.sub}
                             </div>
 
-                            <div className="font-mono text-[9px] tracking-[0.2em] text-white/45">
+                            <div className="font-mono text-[10px] tracking-[0.2em] text-white/45">
                                 {stat.label}
                             </div>
 
@@ -673,7 +638,7 @@
                             >
                                 {stat.value}
                             </div>
-                        </m.div>
+                        </div>
                     ))}
                 </div>
             </section>
@@ -698,18 +663,16 @@
 
                 <div className="mt-8 grid gap-px bg-white/[0.07] md:grid-cols-2">
                     {skillsData.map((skill, index) => (
-                        <m.div
+                        <div
                             key={skill.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.06 }}
-                            className="group relative overflow-hidden bg-[#080b0e] p-6 sm:p-7"
+                            style={{ animationDelay: `${index * 0.06}s` }}
+                            className="gd-rise group relative overflow-hidden bg-[#080b0e] p-6 sm:p-7"
                         >
                             <div className="absolute right-0 top-0 h-16 w-16 border-l border-b border-white/[0.06]" />
 
                             <div className="mb-5 flex items-start justify-between gap-4">
                                 <div>
-                                    <div className="mb-1 font-mono text-[9px] tracking-[0.3em] text-white/25">
+                                    <div className="mb-1 font-mono text-[10px] tracking-[0.3em] text-white/50">
                                         MODULE_{String(index + 1).padStart(2, '0')}
                                     </div>
                                     <h3 className="font-mono text-sm font-bold tracking-[0.15em] text-white sm:text-base">
@@ -717,17 +680,15 @@
                                     </h3>
                                 </div>
 
-                                <span className="border border-white/10 px-2 py-1 font-mono text-[8px] tracking-[0.15em] text-white/30">
+                                <span className="border border-white/10 px-2 py-1 font-mono text-[10px] tracking-[0.15em] text-white/50">
                                     {skill.category}
                                 </span>
                             </div>
 
                             <div className="relative h-3 border border-white/10 bg-black">
-                                <m.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${skill.level}%` }}
-                                    transition={{ duration: 1, delay: 0.2 + index * 0.08 }}
-                                    className={`absolute left-0 top-0 h-full bg-gradient-to-r ${skill.color}`}
+                                <div
+                                    style={{ width: `${skill.level}%`, animationDelay: `${0.2 + index * 0.08}s` }}
+                                    className={`gd-bar absolute left-0 top-0 h-full bg-gradient-to-r ${skill.color}`}
                                 />
 
                                 <div className="absolute inset-0 flex justify-between px-1">
@@ -738,18 +699,18 @@
                             </div>
 
                             <div className="mt-3 flex items-end justify-between">
-                                <div className="font-mono text-[8px] tracking-[0.25em] text-white/20">
+                                <div className="font-mono text-[10px] tracking-[0.25em] text-white/50">
                                     SYNCHRONIZATION
                                 </div>
                                 <div className="font-mono text-sm font-bold text-cyan-300">
                                     {skill.level}%
                                 </div>
                             </div>
-                        </m.div>
+                        </div>
                     ))}
                 </div>
 
-                <div className="mt-5 border border-yellow-400/20 bg-yellow-400/[0.025] p-5 font-mono text-[9px] leading-6 tracking-[0.12em] text-yellow-400/50">
+                <div className="mt-5 border border-yellow-400/20 bg-yellow-400/[0.025] p-5 font-mono text-[10px] leading-6 tracking-[0.12em] text-yellow-400/70">
                     <span className="text-yellow-400">SYSTEM_NOTE //</span> Skill values represent
                     current confidence and practical familiarity, not a claim of absolute mastery.
                 </div>
@@ -775,12 +736,10 @@
 
                 <div className="mt-8 space-y-5">
                     {projectsData.map((project, index) => (
-                        <m.article
+                        <article
                             key={project.name}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.08 }}
-                            className="group relative overflow-hidden border border-white/10 bg-[#080b0e]"
+                            style={{ animationDelay: `${index * 0.08}s` }}
+                            className="gd-slide group relative overflow-hidden border border-white/10 bg-[#080b0e]"
                         >
                             {/* Project visual */}
                             <div className="grid lg:grid-cols-[280px_1fr]">
@@ -793,12 +752,12 @@
                                     <div className="absolute right-[-60px] top-[-60px] h-56 w-56 rotate-12 border border-white/20" />
                                     <div className="absolute right-5 top-8 h-20 w-20 border-r border-t border-white/30" />
 
-                                    <div className="absolute left-6 top-6 font-mono text-[8px] tracking-[0.35em] text-white/60">
+                                    <div className="absolute left-6 top-6 font-mono text-[10px] tracking-[0.35em] text-white/60">
                                         FIELD NOTE / {project.number}
                                     </div>
 
                                     <div className="absolute bottom-6 left-6 max-w-[85%]">
-                                        <div className="mb-1 font-mono text-[8px] uppercase tracking-[0.35em] text-white/45">
+                                        <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.35em] text-white/45">
                                             A SMALL WORLD IN PROGRESS
                                         </div>
                                         <div className="text-5xl font-black uppercase leading-[0.8] tracking-[-0.08em] text-white sm:text-6xl">
@@ -806,7 +765,7 @@
                                         </div>
                                     </div>
 
-                                    <div className="absolute bottom-5 right-5 rotate-90 font-mono text-[8px] tracking-[0.3em] text-white/40">
+                                    <div className="absolute bottom-5 right-5 rotate-90 font-mono text-[10px] tracking-[0.3em] text-white/50">
                                         2026 / BUILD
                                     </div>
                                 </div>
@@ -817,7 +776,7 @@
 
                                     <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                                         <div>
-                                            <div className="mb-1 font-mono text-[8px] tracking-[0.35em] text-cyan-400/40">
+                                            <div className="mb-1 font-mono text-[10px] tracking-[0.35em] text-cyan-400/70">
                                                 ARCHIVE ENTRY // {project.number}
                                             </div>
                                             <h3 className="text-2xl font-black tracking-[-0.03em] text-white transition-colors group-hover:text-cyan-300 sm:text-3xl">
@@ -836,20 +795,20 @@
                                         {project.tech.map((technology) => (
                                             <span
                                                 key={technology}
-                                                className="border border-cyan-400/15 bg-cyan-400/[0.025] px-3 py-1.5 font-mono text-[9px] tracking-[0.15em] text-cyan-300/60 transition-colors group-hover:border-cyan-400/30 group-hover:text-cyan-300"
+                                                className="border border-cyan-400/15 bg-cyan-400/[0.025] px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] text-cyan-300/60 transition-colors group-hover:border-cyan-400/30 group-hover:text-cyan-300"
                                             >
                                                 {technology}
                                             </span>
                                         ))}
                                     </div>
 
-                                    <div className="mt-7 flex items-center gap-3 font-mono text-[8px] tracking-[0.25em] text-white/20">
+                                    <div className="mt-7 flex items-center gap-3 font-mono text-[10px] tracking-[0.25em] text-white/50">
                                         <span className="h-px w-10 bg-white/10" />
                                         SYSTEM ARCHIVED
                                     </div>
                                 </div>
                             </div>
-                        </m.article>
+                        </article>
                     ))}
                 </div>
             </section>
@@ -898,28 +857,26 @@
 
                 <div className="relative mt-8 grid gap-4 md:grid-cols-2">
                     {contacts.map((item, index) => (
-                        <m.a
+                        <a
                             key={item.title}
                             href={item.href}
                             target={item.title === 'EMAIL' ? undefined : '_blank'}
                             rel={item.title === 'EMAIL' ? undefined : 'noopener noreferrer'}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.08 }}
-                            className="group relative overflow-hidden border border-white/10 bg-[#080b0e] p-6 transition-all hover:border-cyan-400/40 sm:p-8"
+                            style={{ animationDelay: `${index * 0.08}s` }}
+                            className="gd-rise group relative overflow-hidden border border-white/10 bg-[#080b0e] p-6 transition-all hover:border-cyan-400/40 sm:p-8"
                         >
                             <div className="absolute right-0 top-0 h-20 w-20 border-l border-b border-white/[0.06]" />
 
                             <div className="mb-7 flex items-center justify-between">
-                                <span className="font-mono text-[9px] tracking-[0.3em] text-cyan-400/40">
+                                <span className="font-mono text-[10px] tracking-[0.3em] text-cyan-400/70">
                                     {item.code}
                                 </span>
-                                <span className="text-white/20 transition-colors group-hover:text-cyan-300">
+                                <span className="text-white/50 transition-colors group-hover:text-cyan-300">
                                     ↗
                                 </span>
                             </div>
 
-                            <div className="mb-2 font-mono text-[9px] tracking-[0.3em] text-white/30">
+                            <div className="mb-2 font-mono text-[10px] tracking-[0.3em] text-white/50">
                                 {item.title}
                             </div>
 
@@ -928,7 +885,7 @@
                             </div>
 
                             <div className="mt-7 h-px w-10 bg-cyan-400/40 transition-all duration-500 group-hover:w-full" />
-                        </m.a>
+                        </a>
                     ))}
 
                     {/* Availability panel */}
@@ -936,7 +893,7 @@
                         <div className="absolute right-0 top-0 h-24 w-24 border-l border-b border-green-400/10" />
 
                         <div className="mb-8 flex items-center justify-between">
-                            <span className="font-mono text-[9px] tracking-[0.3em] text-green-400/50">
+                            <span className="font-mono text-[10px] tracking-[0.3em] text-green-400/70">
                                 CONNECTION_STATUS
                             </span>
                             <span className="h-2 w-2 animate-pulse rounded-full bg-green-400 shadow-[0_0_12px_#4ade80]" />
@@ -946,7 +903,7 @@
                             CHANNEL OPEN
                         </div>
 
-                        <p className="mt-3 max-w-md font-mono text-[10px] leading-6 tracking-[0.1em] text-green-400/40">
+                        <p className="mt-3 max-w-md font-mono text-[10px] leading-6 tracking-[0.1em] text-green-400/70">
                             AVAILABLE FOR CONTRACTS / COLLABORATIONS / GAME DEVELOPMENT WORK
                         </p>
 
@@ -996,7 +953,7 @@
 
         return (
             <header className="relative">
-                <div className="mb-4 flex items-center gap-3 font-mono text-[9px] tracking-[0.35em] text-white/25">
+                <div className="mb-4 flex items-center gap-3 font-mono text-[10px] tracking-[0.35em] text-white/50">
                     <span className={`h-px w-8 ${lines[accent]}`} />
                     {eyebrow}
                 </div>
@@ -1017,7 +974,7 @@
                     </div>
                 </div>
 
-                <p className="mt-5 max-w-2xl border-l border-white/10 pl-4 text-sm leading-6 text-white/35 sm:text-base">
+                <p className="mt-5 max-w-2xl border-l border-white/10 pl-4 text-sm leading-6 text-white/50 sm:text-base">
                     {description}
                 </p>
             </header>
@@ -1027,9 +984,9 @@
     function Diagnostic({ label, value }: { label: string; value: string }) {
         return (
             <div className="mb-5">
-                <div className="mb-2 flex justify-between font-mono text-[8px] tracking-[0.2em]">
-                    <span className="text-white/30">{label}</span>
-                    <span className="text-cyan-400/50">{value}</span>
+                <div className="mb-2 flex justify-between font-mono text-[10px] tracking-[0.2em]">
+                    <span className="text-white/50">{label}</span>
+                    <span className="text-cyan-400/70">{value}</span>
                 </div>
 
                 <div className="flex gap-1">
@@ -1057,7 +1014,7 @@
 
         return (
             <span
-                className={`border px-3 py-2 font-mono text-[8px] font-bold tracking-[0.15em] ${styles[status]}`}
+                className={`border px-3 py-2 font-mono text-[10px] font-bold tracking-[0.15em] ${styles[status]}`}
             >
                 {status}
             </span>

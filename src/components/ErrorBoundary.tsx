@@ -11,7 +11,7 @@ import type { ErrorInfo, ReactNode } from 'react';
 const DISPLAY = 'font-[family-name:var(--font-orbitron)]';
 const LABEL = 'font-mono text-[10px] uppercase tracking-[0.2em]';
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
 
 /* ============================================================================
    ErrorBoundary
@@ -115,7 +115,7 @@ function DefaultFallback({
     >
       <div className="w-full max-w-lg border border-[var(--line-strong)] bg-[var(--surface)]">
         <div className={`flex items-center justify-between border-b border-[var(--line)] px-5 py-3 ${LABEL}`}>
-          <span className="flex items-center gap-2 text-[var(--primary)]">
+          <span className="flex items-center gap-2 text-[var(--primary-text)]">
             <span className="h-1.5 w-1.5 animate-pulse bg-[var(--primary)] motion-reduce:animate-none" aria-hidden="true" />
             System fault
           </span>
@@ -138,7 +138,7 @@ function DefaultFallback({
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className={`bg-[var(--primary)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--background)] transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${FOCUS_RING}`}
+              className={`bg-[var(--primary)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--ink)] transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${FOCUS_RING}`}
             >
               Reload page
             </button>
@@ -146,7 +146,7 @@ function DefaultFallback({
             <button
               type="button"
               onClick={reset}
-              className={`border border-[var(--line-strong)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition-colors hover:border-[var(--primary)] ${FOCUS_RING}`}
+              className={`border border-[var(--line-strong)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition-colors hover:border-[var(--primary-text)] ${FOCUS_RING}`}
             >
               Try again
             </button>

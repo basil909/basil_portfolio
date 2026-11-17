@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { Inter, Orbitron, Rajdhani } from 'next/font/google';
+import { Inter, Orbitron } from 'next/font/google';
 
 import ErrorBoundary from '../components/ErrorBoundary';
 import SmoothScroll from '../components/SmoothScroll';
@@ -28,13 +28,6 @@ const orbitron = Orbitron({
   display: 'swap',
   variable: '--font-orbitron',
   weight: ['400', '700', '900'],
-});
-
-const rajdhani = Rajdhani({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-rajdhani',
-  weight: ['400', '500', '600', '700'],
 });
 
 /* =========================================================
@@ -216,7 +209,6 @@ const structuredData = JSON.stringify({
 const bodyClassName = [
   inter.variable,
   orbitron.variable,
-  rajdhani.variable,
   inter.className,
   'antialiased',
 ].join(' ');

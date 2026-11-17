@@ -351,7 +351,7 @@ export default function Contact() {
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
               <div className="mb-5 flex items-center gap-4">
-                <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--primary)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--primary-text)]">
                   04 / Contact
                 </span>
 
@@ -364,14 +364,14 @@ export default function Contact() {
               >
                 LET&apos;S
                 <br />
-                <span className="text-[var(--primary)]">
+                <span className="text-[var(--primary-text)]">
                   BUILD.
                 </span>
               </h2>
             </div>
 
             <div className="max-w-sm text-right">
-              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted)]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
                 Open for opportunities
               </span>
 
@@ -391,7 +391,7 @@ export default function Contact() {
           >
             <div className="flex h-full flex-col">
               <div>
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
                   Start a conversation
                 </span>
 
@@ -409,14 +409,14 @@ export default function Contact() {
               <div className="mt-10 space-y-1 border-y border-[var(--line)]">
                 <a
                   href={`mailto:${SITE_EMAIL}`}
-                  className="group flex items-center gap-4 border-b border-[var(--line)] py-5 transition-colors hover:text-[var(--primary)] focus:outline-none focus-visible:text-[var(--primary)]"
+                  className="group flex items-center gap-4 border-b border-[var(--line)] py-5 transition-colors hover:text-[var(--primary-text)] focus:outline-none focus-visible:text-[var(--primary-text)]"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[var(--line)] text-[var(--primary)] transition-colors group-hover:border-[var(--primary)]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[var(--line)] text-[var(--primary-text)] transition-colors group-hover:border-[var(--primary-text)]">
                     <MailIcon />
                   </span>
 
                   <span className="min-w-0">
-                    <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Email
                     </span>
 
@@ -431,12 +431,12 @@ export default function Contact() {
                 </a>
 
                 <div className="flex items-center gap-4 border-b border-[var(--line)] py-5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[var(--line)] text-[var(--primary)]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[var(--line)] text-[var(--primary-text)]">
                     <LocationIcon />
                   </span>
 
                   <span>
-                    <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Location
                     </span>
 
@@ -448,7 +448,7 @@ export default function Contact() {
               </div>
 
               <div className="mt-auto pt-10">
-                <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
                   Find me online
                 </span>
 
@@ -458,7 +458,7 @@ export default function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Visit GitHub profile"
-                    className="flex h-11 w-11 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                    className="flex h-11 w-11 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                   >
                     <GithubIcon />
                   </a>
@@ -468,7 +468,7 @@ export default function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Visit LinkedIn profile"
-                    className="flex h-11 w-11 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                    className="flex h-11 w-11 items-center justify-center border border-[var(--line)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                   >
                     <LinkedinIcon />
                   </a>
@@ -509,7 +509,7 @@ export default function Contact() {
                   </svg>
                 </div>
 
-                <span className="mt-8 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                <span className="mt-8 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
                   Transmission complete
                 </span>
 
@@ -536,7 +536,7 @@ export default function Contact() {
                       firstInputRef.current?.focus();
                     });
                   }}
-                  className="mt-8 border border-[var(--line)] px-5 py-3 font-mono text-[9px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                  className="mt-8 border border-[var(--line)] px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                 >
                   Send another message
                 </button>
@@ -557,7 +557,7 @@ export default function Contact() {
 
                 <div className="mb-8 flex items-center justify-between border-b border-[var(--line)] pb-4">
                   <div>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--primary)]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
                       Contact form
                     </span>
 
@@ -566,14 +566,14 @@ export default function Contact() {
                     </h3>
                   </div>
 
-                  <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
                     04 — 01
                   </span>
                 </div>
 
                 {submitError && (
                   <div
-                    className="fade-in-up mb-6 border border-red-500/40 bg-red-500/5 px-4 py-3 text-sm leading-6 text-red-500"
+                    className="fade-in-up mb-6 border border-[color:color-mix(in_srgb,var(--danger)_45%,transparent)] bg-[color:color-mix(in_srgb,var(--danger)_6%,transparent)] px-4 py-3 text-sm leading-6 text-[var(--danger)]"
                     role="alert"
                   >
                     {submitError}
@@ -585,7 +585,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       01 / Name
                     </label>
@@ -607,15 +607,15 @@ export default function Contact() {
                       required
                       className={`w-full border-b bg-transparent px-0 py-3 text-base text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-dark)] ${
                         errors.name
-                          ? 'border-red-500'
-                          : 'border-[var(--line)] focus:border-[var(--primary)]'
+                          ? 'border-[var(--danger)]'
+                          : 'border-[var(--line)] focus:border-[var(--primary-text)]'
                       }`}
                     />
 
                     {errors.name && (
                       <p
                         id="name-error"
-                        className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
+                        className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
                         role="alert"
                       >
                         {errors.name}
@@ -627,7 +627,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       02 / Email
                     </label>
@@ -648,15 +648,15 @@ export default function Contact() {
                       required
                       className={`w-full border-b bg-transparent px-0 py-3 text-base text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-dark)] ${
                         errors.email
-                          ? 'border-red-500'
-                          : 'border-[var(--line)] focus:border-[var(--primary)]'
+                          ? 'border-[var(--danger)]'
+                          : 'border-[var(--line)] focus:border-[var(--primary-text)]'
                       }`}
                     />
 
                     {errors.email && (
                       <p
                         id="email-error"
-                        className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
+                        className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
                         role="alert"
                       >
                         {errors.email}
@@ -668,7 +668,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       03 / Message
                     </label>
@@ -690,8 +690,8 @@ export default function Contact() {
                       required
                       className={`w-full resize-none border-b bg-transparent px-0 py-3 text-base leading-7 text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-dark)] ${
                         errors.message
-                          ? 'border-red-500'
-                          : 'border-[var(--line)] focus:border-[var(--primary)]'
+                          ? 'border-[var(--danger)]'
+                          : 'border-[var(--line)] focus:border-[var(--primary-text)]'
                       }`}
                     />
 
@@ -699,7 +699,7 @@ export default function Contact() {
                       {errors.message ? (
                         <p
                           id="message-error"
-                          className="font-mono text-[9px] uppercase tracking-[0.12em] text-red-500"
+                          className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
                           role="alert"
                         >
                           {errors.message}
@@ -708,7 +708,7 @@ export default function Contact() {
                         <span />
                       )}
 
-                      <span className="shrink-0 font-mono text-[9px] text-[var(--muted)]">
+                      <span className="shrink-0 font-mono text-[10px] text-[var(--muted)]">
                         {formData.message.length}/500
                       </span>
                     </div>
@@ -725,7 +725,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group flex w-full items-center justify-between border border-[var(--primary)] bg-[var(--primary)] px-5 py-4 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--primary-light)] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    className="group flex w-full items-center justify-between border border-[var(--primary)] bg-[var(--primary)] px-5 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--primary-light)] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                   >
                     <span>
                       {isSubmitting
@@ -758,15 +758,15 @@ export default function Contact() {
           style={revealDelay(0.24)}
           className="reveal mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4"
         >
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
             AI / ML / Software engineering
           </span>
 
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
             Response channel / Email
           </span>
 
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
             ↓ 04
           </span>
         </div>

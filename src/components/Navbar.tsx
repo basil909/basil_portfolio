@@ -5,7 +5,6 @@ import type { MouseEvent as ReactMouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 
@@ -76,9 +75,9 @@ const ArrowIcon = ({ className }: IconProps) => (
 ============================================================================ */
 
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]';
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]';
 
-const ICON_BUTTON = `flex items-center justify-center border border-[var(--line)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] ${FOCUS_RING}`;
+const ICON_BUTTON = `flex items-center justify-center border border-[var(--line)] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] ${FOCUS_RING}`;
 
 /* ============================================================================
    Theme toggle (was duplicated for desktop / mobile)
@@ -87,36 +86,34 @@ const ICON_BUTTON = `flex items-center justify-center border border-[var(--line)
 function ThemeToggle({
   isDark,
   disabled,
-  reducedMotion,
   onToggle,
   className,
 }: {
   isDark: boolean;
   disabled: boolean;
-  reducedMotion: boolean;
   onToggle: () => void;
   className: string;
 }) {
   const label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  // Animate the icon swap only when the visitor toggles, not when the real
+  // theme is picked up after hydration.
+  const [toggled, setToggled] = useState(false);
 
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={() => {
+        setToggled(true);
+        onToggle();
+      }}
       disabled={disabled}
       aria-label={label}
       title={label}
       className={`${ICON_BUTTON} ${className} text-[var(--muted)] disabled:cursor-default disabled:opacity-70`}
     >
-      <m.span
-        key={isDark ? 'sun' : 'moon'}
-        initial={reducedMotion ? false : { rotate: -45, opacity: 0, scale: 0.7 }}
-        animate={{ rotate: 0, opacity: 1, scale: 1 }}
-        transition={{ duration: reducedMotion ? 0 : 0.2 }}
-        className="h-4 w-4"
-      >
+      <span key={isDark ? 'sun' : 'moon'} className={`block h-4 w-4 ${toggled ? 'nav-icon-in' : ''}`}>
         {isDark ? <SunIcon className="h-full w-full" /> : <MoonIcon className="h-full w-full" />}
-      </m.span>
+      </span>
     </button>
   );
 }
@@ -226,13 +223,7 @@ export default function Navbar() {
 
   /* ---- Render ---- */
   return (
-    <LazyMotion features={domAnimation}>
-      <m.header
-        initial={reducedMotion ? false : { y: -80 }}
-        animate={{ y: 0 }}
-        transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 140, damping: 22 }}
-        className="sticky top-0 z-50"
-      >
+    <header className="nav-drop sticky top-0 z-50">
         <nav
           aria-label="Main navigation"
           className={`relative border-b border-[var(--line)] transition-[background-color,box-shadow] duration-300 ${
@@ -249,7 +240,7 @@ export default function Navbar() {
               aria-label="Muhammed Basil home"
               className={`group flex items-center gap-3 ${FOCUS_RING}`}
             >
-              <span className="relative flex h-8 w-8 items-center justify-center border border-[var(--primary)] font-[family-name:var(--font-rajdhani)] text-xs font-bold text-[var(--primary)] transition-colors group-hover:bg-[var(--primary)] group-hover:text-[var(--ink)]">
+              <span className="relative flex h-8 w-8 items-center justify-center border border-[var(--primary-text)] font-[family-name:var(--font-orbitron)] text-[11px] font-black text-[var(--primary-text)] transition-colors group-hover:bg-[var(--primary)] group-hover:text-[var(--ink)]">
                 MB
               </span>
 
@@ -258,7 +249,7 @@ export default function Navbar() {
                 <span className="block font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
                   Muhammed Basil
                 </span>
-                <span className="mt-0.5 block font-[family-name:var(--font-rajdhani)] text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                <span className="mt-0.5 block font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                   AI / ML Developer
                 </span>
               </span>
@@ -273,9 +264,9 @@ export default function Navbar() {
                       href={item.href}
                       onClick={(e) => handleNavigate(e, item)}
                       aria-current={isCurrent(item) ? 'page' : undefined}
-                      className="group flex items-center gap-2 whitespace-nowrap text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary)]"
+                      className="group flex items-center gap-2 whitespace-nowrap text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary-text)]"
                     >
-                      <span className="font-[family-name:var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
+                      <span className="font-mono text-[10px] text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary-text)]">
                         {pad(i + 1)}
                       </span>
                       <span className="relative py-2">
@@ -297,7 +288,6 @@ export default function Navbar() {
               <ThemeToggle
                 isDark={isDark}
                 disabled={!isInitialized}
-                reducedMotion={reducedMotion}
                 onToggle={toggleTheme}
                 className="h-9 w-9"
               />
@@ -308,7 +298,6 @@ export default function Navbar() {
               <ThemeToggle
                 isDark={isDark}
                 disabled={!isInitialized}
-                reducedMotion={reducedMotion}
                 onToggle={toggleTheme}
                 className="h-10 w-10"
               />
@@ -328,22 +317,21 @@ export default function Navbar() {
           </div>
 
           {/* Mobile navigation */}
-          <AnimatePresence>
-            {menuOpen && (
-              <m.div
-                id="mobile-navigation"
-                initial={reducedMotion ? false : { opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
-                transition={{ duration: reducedMotion ? 0 : 0.22 }}
-                className="overflow-hidden border-t border-[var(--line)] bg-[var(--background)] md:hidden"
-              >
+          <div
+            id="mobile-navigation"
+            className={`absolute inset-x-0 top-full grid max-h-[calc(100svh-72px)] bg-[var(--background)] shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition-[grid-template-rows,opacity,visibility] duration-200 ease-out motion-reduce:transition-none md:hidden ${
+              menuOpen ? 'visible grid-rows-[1fr] border-t border-[var(--line)] opacity-100' : 'invisible grid-rows-[0fr] opacity-0'
+            }`}
+          >
+            {/* Overlays the page (absolute) so opening it never shifts the layout
+                that in-page scroll targets are measured against. */}
+            <div className="min-h-0 overflow-y-auto overscroll-contain" data-lenis-prevent>
                 <div className="mx-auto max-w-[1440px] px-5 py-5 sm:px-8">
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="font-[family-name:var(--font-rajdhani)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+                    <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
                       Navigation
                     </span>
-                    <span className="font-[family-name:var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)]">
+                    <span className="font-mono text-[10px] text-[var(--muted-dark)]">
                       {pad(1)} — {pad(NAV_ITEMS.length)}
                     </span>
                   </div>
@@ -355,10 +343,10 @@ export default function Navbar() {
                           href={item.href}
                           onClick={(e) => handleNavigate(e, item)}
                           aria-current={isCurrent(item) ? 'page' : undefined}
-                          className="group flex w-full items-center justify-between py-4 text-left transition-colors hover:text-[var(--primary)] focus:outline-none focus-visible:text-[var(--primary)]"
+                          className="group flex w-full items-center justify-between py-4 text-left transition-colors hover:text-[var(--primary-text)] focus:outline-none focus-visible:text-[var(--primary-text)]"
                         >
                           <span className="flex items-center gap-4">
-                            <span className="font-[family-name:var(--font-rajdhani)] text-xs text-[var(--muted-dark)] group-hover:text-[var(--primary)]">
+                            <span className="font-mono text-xs text-[var(--muted-dark)] group-hover:text-[var(--primary-text)]">
                               {pad(i + 1)}
                             </span>
                             <span className="text-base font-semibold uppercase tracking-[0.08em]">
@@ -371,11 +359,9 @@ export default function Navbar() {
                     ))}
                   </ul>
                 </div>
-              </m.div>
-            )}
-          </AnimatePresence>
+            </div>
+          </div>
         </nav>
-      </m.header>
-    </LazyMotion>
+    </header>
   );
 }
