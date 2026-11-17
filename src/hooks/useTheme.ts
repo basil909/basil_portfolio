@@ -6,35 +6,6 @@ export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'theme';
 
-function getSystemTheme(): Theme {
-  if (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
-    return 'dark';
-  }
-
-  return 'light';
-}
-
-function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') {
-    return 'dark';
-  }
-
-  try {
-    const savedTheme = localStorage.getItem(STORAGE_KEY);
-
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme;
-    }
-  } catch {
-    // Ignore localStorage errors.
-  }
-
-  return getSystemTheme();
-}
-
 function applyTheme(theme: Theme) {
   const html = document.documentElement;
 
@@ -48,8 +19,14 @@ function applyTheme(theme: Theme) {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] =
-    useState<Theme>(getInitialTheme);
+  /*
+   * Always start as 'dark' so the first client render matches the server
+   * HTML. Reading localStorage / matchMedia here caused a hydration mismatch
+   * (different toggle icon) for light-mode visitors, and React's recovery
+   * re-render wiped the `.light` class set by the head script. The effect
+   * below picks up the real theme once hydration has finished.
+   */
+  const [theme, setThemeState] = useState<Theme>('dark');
 
   const [isInitialized, setIsInitialized] =
     useState(false);

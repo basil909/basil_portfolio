@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
@@ -163,6 +164,7 @@ export default function Projects() {
   const triggerRef = useRef<HTMLElement | null>(null);
   const inView = useInView(sectionRef, { once: true, amount: 0.08 });
   const reducedMotion = useMotionReduced();
+  const lenis = useLenis();
 
   const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];
   const visibleProjects =
@@ -203,14 +205,17 @@ export default function Projects() {
 
     document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
+    // Lenis drives wheel scrolling itself and ignores `overflow: hidden`.
+    lenis?.stop();
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = previousOverflow;
+      lenis?.start();
       if (triggerRef.current?.isConnected) triggerRef.current.focus();
       triggerRef.current = null;
     };
-  }, [selectedProject]);
+  }, [selectedProject, lenis]);
 
   const openProject = (
     project: Project,

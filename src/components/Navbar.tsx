@@ -6,6 +6,7 @@ import { flushSync } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 
 import { useTheme } from '../hooks/useTheme';
@@ -132,6 +133,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { isDark, toggleTheme, isInitialized } = useTheme();
   const reducedMotion = useMotionReduced();
+  const lenis = useLenis();
 
   /* ---- Scroll state (rAF-throttled; React bails out when value is unchanged) ---- */
   useEffect(() => {
@@ -161,6 +163,8 @@ export default function Navbar() {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Lenis drives wheel scrolling itself and ignores `overflow: hidden`.
+    lenis?.stop();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -179,10 +183,11 @@ export default function Navbar() {
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      lenis?.start();
       window.removeEventListener('keydown', onKeyDown);
       mq.removeEventListener('change', onChange);
     };
-  }, [menuOpen]);
+  }, [menuOpen, lenis]);
 
   /* ---- Navigation ---- */
   const closeMenu = useCallback(() => setMenuOpen(false), []);

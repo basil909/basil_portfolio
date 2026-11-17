@@ -106,7 +106,7 @@
      Editorial Layout
   ======================================================= */
 
-  --header-height: 76px;
+  --header-height: 72px; /* matches the navbar's h-[72px] */
   --content-width: 1440px;
   --page-gutter: clamp(1rem, 3vw, 3.5rem);
   --section-space: clamp(6rem, 12vw, 12rem);
@@ -184,6 +184,7 @@ html.light {
   }
 
   #about,
+  #experience,
   #projects,
   #contact,
   #main-content {
