@@ -1,4 +1,7 @@
 import { RESUME_URL } from '../config/site';
+import RevealSection from './RevealSection';
+import TimelineRail from './TimelineRail';
+import SectionHeading, { Accent } from './SectionHeading';
 
 /* -------------------------------------------------------------------------- */
 /*  Data                                                                      */
@@ -58,8 +61,8 @@ const CERTIFICATIONS = [
 /* -------------------------------------------------------------------------- */
 
 const DISPLAY = 'font-[family-name:var(--font-orbitron)]';
-const LABEL = 'font-mono text-[10px] uppercase tracking-[0.2em]';
-const SUBHEAD = `${LABEL} mb-6 border-b border-[var(--line)] pb-3 text-[10px] font-bold tracking-[0.22em]`;
+const LABEL = 'font-mono text-[11px] uppercase tracking-[0.22em]';
+const SUBHEAD = `${LABEL} mb-6 border-b border-[var(--line)] pb-3 font-bold text-[var(--foreground)]`;
 const FOCUS_RING =
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]';
 
@@ -73,63 +76,58 @@ function Bullet() {
 
 export default function Experience() {
   return (
-    <section
+    <RevealSection
       id="experience"
-      className="relative border-t border-[var(--line)] bg-[var(--background)] px-5 py-24 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-32"
+      className="relative border-t border-[var(--line)] bg-[var(--background)] px-5 py-20 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-28"
       aria-labelledby="experience-title"
     >
-      <div className="mx-auto max-w-[1600px]">
-        <div className="mb-14 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:mb-20">
-          <div>
-            <div className="mb-5 flex items-center gap-3">
-              <span className={`${LABEL} tracking-[0.22em] text-[var(--primary-text)]`}>02 / Background</span>
-              <span className="h-px w-10 bg-[var(--primary)]" aria-hidden="true" />
-            </div>
-
-            <h2
-              id="experience-title"
-              className={`${DISPLAY} text-[clamp(1.875rem,8vw,3.5rem)] font-black uppercase leading-[0.92] tracking-[-0.06em] lg:text-[clamp(2.25rem,4.6vw,5rem)]`}
+      <div className="mx-auto max-w-[1440px]">
+        <SectionHeading
+          index="02"
+          label="Background"
+          id="experience-title"
+          lines={['Experience', <span key="e"><Accent>&amp;</Accent> education</span>]}
+          aside={
+            <a
+              href={RESUME_URL}
+              download
+              className={`inline-flex w-fit items-center gap-2 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--muted)] underline decoration-[var(--line-strong)] underline-offset-[6px] transition-colors hover:text-[var(--primary-text)] hover:decoration-[var(--primary-text)] ${FOCUS_RING}`}
             >
-              Experience <span className="text-[var(--primary-text)]">&amp;</span>
-              <br />
-              education.
-            </h2>
-          </div>
+              Download résumé
+              <span aria-hidden="true">↓</span>
+            </a>
+          }
+        />
 
-          <a
-            href={RESUME_URL}
-            download
-            className={`inline-flex w-fit shrink-0 items-center gap-4 border border-[var(--primary-text)] px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--primary-text)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--ink)] ${FOCUS_RING}`}
-          >
-            Download résumé
-            <span aria-hidden="true">↓</span>
-          </a>
-        </div>
-
-        <div className="grid gap-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-20 xl:gap-28">
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-20">
           <div>
-            <h3 className={SUBHEAD}>Experience</h3>
+            <h3 className={SUBHEAD}>Work</h3>
 
-            <ol className="space-y-px border border-[var(--line)] bg-[var(--line)]">
-              {EXPERIENCE.map((job) => (
-                <li key={job.role + job.org} className="bg-[var(--surface)] p-6 sm:p-8">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                    <h4 className={`${DISPLAY} text-base font-bold uppercase tracking-wide sm:text-lg`}>{job.role}</h4>
-                    <p className={`${LABEL} shrink-0 text-[var(--primary-text)]`}>{job.period}</p>
-                  </div>
-                  <p className="mt-2 text-sm font-medium text-[var(--muted)]">{job.org}</p>
+            <TimelineRail>
+              <ol className="space-y-12">
+                {EXPERIENCE.map((job) => (
+                  <li key={job.role + job.org} className="relative">
+                    {/* Marker on the rail; lights up when the fill reaches it. */}
+                    <span
+                      className="timeline-dot absolute -left-9 top-1.5 h-[15px] w-[15px] border border-[var(--line-strong)] bg-[var(--background)] sm:-left-12"
+                      aria-hidden="true"
+                    />
+                    <p className={`${LABEL} text-[var(--primary-text)]`}>{job.period}</p>
+                    <h4 className={`mt-3 ${DISPLAY} text-base font-bold uppercase tracking-wide sm:text-lg`}>{job.role}</h4>
+                    <p className="mt-1 text-sm font-medium text-[var(--muted)]">{job.org}</p>
 
-                  <ul className="mt-5 space-y-3">
-                    {job.points.map((point) => (
-                      <li key={point} className="flex gap-3 text-sm leading-6 text-[var(--muted)]">
-                        <Bullet />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ol>
+                    <ul className="mt-5 space-y-3">
+                      {job.points.map((point) => (
+                        <li key={point} className="flex gap-3 text-sm leading-6 text-[var(--muted)]">
+                          <Bullet />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
+            </TimelineRail>
           </div>
 
           <div className="space-y-12">
@@ -174,6 +172,6 @@ export default function Experience() {
           </div>
         </div>
       </div>
-    </section>
+    </RevealSection>
   );
 }

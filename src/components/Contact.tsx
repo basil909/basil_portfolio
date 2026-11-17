@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { emailjsConfig } from '../config/emailjs';
 import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../config/site';
 import RevealSection, { revealDelay } from './RevealSection';
+import SectionHeading, { Accent } from './SectionHeading';
 
 type FormData = {
   name: string;
@@ -321,67 +322,17 @@ export default function Contact() {
   return (
     <RevealSection
       id="contact"
-      className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--background)] px-5 py-24 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-32"
+      className="relative border-t border-[var(--line)] bg-[var(--background)] px-5 py-20 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-28"
       aria-labelledby="contact-title"
     >
-      {/* Structural background */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      >
-        <div className="absolute left-[5%] top-0 h-full w-px bg-[var(--line)] opacity-60" />
-
-        <div className="absolute right-[5%] top-0 h-full w-px bg-[var(--line)] opacity-60" />
-
-        <div
-          className="absolute inset-0 opacity-[0.13]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
+      <div className="mx-auto max-w-[1440px]">
+        <SectionHeading
+          index="04"
+          label="Contact"
+          id="contact-title"
+          lines={[<span key="l">Let&apos;s <Accent>build</Accent></span>]}
+          aside="Have an idea, project, or opportunity worth discussing? Send me a message."
         />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1600px]">
-        {/* Header */}
-        <div
-          className="reveal mb-14 border-b border-[var(--line)] pb-5"
-        >
-          <div className="flex flex-wrap items-end justify-between gap-5">
-            <div>
-              <div className="mb-5 flex items-center gap-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--primary-text)]">
-                  04 / Contact
-                </span>
-
-                <span className="hidden h-px w-14 bg-[var(--primary)] sm:block" />
-              </div>
-
-              <h2
-                id="contact-title"
-                className="font-[family-name:var(--font-orbitron)] text-[clamp(3rem,8vw,8rem)] font-black leading-[0.82] tracking-[-0.075em]"
-              >
-                LET&apos;S
-                <br />
-                <span className="text-[var(--primary-text)]">
-                  BUILD.
-                </span>
-              </h2>
-            </div>
-
-            <div className="max-w-sm text-right">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
-                Open for opportunities
-              </span>
-
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                Have an idea, project, or opportunity worth
-                discussing? Send me a message.
-              </p>
-            </div>
-          </div>
-        </div>
 
         <div className="grid gap-px border border-[var(--line)] bg-[var(--line)] lg:grid-cols-[0.72fr_1.28fr]">
           {/* Contact information */}
@@ -391,11 +342,7 @@ export default function Contact() {
           >
             <div className="flex h-full flex-col">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
-                  Start a conversation
-                </span>
-
-                <h3 className="mt-4 max-w-md font-[family-name:var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-3xl">
+                <h3 className="max-w-md font-[family-name:var(--font-orbitron)] text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-3xl">
                   Good work starts with a good brief.
                 </h3>
 
@@ -416,7 +363,7 @@ export default function Contact() {
                   </span>
 
                   <span className="min-w-0">
-                    <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Email
                     </span>
 
@@ -436,7 +383,7 @@ export default function Contact() {
                   </span>
 
                   <span>
-                    <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">
                       Location
                     </span>
 
@@ -447,12 +394,8 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="mt-auto pt-10">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                  Find me online
-                </span>
-
-                <div className="mt-4 flex gap-2">
+              <div className="mt-8">
+                <div className="flex gap-2">
                   <a
                     href={GITHUB_URL}
                     target="_blank"
@@ -489,7 +432,7 @@ export default function Contact() {
 
             {isSubmitted ? (
               <div
-                className="fade-in-up flex min-h-[520px] flex-col items-start justify-center border border-[var(--line)] bg-[var(--background)] p-7 sm:p-10"
+                className="fade-in-up flex min-h-[420px] flex-col items-start justify-center"
                 role="status"
               >
                 <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)] bg-[var(--primary)] text-black">
@@ -509,14 +452,10 @@ export default function Contact() {
                   </svg>
                 </div>
 
-                <span className="mt-8 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
-                  Transmission complete
-                </span>
-
                 <h3
                   ref={successHeadingRef}
                   tabIndex={-1}
-                  className="mt-3 font-[family-name:var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] focus:outline-none sm:text-4xl"
+                  className="mt-8 font-[family-name:var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] focus:outline-none sm:text-4xl"
                 >
                   Message sent.
                 </h3>
@@ -536,7 +475,7 @@ export default function Contact() {
                       firstInputRef.current?.focus();
                     });
                   }}
-                  className="mt-8 border border-[var(--line)] px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
+                  className="mt-8 border border-[var(--line)] px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]"
                 >
                   Send another message
                 </button>
@@ -546,7 +485,6 @@ export default function Contact() {
                 ref={formRef}
                 onSubmit={handleSubmit}
                 noValidate
-                className="border border-[var(--line)] bg-[var(--background)] p-5 sm:p-7 lg:p-8"
               >
                 <div aria-hidden="true" className="fixed -left-[9999px] top-0 h-0 w-0 overflow-hidden">
                   <label>
@@ -555,21 +493,9 @@ export default function Contact() {
                   </label>
                 </div>
 
-                <div className="mb-8 flex items-center justify-between border-b border-[var(--line)] pb-4">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--primary-text)]">
-                      Contact form
-                    </span>
-
-                    <h3 className="mt-2 text-lg font-semibold">
-                      Send a message
-                    </h3>
-                  </div>
-
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                    04 — 01
-                  </span>
-                </div>
+                <h3 className="mb-8 border-b border-[var(--line)] pb-4 text-lg font-semibold">
+                  Send a message
+                </h3>
 
                 {submitError && (
                   <div
@@ -585,7 +511,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       01 / Name
                     </label>
@@ -615,7 +541,7 @@ export default function Contact() {
                     {errors.name && (
                       <p
                         id="name-error"
-                        className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
+                        className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--danger)]"
                         role="alert"
                       >
                         {errors.name}
@@ -627,7 +553,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       02 / Email
                     </label>
@@ -656,7 +582,7 @@ export default function Contact() {
                     {errors.email && (
                       <p
                         id="email-error"
-                        className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
+                        className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--danger)]"
                         role="alert"
                       >
                         {errors.email}
@@ -668,7 +594,7 @@ export default function Contact() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
+                      className="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]"
                     >
                       03 / Message
                     </label>
@@ -699,7 +625,7 @@ export default function Contact() {
                       {errors.message ? (
                         <p
                           id="message-error"
-                          className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--danger)]"
+                          className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--danger)]"
                           role="alert"
                         >
                           {errors.message}
@@ -708,7 +634,7 @@ export default function Contact() {
                         <span />
                       )}
 
-                      <span className="shrink-0 font-mono text-[10px] text-[var(--muted)]">
+                      <span className="shrink-0 font-mono text-[11px] text-[var(--muted)]">
                         {formData.message.length}/500
                       </span>
                     </div>
@@ -725,7 +651,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group flex w-full items-center justify-between border border-[var(--primary)] bg-[var(--primary)] px-5 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--primary-light)] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    className="group flex w-full items-center justify-between border border-[var(--primary)] bg-[var(--primary)] px-5 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--primary-light)] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                   >
                     <span>
                       {isSubmitting
@@ -751,24 +677,6 @@ export default function Contact() {
               </form>
             )}
           </div>
-        </div>
-
-        {/* Bottom strip */}
-        <div
-          style={revealDelay(0.24)}
-          className="reveal mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4"
-        >
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-            AI / ML / Software engineering
-          </span>
-
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-            Response channel / Email
-          </span>
-
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-            ↓ 04
-          </span>
         </div>
       </div>
     </RevealSection>

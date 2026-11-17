@@ -312,7 +312,7 @@
                                 <div className="relative overflow-visible">
                                     <div className="absolute -left-3 top-1 h-28 w-[3px] bg-yellow-400" />
 
-                                    <div className="mb-3 pl-3 font-mono text-[10px] tracking-[0.4em] text-cyan-300/60">
+                                    <div className="mb-3 pl-3 font-mono text-[10px] whitespace-nowrap tracking-[0.16em] text-cyan-300/60">
                                         GAME DEVELOPER / DIGITAL WORLDS
                                     </div>
 

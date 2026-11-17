@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Inter, Orbitron } from 'next/font/google';
 
 import ErrorBoundary from '../components/ErrorBoundary';
+import Ambient from '../components/Ambient';
 import SmoothScroll from '../components/SmoothScroll';
 import {
   AUTHOR_NAME,
@@ -227,7 +228,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: perfScript }} />
         {/* Without JS nothing can trigger the scroll reveal, so show it outright. */}
         <noscript
-          dangerouslySetInnerHTML={{ __html: '<style>.reveal{opacity:1!important;transform:none!important}</style>' }}
+          dangerouslySetInnerHTML={{ __html: '<style>.reveal,.reveal-line>span,.flow .flow-step{opacity:1!important;transform:none!important}</style>' }}
         />
       </head>
 
@@ -245,6 +246,7 @@ export default function RootLayout({
         <SmoothScroll>
           <ErrorBoundary>{children}</ErrorBoundary>
         </SmoothScroll>
+        <Ambient />
       </body>
     </html>
   );

@@ -43,19 +43,6 @@ function ArrowUpIcon() {
   );
 }
 
-function ArrowIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      aria-hidden="true"
-      className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
-    >
-      <path d="M5 12h13M13 6l6 6-6 6"strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -67,172 +54,72 @@ export default function Footer() {
     else window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const iconLink =
+    'flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-text)]';
+
   return (
-    <footer className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--background)] text-[var(--foreground)]">
-      {/* Subtle technical grid */}
-      <div
-        className="pointer-events-none absolute left-0 top-0 h-px w-1/3 bg-[var(--primary)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage:
-            'linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative mx-auto max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12">
-        {/* Top identity row */}
-        <div className="mb-16 flex flex-col gap-8 border-b border-[var(--line)] pb-10 lg:flex-row lg:items-end lg:justify-between">
+    <footer className="border-t border-[var(--line)] bg-[var(--background)] text-[var(--foreground)]">
+      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+        <div className="flex flex-col gap-8 py-10 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
-              Portfolio / 2026
+            <p className="font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.12em]">
+              Muhammed Basil
             </p>
-
-            <h2 className="font-[family-name:var(--font-orbitron)] text-[clamp(2.4rem,6vw,6.5rem)] font-black uppercase leading-[0.88] tracking-[-0.06em]">
-              Build something
-              <br />
-              <span className="text-[var(--primary-text)]">intelligent.</span>
-            </h2>
+            <p className="mt-2 text-sm text-[var(--muted)]">AI/ML developer · Kerala, India</p>
           </div>
 
-          <a
-            href="#contact"
-            className="group inline-flex w-fit items-center gap-3 border-b border-[var(--foreground)] pb-2 text-sm font-semibold uppercase tracking-[0.16em] transition-colors hover:border-[var(--primary-text)] hover:text-[var(--primary-text)]"
-          >
-            Start a conversation
-            <ArrowIcon />
-          </a>
-        </div>
-
-        {/* Main footer grid */}
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_1fr] lg:gap-16">
-          {/* About + newsletter */}
-          <div>
-            <div className="mb-8 flex items-center gap-3">
-              <span className="relative h-2 w-2 bg-[var(--primary)]">
-                <span className="absolute -inset-1 border border-[color:color-mix(in_srgb,var(--primary)_30%,transparent)]" />
-              </span>
-              <span className="font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.12em]">
-                Muhammed Basil
-              </span>
-            </div>
-
-            <p className="max-w-md text-sm leading-7 text-[var(--muted)]">
-              AI/ML developer building practical intelligent systems,
-              full-stack applications, and tools designed to solve real
-              problems.
-            </p>
-          </div>
-
-          {/* Navigation */}
           <nav aria-label="Footer navigation">
-            <p className="mb-6 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
-              Navigate
-            </p>
-
-            <ul className="space-y-4">
+            <ul className="flex flex-wrap gap-x-7 gap-y-3">
               {[
-                ['01', 'About', '#about'],
-                ['02', 'Experience', '#experience'],
-                ['03', 'Projects', '#projects'],
-                ['04', 'Contact', '#contact'],
-              ].map(([number, label, href]) => (
+                ['About', '#about'],
+                ['Experience', '#experience'],
+                ['Projects', '#projects'],
+                ['Contact', '#contact'],
+              ].map(([label, href]) => (
                 <li key={label}>
                   <a
                     href={href}
-                    className="group flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--primary-text)]"
+                    className="text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary-text)]"
                   >
-                    <span className="font-mono text-xs text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary-text)]">
-                      {number}
-                    </span>
-                    <span>{label}</span>
-                    <ArrowIcon />
+                    {label}
                   </a>
                 </li>
               ))}
             </ul>
           </nav>
 
-          {/* Connect */}
-          <div>
-            <p className="mb-6 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
-              Connect
-            </p>
-
-            <div className="flex flex-wrap gap-2">
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
-              >
-                <span className="h-5 w-5">
-                  <GithubIcon />
-                </span>
-              </a>
-
-              <a
-                href={LINKEDIN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
-              >
-                <span className="h-5 w-5">
-                  <LinkedinIcon />
-                </span>
-              </a>
-
-              <a
-                href={`mailto:${SITE_EMAIL}`}
-                aria-label="Email"
-                className="flex h-11 w-11 items-center justify-center border border-[var(--line-strong)] text-[var(--muted)] transition-all hover:border-[var(--primary-text)] hover:bg-[var(--primary)] hover:text-black"
-              >
-                <span className="h-5 w-5">
-                  <MailIcon />
-                </span>
-              </a>
-            </div>
-
-            <div className="mt-8 border-l-2 border-[var(--primary-text)] pl-4">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                Based in
-              </p>
-              <p className="mt-1 text-sm font-medium">Kerala, India</p>
-            </div>
-
-            <p className="mt-8 max-w-xs text-xs leading-6 text-[var(--muted-dark)]">
-              Open to interesting projects, collaborations, and opportunities
-              involving AI, ML, and software engineering.
-            </p>
+          <div className="flex gap-2">
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in a new tab)" className={iconLink}>
+              <span className="h-5 w-5">
+                <GithubIcon />
+              </span>
+            </a>
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in a new tab)" className={iconLink}>
+              <span className="h-5 w-5">
+                <LinkedinIcon />
+              </span>
+            </a>
+            <a href={`mailto:${SITE_EMAIL}`} aria-label="Email" className={iconLink}>
+              <span className="h-5 w-5">
+                <MailIcon />
+              </span>
+            </a>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 flex flex-col gap-5 border-t border-[var(--line)] pt-6 text-xs text-[var(--muted-dark)] sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {currentYear} Muhammed Basil. All rights reserved.
-          </p>
+        <div className="flex flex-col gap-4 border-t border-[var(--line)] py-6 text-xs text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+          <p>© {currentYear} Muhammed Basil</p>
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <span>Next.js / Tailwind CSS</span>
-
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="group inline-flex items-center gap-2 font-semibold uppercase tracking-[0.12em] text-[var(--muted)] transition-colors hover:text-[var(--primary-text)]"
-            >
-              Back to top
-              <span className="h-4 w-4 transition-transform group-hover:-translate-y-0.5">
-                <ArrowUpIcon />
-              </span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="group inline-flex w-fit items-center gap-2 font-semibold uppercase tracking-[0.12em] transition-colors hover:text-[var(--primary-text)] focus:outline-none focus-visible:text-[var(--primary-text)]"
+          >
+            Back to top
+            <span className="h-4 w-4 transition-transform group-hover:-translate-y-0.5">
+              <ArrowUpIcon />
+            </span>
+          </button>
         </div>
       </div>
     </footer>

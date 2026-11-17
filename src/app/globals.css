@@ -622,11 +622,17 @@ html[data-perf='low'] *::after {
   backdrop-filter: none !important;
 }
 
-/* Skip layout and paint for sections far below the fold. */
+/* Skip layout and paint for sections far below the fold. The sizes are
+   estimates used until first render ("auto" then remembers the real one). */
 #contact,
 footer {
   content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
+}
+#contact {
+  contain-intrinsic-size: auto 1100px;
+}
+footer {
+  contain-intrinsic-size: auto 220px;
 }
 
 /* =========================================================
@@ -721,40 +727,6 @@ footer {
 }
 
 /* Project dialog (Projects.tsx). The *-out classes end with animationend. */
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes modal-fade-out {
-  to {
-    opacity: 0;
-  }
-}
-@keyframes modal-panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.985);
-  }
-}
-@keyframes modal-panel-out {
-  to {
-    opacity: 0;
-    transform: translateY(12px) scale(0.99);
-  }
-}
-.modal-backdrop-in {
-  animation: modal-fade-in 0.3s ease-out;
-}
-.modal-backdrop-out {
-  animation: modal-fade-out 0.3s ease-in forwards;
-}
-.modal-panel-in {
-  animation: modal-panel-in 0.35s var(--ease-out);
-}
-.modal-panel-out {
-  animation: modal-panel-out 0.3s ease-in forwards;
-}
 
 /* Game Dev page entrances. */
 @keyframes gd-panel-in {
@@ -797,10 +769,6 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .nav-drop,
   .nav-icon-in,
-  .modal-backdrop-in,
-  .modal-backdrop-out,
-  .modal-panel-in,
-  .modal-panel-out,
   .gd-panel-in,
   .gd-rise,
   .gd-slide,
@@ -808,4 +776,164 @@ footer {
   .gd-artifact {
     animation: none;
   }
+}
+
+/* =========================================================
+   AMBIENT (components/Ambient.tsx)
+========================================================= */
+
+.ambient-light {
+  background: radial-gradient(
+    520px circle at var(--mx, -999px) var(--my, -999px),
+    rgb(var(--primary-rgb) / 0.07),
+    transparent 70%
+  );
+}
+
+html.light .ambient-light {
+  background: radial-gradient(
+    520px circle at var(--mx, -999px) var(--my, -999px),
+    rgb(var(--primary-rgb) / 0.16),
+    transparent 70%
+  );
+}
+
+/* Plain opacity (no blend mode): a blended full-screen layer would be
+   recomposited on every scroll frame. */
+.ambient-grain {
+  opacity: 0.035;
+}
+
+html.light .ambient-grain {
+  opacity: 0.05;
+  filter: invert(1);
+}
+
+html[data-perf='low'] .ambient-grain,
+html[data-perf='low'] .ambient-light {
+  display: none;
+}
+
+/* =========================================================
+   SECTION HEADINGS (components/SectionHeading.tsx)
+========================================================= */
+
+/* Each heading line rises out of a mask once its section is revealed. */
+.reveal-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.reveal-line > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.9s var(--ease-out) var(--line-delay, 0s);
+}
+
+[data-revealed='true'] .reveal-line > span {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .reveal-line > span {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Large outlined index behind each heading: texture, not information. */
+.section-numeral {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(var(--foreground-rgb) / 0.09);
+  letter-spacing: -0.06em;
+}
+
+/* =========================================================
+   PROJECT PIPELINES (Projects.tsx FlowDiagram)
+========================================================= */
+
+/* Steps light up in order the first time the card is seen. */
+.flow .flow-step {
+  opacity: 0.35;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.5s ease-out calc(var(--i) * 0.18s),
+    transform 0.5s var(--ease-out) calc(var(--i) * 0.18s);
+}
+
+.flow[data-seen='true'] .flow-step {
+  opacity: 1;
+  transform: none;
+}
+
+.flow .flow-core {
+  box-shadow: 0 0 0 0 rgb(var(--primary-rgb) / 0.5);
+}
+
+.flow[data-live='true'] .flow-core {
+  animation: flow-core-pulse 2.6s ease-out 1s infinite;
+}
+
+/* A packet runs down the spine; the step boxes hide it, so it only shows in
+   the gaps — data moving between stages. */
+.flow-packet {
+  opacity: 0;
+}
+
+.flow[data-live='true'] .flow-packet {
+  animation: flow-packet 2.6s linear 1s infinite;
+}
+
+@keyframes flow-packet {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes flow-core-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--primary-rgb) / 0.45);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 12px rgb(var(--primary-rgb) / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .flow .flow-step {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .flow[data-live='true'] .flow-packet,
+  .flow[data-live='true'] .flow-core {
+    animation: none;
+  }
+}
+
+/* Experience timeline marker (TimelineRail.tsx) */
+.timeline-dot {
+  transition:
+    background-color 0.3s ease-out,
+    border-color 0.3s ease-out,
+    box-shadow 0.3s ease-out;
+}
+
+.timeline-dot[data-on='true'] {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  box-shadow: 0 0 0 5px rgb(var(--primary-rgb) / 0.15);
 }
