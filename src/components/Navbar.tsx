@@ -203,14 +203,23 @@ export default function Navbar() {
       // route, let Next.js navigate to "/#section" normally.
       if (!item.hash || pathname !== '/') return;
 
-      const target = document.querySelector(item.hash);
+      const target = document.querySelector<HTMLElement>(item.hash);
       if (!target) return;
 
       event.preventDefault();
-      target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      // Stop the click reaching Lenis's own anchor handler (on window), so the
+      // scroll is started exactly once.
+      event.stopPropagation();
+
+      if (lenis) {
+        // Lenis honours `scroll-margin-top`, so sections clear the sticky header.
+        lenis.scrollTo(target, { immediate: reducedMotion, force: true });
+      } else {
+        target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      }
       window.history.pushState(null, '', item.hash);
     },
-    [pathname, reducedMotion],
+    [pathname, reducedMotion, lenis],
   );
 
   const isCurrent = (item: NavItem) => !item.hash && pathname === item.href;
@@ -244,7 +253,8 @@ export default function Navbar() {
                 MB
               </span>
 
-              <span className="hidden sm:block">
+              {/* Hidden at md, where the desktop links need the room; back at lg. */}
+              <span className="hidden whitespace-nowrap sm:block md:hidden lg:block">
                 <span className="block font-[family-name:var(--font-orbitron)] text-sm font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
                   Muhammed Basil
                 </span>
@@ -255,15 +265,15 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop navigation */}
-            <div className="hidden items-center gap-6 md:flex">
-              <ul className="flex items-center gap-6">
+            <div className="hidden items-center gap-4 md:flex lg:gap-6">
+              <ul className="flex items-center gap-4 lg:gap-6">
                 {NAV_ITEMS.map((item, i) => (
                   <li key={item.name}>
                     <Link
                       href={item.href}
                       onClick={(e) => handleNavigate(e, item)}
                       aria-current={isCurrent(item) ? 'page' : undefined}
-                      className="group flex items-center gap-2 text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary)]"
+                      className="group flex items-center gap-2 whitespace-nowrap text-sm font-medium text-[var(--muted)] transition-colors hover:text-[var(--foreground)] focus:outline-none focus-visible:text-[var(--primary)]"
                     >
                       <span className="font-[family-name:var(--font-rajdhani)] text-[10px] text-[var(--muted-dark)] transition-colors group-hover:text-[var(--primary)]">
                         {pad(i + 1)}

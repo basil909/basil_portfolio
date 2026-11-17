@@ -1396,3 +1396,68 @@ footer {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+
+/* =========================================================
+   SCROLL REVEAL (see components/RevealSection.tsx)
+   Hidden only while JS can reveal it: visible with no scripting,
+   reduced motion, or the <noscript> override in layout.tsx.
+========================================================= */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s var(--ease-out) var(--reveal-delay, 0s),
+    transform 0.8s var(--ease-out) var(--reveal-delay, 0s);
+}
+
+[data-revealed='true'] .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Short entrance for content that swaps in place (filters, form states). */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.45s var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up {
+    animation: none;
+  }
+}
+
+/* Game Dev page: floating background artifacts (duration/delay set inline). */
+@keyframes gd-float {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-80px);
+    opacity: 0.4;
+  }
+}
+
+.gd-artifact {
+  opacity: 0;
+  animation-name: gd-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}

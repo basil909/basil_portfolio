@@ -1,34 +1,30 @@
 'use client';
 
-import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ReactLenis, useLenis } from 'lenis/react';
+import { ReactLenis } from 'lenis/react';
+import type { LenisOptions } from 'lenis';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 
-const LENIS_OPTIONS = {
+const BASE_OPTIONS = {
   autoRaf: true,
   lerp: 0.1,
-  smoothWheel: true,
   syncTouch: false, // touch screens keep their native momentum scrolling
-  anchors: true, // in-page #links glide instead of jumping
-} as const;
+} as const satisfies LenisOptions;
 
-/** Turns Lenis off for reduced-motion visitors and slow devices. */
-function ReducedMotionGuard() {
-  const lenis = useLenis();
+// Two stable objects, so <ReactLenis> only rebuilds its instance when the mode flips.
+const SMOOTH_OPTIONS: LenisOptions = { ...BASE_OPTIONS, smoothWheel: true, anchors: true };
+const PLAIN_OPTIONS: LenisOptions = { ...BASE_OPTIONS, smoothWheel: false, anchors: { immediate: true } };
+
+/**
+ * Lenis smooth scrolling. Reduced-motion visitors and slow devices get native
+ * wheel scrolling and instant anchor jumps. ReactLenis recreates its instance
+ * when the options change, so the mode follows the OS setting both ways.
+ */
+export default function SmoothScroll({ children }: { children: ReactNode }) {
   const reduced = useMotionReduced();
 
-  useEffect(() => {
-    if (lenis && reduced) lenis.destroy();
-  }, [lenis, reduced]);
-
-  return null;
-}
-
-export default function SmoothScroll({ children }: { children: ReactNode }) {
   return (
-    <ReactLenis root options={LENIS_OPTIONS}>
-      <ReducedMotionGuard />
+    <ReactLenis root options={reduced ? PLAIN_OPTIONS : SMOOTH_OPTIONS}>
       {children}
     </ReactLenis>
   );

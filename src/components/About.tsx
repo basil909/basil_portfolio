@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
-import type { ComponentPropsWithoutRef, CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import RevealSection, { revealDelay } from './RevealSection';
 
 /* -------------------------------------------------------------------------- */
 /*  Data                                                                      */
@@ -56,58 +56,7 @@ const SCAN_STYLE: CSSProperties = {
     'linear-gradient(to bottom, transparent 0%, transparent 48%, rgba(255,255,255,0.08) 50%, transparent 52%, transparent 100%)',
 };
 
-/** Stagger helper for `.reveal` elements (see RevealSection). */
-const delay = (seconds: number) => ({ '--reveal-delay': `${seconds}s` }) as CSSProperties;
-
-/* -------------------------------------------------------------------------- */
-/*  Scroll reveal (no animation library)                                      */
-/*  One IntersectionObserver flips `data-revealed` on the <section> once; any */
-/*  descendant with `.reveal` then transitions in via CSS. The flag is set on */
-/*  the DOM node directly, so nothing re-renders.                             */
-/* -------------------------------------------------------------------------- */
-
-const REVEAL_EASE = 'cubic-bezier(.16,1,.3,1)';
-
-const REVEAL_CSS = `
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ${REVEAL_EASE} var(--reveal-delay,0s),transform .8s ${REVEAL_EASE} var(--reveal-delay,0s)}
-[data-revealed="true"] .reveal{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-@media (scripting:none){.reveal{opacity:1;transform:none;transition:none}}
-`;
-
-function RevealSection({ children, ...props }: ComponentPropsWithoutRef<'section'>) {
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-
-    if (typeof IntersectionObserver === 'undefined') {
-      el.dataset['revealed'] = 'true';
-      return undefined;
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        // `.some` instead of `[entry]` destructuring: indexing is `T | undefined` under noUncheckedIndexedAccess.
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        el.dataset['revealed'] = 'true';
-        io.disconnect();
-      },
-      { threshold: 0.05, rootMargin: '0px 0px -10% 0px' },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <section ref={ref} {...props}>
-      <style dangerouslySetInnerHTML={{ __html: REVEAL_CSS }} />
-      {children}
-    </section>
-  );
-}
+const delay = revealDelay;
 
 /* -------------------------------------------------------------------------- */
 /*  About                                                                     */
@@ -171,7 +120,7 @@ function SectionHeader() {
   return (
     <div className="mb-14 flex items-end justify-between border-b border-[var(--line)] pb-5">
       <div className="flex items-center gap-4">
-        <span className={`${LABEL} text-[10px] tracking-[0.24em] text-[var(--primary)]`}>02 / Profile</span>
+        <span className={`${LABEL} text-[10px] tracking-[0.24em] text-[var(--primary)]`}>01 / Profile</span>
         <span className="hidden h-px w-14 bg-[var(--primary)] sm:block" aria-hidden="true" />
       </div>
 

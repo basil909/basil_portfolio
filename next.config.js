@@ -8,6 +8,12 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
+  // Always defined, so it is inlined as a constant and the dev-only perf panel
+  // (ErrorBoundary.tsx) is dropped from production bundles unless it is '1'.
+  env: {
+    NEXT_PUBLIC_PERF_MONITOR: process.env.NEXT_PUBLIC_PERF_MONITOR ?? '',
+  },
+
   images: {
     unoptimized: process.env.NODE_ENV === 'development',
     formats: ['image/avif', 'image/webp'],
@@ -15,14 +21,15 @@ const nextConfig = {
 
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['framer-motion', 'react-intersection-observer'],
+    optimizePackageImports: ['framer-motion'],
   },
 
   async headers() {
     return [
       {
         // Downloadable, but kept out of search results (it contains contact details).
-        source: '/:file(.*\.pdf)',
+        // `\\.` so the regex gets a literal dot (a lone `\.` in a JS string is just `.`).
+        source: '/:file(.*\\.pdf)',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {

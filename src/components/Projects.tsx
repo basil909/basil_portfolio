@@ -1,8 +1,9 @@
 'use client';
 
-import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { useMotionReduced } from '../hooks/useMotionReduced';
+import RevealSection, { revealDelay } from './RevealSection';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
@@ -157,12 +158,11 @@ function ProjectVisual({ project, active }: { project: Project; active: boolean 
 
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [filterUsed, setFilterUsed] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const sectionRef = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
-  const inView = useInView(sectionRef, { once: true, amount: 0.08 });
   const reducedMotion = useMotionReduced();
   const lenis = useLenis();
 
@@ -225,23 +225,9 @@ export default function Projects() {
     setSelectedProject(project);
   };
 
-  const reveal = (delay = 0) => ({
-    initial: { opacity: 0, y: reducedMotion ? 0 : 24 },
-    animate: inView
-      ? {
-          opacity: 1,
-          y: 0,
-          transition: reducedMotion
-            ? { duration: 0 }
-            : { duration: 0.75, delay, ease: [0.16, 1, 0.3, 1] as const },
-        }
-      : { opacity: 0, y: reducedMotion ? 0 : 24 },
-  });
-
   return (
-    <section
+    <RevealSection
       id="projects"
-      ref={sectionRef}
       className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--background)] px-5 py-24 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-32"
       aria-labelledby="projects-title"
     >
@@ -253,7 +239,7 @@ export default function Projects() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1600px]">
-        <motion.header {...reveal()} className="border-b border-[var(--line)] pb-6">
+        <header className="reveal border-b border-[var(--line)] pb-6">
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <div className="mb-5 flex items-center gap-4">
@@ -283,11 +269,10 @@ export default function Projects() {
               </p>
             </div>
           </div>
-        </motion.header>
+        </header>
 
-        <motion.div
-          {...reveal(0.08)}
-          className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--line)] py-5"
+        <div
+          className="reveal flex flex-wrap items-center justify-between gap-4 border-b border-[var(--line)] py-5"
         >
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects">
             {categories.map((category) => {
@@ -297,7 +282,10 @@ export default function Projects() {
                 <button
                   key={category}
                   type="button"
-                  onClick={() => setActiveFilter(category)}
+                  onClick={() => {
+                    setActiveFilter(category);
+                    setFilterUsed(true);
+                  }}
                   aria-pressed={active}
                   className={`border px-4 py-2.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
                     active
@@ -314,21 +302,16 @@ export default function Projects() {
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             {visibleProjects.length.toString().padStart(2, '0')} systems
           </span>
-        </motion.div>
+        </div>
 
-        <div className="mt-8 space-y-5">
-          <AnimatePresence mode="popLayout">
+        {/* Keyed by filter so the cards replay a short CSS entrance when it changes;
+            the first appearance is handled by the scroll reveal instead. */}
+        <div key={activeFilter} className={`mt-8 space-y-5 ${filterUsed ? 'fade-in-up' : ''}`}>
             {visibleProjects.map((project, index) => (
-              <motion.article
+              <article
                 key={project.title}
-                layout
-                {...reveal(0.12 + index * 0.06)}
-                exit={
-                  reducedMotion
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: -12, scale: 0.99 }
-                }
-                className="group relative grid overflow-hidden border border-[var(--line)] bg-[var(--surface)] lg:min-h-[520px] lg:grid-cols-[1.12fr_0.88fr]"
+                style={revealDelay(0.12 + index * 0.06)}
+                className="reveal group relative grid overflow-hidden border border-[var(--line)] bg-[var(--surface)] lg:min-h-[520px] lg:grid-cols-[1.12fr_0.88fr]"
               >
                 <button
                   type="button"
@@ -397,14 +380,13 @@ export default function Projects() {
                     </div>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             ))}
-          </AnimatePresence>
         </div>
 
-        <motion.div
-          {...reveal(0.25)}
-          className="mt-12 flex flex-col gap-3 border-t border-[var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between"
+        <div
+          style={revealDelay(0.25)}
+          className="reveal mt-12 flex flex-col gap-3 border-t border-[var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between"
         >
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             Archive / End of selected systems
@@ -412,12 +394,13 @@ export default function Projects() {
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted-dark)]">
             More experiments in progress
           </span>
-        </motion.div>
+        </div>
       </div>
 
+      <LazyMotion features={domAnimation} strict>
       <AnimatePresence>
         {selectedProject && (
-          <motion.div
+          <m.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6"
             role="dialog"
             aria-modal="true"
@@ -429,7 +412,7 @@ export default function Projects() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div
+            <m.div
               ref={dialogRef}
               data-lenis-prevent
               className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto border border-[var(--line)] bg-[var(--surface)] shadow-2xl"
@@ -559,10 +542,11 @@ export default function Projects() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </section>
+      </LazyMotion>
+    </RevealSection>
   );
 }

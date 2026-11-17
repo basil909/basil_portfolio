@@ -233,6 +233,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: perfScript }} />
+        {/* Without JS nothing can trigger the scroll reveal, so show it outright. */}
+        <noscript
+          dangerouslySetInnerHTML={{ __html: '<style>.reveal{opacity:1!important;transform:none!important}</style>' }}
+        />
       </head>
 
       <body className={bodyClassName} suppressHydrationWarning>

@@ -1,9 +1,10 @@
     'use client';
 
-    import { useEffect, useMemo, useState } from 'react';
-    import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+    import { useEffect, useRef, useState } from 'react';
+    import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion';
     import Link from 'next/link';
     import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../../config/site';
+    import { useMotionReduced } from '../../hooks/useMotionReduced';
 
     /*
     * ART DIRECTION
@@ -110,93 +111,89 @@
     }
 
 
+    const ARTIFACTS = createArtifacts();
+
     const artNotes = [
         'MAKE IT FEEL PLAYABLE',
         'LIGHT / MOTION / WEIGHT',
         'BUILD THE FEEL FIRST',
     ];
 
-    function CursorGlow() {
-        const [cursor, setCursor] = useState({ x: 50, y: 50 });
+    /*
+    * The pointer position is written to CSS variables on the element, so moving
+    * the mouse repaints one layer instead of re-rendering React every frame.
+    */
+    const GLOW_BACKGROUND = `
+        radial-gradient(circle 620px at var(--gx, 50%) var(--gy, 50%), rgba(0,229,255,0.11), transparent 62%),
+        radial-gradient(circle 520px at 78% 18%, rgba(255,32,128,0.08), transparent 65%),
+        radial-gradient(circle 700px at 18% 88%, rgba(250,204,21,0.055), transparent 68%)
+    `;
+
+    function CursorGlow({ interactive }: { interactive: boolean }) {
+        const ref = useRef<HTMLDivElement>(null);
 
         useEffect(() => {
-            let frame: number | null = null;
+            const el = ref.current;
+            if (!el || !interactive) return undefined;
+
+            let frame = 0;
             let clientX = 0;
             let clientY = 0;
 
             const move = (event: MouseEvent) => {
                 clientX = event.clientX;
                 clientY = event.clientY;
-
-                if (frame !== null) return;
+                if (frame) return;
 
                 frame = window.requestAnimationFrame(() => {
-                    frame = null;
-                    setCursor({
-                        x: (clientX / window.innerWidth) * 100,
-                        y: (clientY / window.innerHeight) * 100,
-                    });
+                    frame = 0;
+                    el.style.setProperty('--gx', `${(clientX / window.innerWidth) * 100}%`);
+                    el.style.setProperty('--gy', `${(clientY / window.innerHeight) * 100}%`);
                 });
             };
 
-            window.addEventListener('mousemove', move);
+            window.addEventListener('mousemove', move, { passive: true });
             return () => {
                 window.removeEventListener('mousemove', move);
-                if (frame !== null) window.cancelAnimationFrame(frame);
+                if (frame) window.cancelAnimationFrame(frame);
             };
-        }, []);
+        }, [interactive]);
 
         return (
             <div
-                className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-700"
-                style={{
-                    background: `
-                        radial-gradient(circle 620px at ${cursor.x}% ${cursor.y}%,
-                            rgba(0,229,255,0.11),
-                            transparent 62%),
-                        radial-gradient(circle 520px at 78% 18%,
-                            rgba(255,32,128,0.08),
-                            transparent 65%),
-                        radial-gradient(circle 700px at 18% 88%,
-                            rgba(250,204,21,0.055),
-                            transparent 68%)
-                    `,
-                }}
+                ref={ref}
+                className="pointer-events-none fixed inset-0 z-0"
+                style={{ background: GLOW_BACKGROUND }}
             />
         );
+    }
+
+    /* Ticking clock in its own component, so only this text re-renders each second. */
+    function LocalClock() {
+        const [clock, setClock] = useState('');
+
+        useEffect(() => {
+            const format = new Intl.DateTimeFormat(undefined, {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            });
+            const update = () => setClock(format.format(new Date()));
+
+            update();
+            const timer = window.setInterval(update, 1000);
+            return () => window.clearInterval(timer);
+        }, []);
+
+        return <div className="text-xs text-cyan-300">{clock || '--:--:--'}</div>;
     }
 
     export default function GameDevPage() {
         const [activeMenu, setActiveMenu] = useState<MenuId>('profile');
         const [glitchActive, setGlitchActive] = useState(false);
-        const [clock, setClock] = useState('');
-        const [booted, setBooted] = useState(false);
         const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-        const shouldReduceMotion = useReducedMotion();
-
-        const artifacts = useMemo(() => createArtifacts(), []);
-
-        useEffect(() => {
-            const timer = window.setTimeout(() => setBooted(true), 450);
-
-            const updateClock = () => {
-                setClock(
-                    new Intl.DateTimeFormat(undefined, {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                    }).format(new Date())
-                );
-            };
-
-            updateClock();
-            const clockTimer = window.setInterval(updateClock, 1000);
-
-            return () => {
-                window.clearTimeout(timer);
-                window.clearInterval(clockTimer);
-            };
-        }, []);
+        // Also true on low-power devices (see useMotionReduced).
+        const shouldReduceMotion = useMotionReduced();
 
         useEffect(() => {
             if (shouldReduceMotion) return;
@@ -217,7 +214,8 @@
         };
 
         return (
-            <div className={`game-dev-page cyberpunk-font min-h-screen overflow-hidden bg-[#050608] text-white ${booted ? 'boot-complete' : 'booting'}`}>
+            <LazyMotion features={domAnimation} strict>
+            <div className="game-dev-page cyberpunk-font min-h-screen overflow-hidden bg-[#050608] text-white">
                 {/* =========================================================
                     ATMOSPHERE
                 ========================================================= */}
@@ -226,7 +224,7 @@
 
                 {/* A moving pool of light gives the page the feeling of a physical space,
                     not a flat software canvas. */}
-                <CursorGlow />
+                <CursorGlow interactive={!shouldReduceMotion} />
 
                 {/* Editorial registration marks */}
                 <div className="pointer-events-none fixed inset-0 z-0">
@@ -247,22 +245,18 @@
 
                 {!shouldReduceMotion && (
                     <div className="pointer-events-none fixed inset-0 z-0">
-                        {artifacts.map((artifact) => (
-                            <motion.div
+                        {/* Pure CSS loops (compositor-only), no per-frame JS. */}
+                        {ARTIFACTS.map((artifact) => (
+                            <div
                                 key={artifact.id}
-                                className="absolute bg-cyan-300/20"
+                                className="gd-artifact absolute bg-cyan-300/20"
                                 style={{
                                     left: `${artifact.left}%`,
                                     top: `${artifact.top}%`,
                                     width: artifact.width,
                                     height: artifact.height,
-                                }}
-                                animate={{ y: [0, -80, 0], opacity: [0, 0.4, 0] }}
-                                transition={{
-                                    duration: artifact.duration,
-                                    delay: artifact.delay,
-                                    repeat: Infinity,
-                                    ease: 'linear',
+                                    animationDuration: `${artifact.duration}s`,
+                                    animationDelay: `${artifact.delay}s`,
                                 }}
                             />
                         ))}
@@ -275,6 +269,13 @@
 
                 <div className="relative z-50 flex h-7 items-center justify-between border-b border-cyan-400/20 bg-black/80 px-4 font-mono text-[9px] tracking-[0.25em] text-cyan-400/60 sm:px-8">
                     <div className="flex items-center gap-3">
+                        <Link
+                            href="/"
+                            className="text-yellow-400/80 transition-colors hover:text-yellow-300 focus:outline-none focus-visible:text-white"
+                        >
+                            &larr; PORTFOLIO
+                        </Link>
+                        <span className="text-white/20">{'///'}</span>
                         <span className="hidden sm:inline">
                             NIGHT_CITY {'//'} DEV_NODE_07
                         </span>
@@ -306,7 +307,7 @@
                             {/* Brand */}
                             <div className="relative mb-6 sm:mb-10">
                                 <div className="mb-5 flex items-center justify-between font-mono text-[8px] tracking-[0.32em] text-white/25">
-                                    <span>MUHAMMAD BASIL / 2026</span>
+                                    <span>MUHAMMED BASIL / 2026</span>
                                     <span>01—04</span>
                                 </div>
 
@@ -365,7 +366,7 @@
                                     const animationProps = shouldReduceMotion ? {} : { whileHover: { x: 5 }, whileTap: { scale: 0.985 } };
 
                                     return (
-                                        <motion.button
+                                        <m.button
                                             key={item.id}
                                             type="button"
                                             onClick={() => selectMenu(item.id)}
@@ -378,10 +379,7 @@
                                             aria-current={active ? 'page' : undefined}
                                         >
                                             {active && (
-                                                <motion.div
-                                                    layoutId="nav-line"
-                                                    className="absolute right-0 top-0 h-full w-px bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]"
-                                                />
+                                                <span className="absolute right-0 top-0 h-full w-px bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
                                             )}
 
                                             <span
@@ -411,7 +409,7 @@
                                             <span className="ml-auto font-mono text-[8px] text-white/15">
                                                 {active ? 'ACTIVE' : 'OPEN'}
                                             </span>
-                                        </motion.button>
+                                        </m.button>
                                     );
                                 })}
 
@@ -466,14 +464,14 @@
                                     OPERATOR_ID
                                 </div>
                                 <div className="truncate font-mono text-sm font-bold tracking-[0.12em] text-white sm:text-base">
-                                    MUHAMMAD BASIL C.P
+                                    MUHAMMED BASIL C.P
                                 </div>
                             </div>
 
                             <div className="hidden items-center gap-4 sm:flex">
                                 <div className="text-right font-mono">
                                     <div className="text-[8px] tracking-[0.3em] text-white/25">LOCAL_TIME</div>
-                                    <div className="text-xs text-cyan-300">{clock || '--:--:--'}</div>
+                                    <LocalClock />
                                 </div>
 
                                 <div className="h-8 w-px bg-white/10" />
@@ -497,7 +495,7 @@
                             </div>
 
                             <AnimatePresence mode="wait">
-                                <motion.div
+                                <m.div
                                     key={activeMenu}
                                     initial={
                                         shouldReduceMotion
@@ -521,7 +519,7 @@
                                     {activeMenu === 'skills' && <SkillsContent />}
                                     {activeMenu === 'projects' && <ProjectsContent />}
                                     {activeMenu === 'contact' && <ContactContent />}
-                                </motion.div>
+                                </m.div>
                             </AnimatePresence>
                         </div>
                     </main>
@@ -530,7 +528,7 @@
                 {/* Glitch layer */}
                 <AnimatePresence>
                     {glitchActive && (
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -538,10 +536,11 @@
                         >
                             <div className="absolute left-0 top-[42%] h-2 w-full bg-red-500/20 mix-blend-screen" />
                             <div className="absolute left-0 top-[58%] h-px w-full bg-cyan-400/40 mix-blend-screen" />
-                        </motion.div>
+                        </m.div>
                     )}
                 </AnimatePresence>
             </div>
+            </LazyMotion>
         );
     }
 
@@ -553,6 +552,7 @@
         return (
             <section aria-labelledby="profile-title">
                 <PageIntro
+                    titleId="profile-title"
                     number="01"
                     eyebrow="IDENTITY / PLAYER DATA"
                     title="PROFILE_DATA"
@@ -637,7 +637,7 @@
                 {/* Stats */}
                 <div className="mt-5 grid grid-cols-1 gap-px bg-white/[0.07] sm:grid-cols-3">
                     {profileStats.map((stat, index) => (
-                        <motion.div
+                        <m.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -673,7 +673,7 @@
                             >
                                 {stat.value}
                             </div>
-                        </motion.div>
+                        </m.div>
                     ))}
                 </div>
             </section>
@@ -688,6 +688,7 @@
         return (
             <section aria-labelledby="skills-title">
                 <PageIntro
+                    titleId="skills-title"
                     number="02"
                     eyebrow="CAPABILITIES / LOADOUT"
                     title="SKILL_MATRIX"
@@ -697,7 +698,7 @@
 
                 <div className="mt-8 grid gap-px bg-white/[0.07] md:grid-cols-2">
                     {skillsData.map((skill, index) => (
-                        <motion.div
+                        <m.div
                             key={skill.name}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -722,7 +723,7 @@
                             </div>
 
                             <div className="relative h-3 border border-white/10 bg-black">
-                                <motion.div
+                                <m.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${skill.level}%` }}
                                     transition={{ duration: 1, delay: 0.2 + index * 0.08 }}
@@ -744,7 +745,7 @@
                                     {skill.level}%
                                 </div>
                             </div>
-                        </motion.div>
+                        </m.div>
                     ))}
                 </div>
 
@@ -764,6 +765,7 @@
         return (
             <section aria-labelledby="projects-title">
                 <PageIntro
+                    titleId="projects-title"
                     number="03"
                     eyebrow="ARCHIVE / SELECTED BUILDS"
                     title="PROJECT_DB"
@@ -773,7 +775,7 @@
 
                 <div className="mt-8 space-y-5">
                     {projectsData.map((project, index) => (
-                        <motion.article
+                        <m.article
                             key={project.name}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -847,7 +849,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </motion.article>
+                        </m.article>
                     ))}
                 </div>
             </section>
@@ -886,6 +888,7 @@
         return (
             <section aria-labelledby="contact-title">
                 <PageIntro
+                    titleId="contact-title"
                     number="04"
                     eyebrow="COMMUNICATIONS / OPEN CHANNEL"
                     title="COMMS_LINK"
@@ -895,7 +898,7 @@
 
                 <div className="relative mt-8 grid gap-4 md:grid-cols-2">
                     {contacts.map((item, index) => (
-                        <motion.a
+                        <m.a
                             key={item.title}
                             href={item.href}
                             target={item.title === 'EMAIL' ? undefined : '_blank'}
@@ -925,7 +928,7 @@
                             </div>
 
                             <div className="mt-7 h-px w-10 bg-cyan-400/40 transition-all duration-500 group-hover:w-full" />
-                        </motion.a>
+                        </m.a>
                     ))}
 
                     {/* Availability panel */}
@@ -963,12 +966,14 @@
     ================================================================ */
 
     function PageIntro({
+        titleId,
         number,
         eyebrow,
         title,
         description,
         accent,
     }: {
+        titleId: string;
         number: string;
         eyebrow: string;
         title: string;
@@ -1006,7 +1011,7 @@
                     </span>
 
                     <div className="relative z-10">
-                        <h2 className="text-4xl font-black uppercase tracking-[-0.07em] text-white sm:text-7xl">
+                        <h2 id={titleId} className="text-4xl font-black uppercase tracking-[-0.07em] text-white sm:text-7xl">
                             {title}
                         </h2>
                     </div>

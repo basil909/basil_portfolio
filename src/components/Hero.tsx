@@ -20,15 +20,13 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import type { MotionStyle, Variants } from 'framer-motion';
+import type { MotionStyle } from 'framer-motion';
 import { GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../config/site';
 import { useMotionReduced } from '../hooks/useMotionReduced';
 
 /* ============================================================================
    Configuration
 ============================================================================ */
-
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const TYPING = { typeSpeed: 65, deleteSpeed: 28, pause: 2100 } as const;
 const NEURAL = { logInterval: 3200, tilt: 4 } as const; // tilt = max degrees per axis
@@ -60,31 +58,6 @@ const HERO_CSS = `
 
 // Hoisted so the element isn't rebuilt on every render.
 const HERO_STYLE = <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />;
-
-/* ============================================================================
-   Motion variants (one factory instead of near-identical objects)
-============================================================================ */
-
-type VariantOpts = { x?: number; y?: number; duration?: number; delay?: number };
-
-const makeVariant = ({ x = 0, y = 0, duration = 0.6, delay = 0 }: VariantOpts = {}): Variants => ({
-  hidden: { opacity: 0, x, y },
-  visible: { opacity: 1, x: 0, y: 0, transition: { duration, delay, ease: EASE } },
-});
-
-const V = {
-  fadeIn: makeVariant({ duration: 0.55 }),
-  introMarker: makeVariant({ x: -14, delay: 0.05 }),
-  systemLabel: makeVariant({ duration: 0.55, delay: 0.12 }),
-  heroHeading: makeVariant({ duration: 0.35, delay: 0.08 }),
-  roleBlock: makeVariant({ x: -8, duration: 0.65, delay: 0.3 }),
-  descriptionBlock: makeVariant({ y: 12, duration: 0.65, delay: 0.38 }),
-  focusStrip: makeVariant({ y: 8, delay: 0.44 }),
-  ctaBlock: makeVariant({ y: 12, duration: 0.65, delay: 0.5 }),
-  socialsBlock: makeVariant({ delay: 0.58 }),
-  visualBlock: makeVariant({ x: 24, duration: 0.8, delay: 0.18 }),
-  footerBlock: makeVariant({ duration: 0.65, delay: 0.72 }),
-} as const;
 
 /* ============================================================================
    Static data
@@ -125,7 +98,7 @@ const SOCIAL_LINKS = [
   {
     name: 'LinkedIn',
     href: LINKEDIN_URL,
-    path: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774.792 0 1.771 0h20.454z',
+    path: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
   },
 ] as const;
 
@@ -181,36 +154,26 @@ const IO_COLUMNS = [
 ] as const;
 
 /* ============================================================================
-   Shared hero motion context
-   Hero content is visible in the server-rendered HTML; motion is reserved for
-   decorative and interactive elements.
+   Static block
+   Hero content renders fully in the server HTML with no entrance animation
+   (best for LCP); motion is reserved for decorative / interactive elements.
 ============================================================================ */
 
 type BlockTag = 'div' | 'p' | 'h1';
 
 function Block({
-  variants,
   className,
-  as = 'div',
+  as: Tag = 'div',
   id,
   children,
 }: {
-  variants: Variants;
   className?: string;
   as?: BlockTag;
   id?: string;
   children: ReactNode;
 }) {
-  const Tag = m[as] as typeof m.div;
-
   return (
-    <Tag
-      id={id}
-      variants={variants}
-      initial={false}
-      animate="visible"
-      className={className}
-    >
+    <Tag id={id} className={className}>
       {children}
     </Tag>
   );
@@ -252,19 +215,15 @@ const TypedText = memo(function TypedText({
   active: boolean;
 }) {
   const [textIndex, setTextIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
+  // Start with the first role fully typed: it is in the server HTML (visible
+  // without JS, no empty line on first paint) and the loop begins by pausing.
+  const [displayText, setDisplayText] = useState(() => texts[0] ?? '');
   const [isDeleting, setIsDeleting] = useState(false);
 
   const currentText = texts[textIndex] ?? '';
 
   useEffect(() => {
-    if (!currentText) return undefined;
-
-    if (reducedMotion) {
-      setDisplayText(currentText);
-      return undefined;
-    }
-    if (!active) return undefined;
+    if (!currentText || reducedMotion || !active) return undefined;
 
     let delay: number;
     let next: () => void;
@@ -292,7 +251,8 @@ const TypedText = memo(function TypedText({
 
   return (
     <span className="inline-flex min-w-0 items-center whitespace-nowrap text-[var(--primary)]">
-      {displayText}
+      {/* Reduced motion: show the current role whole instead of typing it. */}
+      {reducedMotion ? currentText : displayText}
       {!reducedMotion && (
         <span
           className="hero-anim hero-blink ml-2 inline-block h-[1.05em] w-px bg-[var(--primary)]"
@@ -720,7 +680,7 @@ export default function Hero() {
           {/* min-h-svh lives here so the marquee + footer sit at the bottom on tall screens */}
           <div className="relative z-10 mx-auto flex min-h-svh w-full max-w-[1600px] flex-col px-5 pb-6 pt-20 sm:px-8 lg:px-12 lg:pt-24">
             {/* Top bar */}
-            <Block variants={V.fadeIn} className="flex items-center justify-between border-b border-[var(--line)] pb-4">
+            <Block className="flex items-center justify-between border-b border-[var(--line)] pb-4">
               <div className="flex items-center gap-4">
                 <span className={`${DISPLAY} text-sm font-black tracking-[-0.05em]`}>
                   MB<span className="text-[var(--primary)]">/</span>
@@ -742,12 +702,12 @@ export default function Hero() {
             <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(320px,0.88fr)] lg:gap-14 lg:py-12 xl:gap-20">
               {/* Left column */}
               <div className="relative">
-                <Block variants={V.introMarker} className="mb-7 flex items-center gap-4">
-                  <span className={`${LABEL_MD} text-[var(--primary)]`}>01 / Introduction</span>
+                <Block className="mb-7 flex items-center gap-4">
+                  <span className={`${LABEL_MD} text-[var(--primary)]`}>00 / Introduction</span>
                   <span className="h-px w-16 bg-[var(--primary)]" />
                 </Block>
 
-                <Block variants={V.systemLabel} className={`mb-4 flex items-center gap-3 ${LABEL_SM} text-[var(--muted)]`}>
+                <Block className={`mb-4 flex items-center gap-3 ${LABEL_SM} text-[var(--muted)]`}>
                   <span className="text-[var(--primary)]">SYS_01</span>
                   <span>/</span>
                   <span>Intelligence + engineering</span>
@@ -758,8 +718,7 @@ export default function Hero() {
                 <Block
                   as="h1"
                   id="hero-title"
-                  variants={V.heroHeading}
-                  className={`relative z-20 ${DISPLAY} text-[clamp(2.5rem,12vw,5.5rem)] font-black leading-[0.8] tracking-[-0.085em] lg:text-[clamp(3.5rem,6.9vw,8.2rem)]`}
+                  className={`relative z-20 ${DISPLAY} text-[clamp(2.5rem,12vw,5.5rem)] font-black leading-[0.8] tracking-[-0.045em] lg:text-[clamp(3.5rem,6.9vw,8.2rem)]`}
                 >
                   <Reveal className="max-w-full">
                     <span className="block">MUHAMMED</span>
@@ -777,7 +736,7 @@ export default function Hero() {
                   </Reveal>
                 </Block>
 
-                <Block variants={V.roleBlock} className="mt-8 flex min-h-10 items-center border-l-2 border-[var(--primary)] pl-5">
+                <Block className="mt-8 flex min-h-10 items-center border-l-2 border-[var(--primary)] pl-5">
                   <span className="sr-only">Roles: {TYPED_TEXTS.join(', ')}</span>
                   <span aria-hidden="true" className={`mr-4 ${LABEL_SM} text-[var(--muted)]`}>
                     I am
@@ -789,7 +748,6 @@ export default function Hero() {
 
                 <Block
                   as="p"
-                  variants={V.descriptionBlock}
                   className="mt-7 max-w-2xl text-base leading-7 text-[var(--muted)] [text-wrap:pretty] sm:text-lg sm:leading-8"
                 >
                   I build intelligent systems and software experiences where machine learning meets practical
@@ -797,7 +755,6 @@ export default function Hero() {
                 </Block>
 
                 <Block
-                  variants={V.focusStrip}
                   className={`mt-6 flex max-w-xl flex-wrap items-center gap-x-3 gap-y-1 border-y border-[var(--line)] py-3 ${LABEL_SM} text-[var(--muted)]`}
                 >
                   <span className="h-1.5 w-1.5 shrink-0 bg-[var(--primary)]" />
@@ -809,7 +766,7 @@ export default function Hero() {
                   ))}
                 </Block>
 
-                <Block variants={V.ctaBlock} className="mt-8 flex flex-wrap gap-3">
+                <Block className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="#projects"
                     className={`group relative isolate inline-flex items-center gap-6 overflow-hidden bg-[var(--primary)] px-6 py-4 text-[var(--background)] ${CTA_BASE}`}
@@ -846,7 +803,7 @@ export default function Hero() {
                   </a>
                 </Block>
 
-                <Block variants={V.socialsBlock} className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
+                <Block className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
                   <span className={`${LABEL_SM} text-[var(--muted)]`}>Connect</span>
                   {SOCIAL_LINKS.map((social) => (
                     <a
@@ -867,7 +824,7 @@ export default function Hero() {
               </div>
 
               {/* Right column */}
-              <Block variants={V.visualBlock} className="relative w-full lg:ml-auto lg:max-w-[600px]">
+              <Block className="relative w-full lg:ml-auto lg:max-w-[600px]">
                 <NeuralVisual reducedMotion={reducedMotion} active={active} />
 
                 <div className="mt-4 grid grid-cols-3 gap-px border border-[var(--line)] bg-[var(--line)]">
@@ -886,7 +843,7 @@ export default function Hero() {
 
             <Marquee reducedMotion={reducedMotion} />
 
-            <Block variants={V.footerBlock} className="flex items-end justify-between gap-6 border-t border-[var(--line)] pt-4">
+            <Block className="flex items-end justify-between gap-6 border-t border-[var(--line)] pt-4">
               <a
                 href="#about"
                 className={`group flex items-center gap-3 ${LABEL_MD} text-[var(--muted)] transition-colors hover:text-[var(--primary)] ${FOCUS_RING}`}

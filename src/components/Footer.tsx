@@ -1,5 +1,6 @@
 'use client';
 
+import { useLenis } from 'lenis/react';
 import {
   GITHUB_URL,
   LINKEDIN_URL,
@@ -58,6 +59,13 @@ function ArrowIcon() {
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const lenis = useLenis();
+
+  // Go through Lenis when it is running; a native smooth scroll would fight it.
+  const scrollToTop = () => {
+    if (lenis) lenis.scrollTo(0, { force: true });
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <footer className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--background)] text-[var(--foreground)]">
@@ -216,7 +224,7 @@ export default function Footer() {
 
             <button
               type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={scrollToTop}
               className="group inline-flex items-center gap-2 font-semibold uppercase tracking-[0.12em] text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
             >
               Back to top

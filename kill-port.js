@@ -12,6 +12,6 @@ try {
     execSync('lsof -i :3000 | grep LISTEN | awk \'{print $2}\' | xargs kill -9');
   }
   console.log('Successfully killed process on port 3000');
-} catch (error) {
+} catch {
   console.log('No process found on port 3000 or failed to kill process');
 }

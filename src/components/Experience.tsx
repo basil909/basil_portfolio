@@ -82,8 +82,8 @@ export default function Experience() {
         <div className="mb-14 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:mb-20">
           <div>
             <div className="mb-5 flex items-center gap-3">
-              <span className={`${LABEL} tracking-[0.22em] text-[var(--muted)]`}>The background</span>
-              <span className="h-px w-10 bg-[var(--line-strong)]" aria-hidden="true" />
+              <span className={`${LABEL} tracking-[0.22em] text-[var(--primary)]`}>02 / Background</span>
+              <span className="h-px w-10 bg-[var(--primary)]" aria-hidden="true" />
             </div>
 
             <h2

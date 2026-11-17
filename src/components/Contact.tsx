@@ -2,12 +2,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useMotionReduced } from '../hooks/useMotionReduced';
-import { useInView } from 'react-intersection-observer';
-import emailjs from '@emailjs/browser';
 import { emailjsConfig } from '../config/emailjs';
 import { GITHUB_URL, LINKEDIN_URL, SITE_EMAIL } from '../config/site';
+import RevealSection, { revealDelay } from './RevealSection';
 
 type FormData = {
   name: string;
@@ -33,7 +30,7 @@ const githubPath =
   'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z';
 
 const linkedinPath =
-  'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774.792 0 1.771 0h20.454z';
+  'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z';
 
 function GithubIcon() {
   return (
@@ -128,29 +125,9 @@ export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
   const formRef = useRef<HTMLFormElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
-  const reducedMotion = useMotionReduced();
-
-  const reveal = {
-    hidden: {
-      opacity: 0,
-      y: reducedMotion ? 0 : 28,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.16, 1, 0.3, 1] as const,
-      },
-    },
-  };
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const validateForm = () => {
     const nextErrors: FormErrors = { ...INITIAL_ERRORS };
@@ -240,6 +217,8 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
+      // Loaded on demand: most visitors never submit, so keep it out of the page bundle.
+      const { default: emailjs } = await import('@emailjs/browser');
       const result = await emailjs.sendForm(
         emailjsConfig.serviceId,
         emailjsConfig.templateId,
@@ -318,6 +297,10 @@ export default function Contact() {
   useEffect(() => {
     if (!isSubmitted) return;
 
+    // The form (and the focused submit button) just unmounted; keep keyboard
+    // and screen-reader users anchored on the confirmation instead of <body>.
+    successHeadingRef.current?.focus({ preventScroll: true });
+
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsSubmitted(false);
@@ -336,9 +319,8 @@ export default function Contact() {
   }, [isSubmitted]);
 
   return (
-    <section
+    <RevealSection
       id="contact"
-      ref={ref}
       className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--background)] px-5 py-24 text-[var(--foreground)] sm:px-8 lg:px-12 lg:py-32"
       aria-labelledby="contact-title"
     >
@@ -363,11 +345,8 @@ export default function Contact() {
 
       <div className="relative z-10 mx-auto max-w-[1600px]">
         {/* Header */}
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          className="mb-14 border-b border-[var(--line)] pb-5"
+        <div
+          className="reveal mb-14 border-b border-[var(--line)] pb-5"
         >
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
@@ -402,15 +381,13 @@ export default function Contact() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         <div className="grid gap-px border border-[var(--line)] bg-[var(--line)] lg:grid-cols-[0.72fr_1.28fr]">
           {/* Contact information */}
-          <motion.div
-            variants={reveal}
-            initial="hidden"
-            animate={inView ? 'visible' : 'hidden'}
-            className="relative bg-[var(--surface)] p-6 sm:p-8 lg:p-10"
+          <div
+            style={revealDelay(0.08)}
+            className="reveal relative bg-[var(--surface)] p-6 sm:p-8 lg:p-10"
           >
             <div className="flex h-full flex-col">
               <div>
@@ -498,14 +475,12 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Form */}
-          <motion.div
-            variants={reveal}
-            initial="hidden"
-            animate={inView ? 'visible' : 'hidden'}
-            className="relative bg-[var(--surface)] p-6 sm:p-8 lg:p-10"
+          <div
+            style={revealDelay(0.16)}
+            className="reveal relative bg-[var(--surface)] p-6 sm:p-8 lg:p-10"
           >
             <div
               className="pointer-events-none absolute left-0 top-0 h-px w-1/3 bg-[var(--primary)]"
@@ -513,16 +488,9 @@ export default function Contact() {
             />
 
             {isSubmitted ? (
-              <motion.div
-                className="flex min-h-[520px] flex-col items-start justify-center border border-[var(--line)] bg-[var(--background)] p-7 sm:p-10"
-                initial={{
-                  opacity: 0,
-                  y: reducedMotion ? 0 : 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
+              <div
+                className="fade-in-up flex min-h-[520px] flex-col items-start justify-center border border-[var(--line)] bg-[var(--background)] p-7 sm:p-10"
+                role="status"
               >
                 <div className="flex h-12 w-12 items-center justify-center border border-[var(--primary)] bg-[var(--primary)] text-black">
                   <svg
@@ -545,7 +513,11 @@ export default function Contact() {
                   Transmission complete
                 </span>
 
-                <h3 className="mt-3 font-[family-name:var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
+                <h3
+                  ref={successHeadingRef}
+                  tabIndex={-1}
+                  className="mt-3 font-[family-name:var(--font-orbitron)] text-3xl font-bold tracking-[-0.04em] focus:outline-none sm:text-4xl"
+                >
                   Message sent.
                 </h3>
 
@@ -568,7 +540,7 @@ export default function Contact() {
                 >
                   Send another message
                 </button>
-              </motion.div>
+              </div>
             ) : (
               <form
                 ref={formRef}
@@ -600,14 +572,12 @@ export default function Contact() {
                 </div>
 
                 {submitError && (
-                  <motion.div
-                    className="mb-6 border border-red-500/40 bg-red-500/5 px-4 py-3 text-sm leading-6 text-red-500"
+                  <div
+                    className="fade-in-up mb-6 border border-red-500/40 bg-red-500/5 px-4 py-3 text-sm leading-6 text-red-500"
                     role="alert"
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
                   >
                     {submitError}
-                  </motion.div>
+                  </div>
                 )}
 
                 <div className="space-y-7">
@@ -780,15 +750,13 @@ export default function Contact() {
                 </div>
               </form>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom strip */}
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4"
+        <div
+          style={revealDelay(0.24)}
+          className="reveal mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4"
         >
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             AI / ML / Software engineering
@@ -801,8 +769,8 @@ export default function Contact() {
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
             ↓ 04
           </span>
-        </motion.div>
+        </div>
       </div>
-    </section>
+    </RevealSection>
   );
 }
